@@ -4,8 +4,8 @@ import {
   SafeAreaViewProps,
 } from 'react-native-safe-area-context';
 
-const ViewContainer = ({ children, style }: SafeAreaViewProps) => {
-  return <SafeAreaView style={[{ flex: 1 }, style]}>{children}</SafeAreaView>;
+const ViewContainer = ({ children }: SafeAreaViewProps) => {
+  return <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>;
 };
 
 export default ViewContainer;

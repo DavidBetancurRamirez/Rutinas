@@ -3,15 +3,18 @@ import {
   Animated,
   GestureResponderEvent,
   Pressable,
+  StyleProp,
   StyleSheet,
   Text,
   TextProps,
+  ViewStyle,
 } from 'react-native';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-interface CardProps extends ComponentProps<typeof AnimatedPressable> {
+export interface CardProps extends ComponentProps<typeof AnimatedPressable> {
   onPress?: (event: GestureResponderEvent) => void;
+  style?: StyleProp<ViewStyle> | ViewStyle | undefined;
   text?: string;
   textProps?: TextProps;
 }
@@ -48,7 +51,7 @@ const Card: React.FC<CardProps> = ({
       style={[
         { transform: [{ scale }] },
         styles.card,
-        style as unknown as object,
+        StyleSheet.flatten(style),
       ]}
       {...rest}
     >
@@ -63,7 +66,7 @@ const Card: React.FC<CardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 15,
