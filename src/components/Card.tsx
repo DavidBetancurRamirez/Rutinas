@@ -1,20 +1,29 @@
-import React, { useRef } from 'react';
+import React, { ComponentProps, useRef } from 'react';
 import {
-  Pressable,
   Animated,
-  StyleSheet,
-  type ViewProps,
   GestureResponderEvent,
-  View,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextProps,
 } from 'react-native';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-interface CardProps extends ViewProps {
+interface CardProps extends ComponentProps<typeof AnimatedPressable> {
   onPress?: (event: GestureResponderEvent) => void;
+  text?: string;
+  textProps?: TextProps;
 }
 
-const Card: React.FC<CardProps> = ({ children, style, onPress, ...rest }) => {
+const Card: React.FC<CardProps> = ({
+  children,
+  style,
+  onPress,
+  text,
+  textProps,
+  ...rest
+}) => {
   const scale = useRef(new Animated.Value(1)).current;
 
   const onPressIn = () => {
@@ -36,11 +45,18 @@ const Card: React.FC<CardProps> = ({ children, style, onPress, ...rest }) => {
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       onPress={onPress}
-      style={{ transform: [{ scale }] }}
+      style={[
+        { transform: [{ scale }] },
+        styles.card,
+        style as unknown as object,
+      ]}
+      {...rest}
     >
-      <View style={[styles.card, style]} {...rest}>
-        {children}
-      </View>
+      {children || (
+        <Text {...textProps} style={[styles.text, textProps?.style]}>
+          {text}
+        </Text>
+      )}
     </AnimatedPressable>
   );
 };
@@ -52,6 +68,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
     padding: 5,
+  },
+  text: {
+    fontSize: 18,
+    color: 'white',
   },
 });
 
