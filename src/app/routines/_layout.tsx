@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 
-import { Colors } from '@/constants/Theme';
+import { RoutineColors } from '@/constants/colors';
 
 const Routines = () => {
   return (
@@ -11,21 +11,21 @@ const Routines = () => {
         name="shower"
         options={{
           title: 'Ducha',
-          headerStyle: { backgroundColor: Colors.yellow },
+          headerStyle: { backgroundColor: RoutineColors.shower },
         }}
       />
       <Stack.Screen
         name="bathroom"
         options={{
           title: 'Ir al baño',
-          headerStyle: { backgroundColor: Colors.green },
+          headerStyle: { backgroundColor: RoutineColors.bathroom },
         }}
       />
       <Stack.Screen
         name="teeth"
         options={{
           title: 'Lavar los dientes',
-          headerStyle: { backgroundColor: Colors.orange },
+          headerStyle: { backgroundColor: RoutineColors.teeth },
         }}
       />
     </Stack>

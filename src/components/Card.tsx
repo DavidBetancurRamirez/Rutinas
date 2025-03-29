@@ -49,7 +49,10 @@ const Card: React.FC<CardProps> = ({
       onPressOut={onPressOut}
       onPress={onPress}
       style={[
-        { transform: [{ scale }] },
+        {
+          transform: [{ scale }],
+          opacity: rest.disabled ? 0.5 : 1,
+        },
         styles.card,
         StyleSheet.flatten(style),
       ]}

@@ -9,7 +9,7 @@ import {
 
 import Card, { CardProps } from '@/components/Card';
 
-import { Colors } from '@/constants/Theme';
+import { Colors } from '@/constants/colors';
 
 interface ScreenProps extends ViewProps {
   containerStyle?: ViewProps['style'];

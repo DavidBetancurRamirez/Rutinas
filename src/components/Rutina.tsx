@@ -2,6 +2,7 @@ import React from 'react';
 import { useRouter } from 'expo-router';
 
 import Screen from './Screen';
+import { GAMES } from '@/constants';
 
 interface RutinaProps {
   title: string;
@@ -10,20 +11,24 @@ interface RutinaProps {
 const Rutina: React.FC<RutinaProps> = ({ title }) => {
   const router = useRouter();
 
+  const handlePress = (game: GAMES) => {
+    router.push(`/games/${game}`);
+  };
+
   return (
     <Screen
       title={title}
       cards={[
         {
-          onPress: () => router.push('/games/interactive'),
+          onPress: () => handlePress(GAMES.INTERACTIVE),
           text: 'Interactivo',
         },
         {
-          onPress: () => router.push('/games/quiz'),
+          onPress: () => handlePress(GAMES.QUIZ),
           text: 'Quiz',
         },
         {
-          onPress: () => router.push('/games/sort'),
+          onPress: () => handlePress(GAMES.SORT),
           text: 'Ordenar',
         },
       ]}
