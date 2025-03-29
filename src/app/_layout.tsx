@@ -30,6 +30,9 @@ export default function RootLayout() {
     <ThemeProvider value={Theme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="options" options={{ title: 'Modo de juego' }} />
+        <Stack.Screen name="routines" options={{ headerShown: false }} />
+        <Stack.Screen name="games" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="dark" />
