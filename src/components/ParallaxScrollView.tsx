@@ -15,10 +15,7 @@ type Props = PropsWithChildren<{
   headerImage: ReactElement;
 }>;
 
-export default function ParallaxScrollView({
-  children,
-  headerImage,
-}: Props) {
+export default function ParallaxScrollView({ children, headerImage }: Props) {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const bottom = useBottomTabOverflow();
@@ -29,11 +26,15 @@ export default function ParallaxScrollView({
           translateY: interpolate(
             scrollOffset.value,
             [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
-            [-HEADER_HEIGHT / 2, 0, HEADER_HEIGHT * 0.75]
+            [-HEADER_HEIGHT / 2, 0, HEADER_HEIGHT * 0.75],
           ),
         },
         {
-          scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
+          scale: interpolate(
+            scrollOffset.value,
+            [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+            [2, 1, 1],
+          ),
         },
       ],
     };
@@ -45,12 +46,9 @@ export default function ParallaxScrollView({
         ref={scrollRef}
         scrollEventThrottle={16}
         scrollIndicatorInsets={{ bottom }}
-        contentContainerStyle={{ paddingBottom: bottom }}>
-        <Animated.View
-          style={[
-            styles.header,
-            headerAnimatedStyle,
-          ]}>
+        contentContainerStyle={{ paddingBottom: bottom }}
+      >
+        <Animated.View style={[styles.header, headerAnimatedStyle]}>
           {headerImage}
         </Animated.View>
         <View style={styles.content}>{children}</View>
