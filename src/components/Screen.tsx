@@ -30,22 +30,24 @@ const Screen: React.FC<ScreenProps> = ({
       <Text {...titleProps} style={[styles.title, titleProps?.style]}>
         {title}
       </Text>
-      {cards && (
-        <View style={styles.cardsContainer}>
-          {cards?.map((option, index) => {
-            const { style: optionStyle, ...rest } = option;
-            return (
-              <Card
-                key={index}
-                style={[styles.card, optionStyle]}
-                textProps={{ style: styles.cardText }}
-                {...rest}
-              />
-            );
-          })}
-        </View>
-      )}
-      {children}
+      <View style={styles.content}>
+        {cards && (
+          <View style={styles.cardsContainer}>
+            {cards.map((option, index) => {
+              const { style: optionStyle, ...rest } = option;
+              return (
+                <Card
+                  key={index}
+                  style={[styles.card, optionStyle]}
+                  textProps={{ style: styles.cardText }}
+                  {...rest}
+                />
+              );
+            })}
+          </View>
+        )}
+        {children && <View style={styles.childrenContainer}>{children}</View>}
+      </View>
     </View>
   );
 };
@@ -54,14 +56,19 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     margin: 10,
+    flex: 1,
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
   },
-  cardsContainer: {
+  content: {
+    flex: 1,
     width: '100%',
-    height: '100%',
+    justifyContent: 'space-between',
+  },
+  cardsContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 40,
@@ -75,6 +82,9 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     justifyContent: 'center',
+  },
+  childrenContainer: {
+    alignSelf: 'stretch',
   },
 });
 
