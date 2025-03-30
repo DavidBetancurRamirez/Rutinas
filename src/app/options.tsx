@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import Card from '@/components/Card';
-import OptionsScreen from '@/components/Screen';
+import Screen from '@/components/Screen';
 
 import { Colors } from '@/constants/colors';
 import { AGES, GENDERS } from '@/constants';
@@ -24,7 +24,7 @@ const Options = () => {
   const { age, gender, setAge, setGender } = useAppStore();
 
   return (
-    <OptionsScreen title="Elige tu modo de juego">
+    <Screen title="Elige tu modo de juego">
       <View style={styles.container}>
         <Text style={styles.subTitle}>Género</Text>
         <View style={styles.optionContainer}>
@@ -77,7 +77,7 @@ const Options = () => {
           onPress={() => router.navigate('/routines')}
         />
       </View>
-    </OptionsScreen>
+    </Screen>
   );
 };
 
