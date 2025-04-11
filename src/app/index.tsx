@@ -26,15 +26,19 @@ const Index = () => {
         title="Bienvenid@ a Rutinas"
         cards={[
           {
-            text: 'Comenzar',
-            onPress: () => router.push('/options'),
+            text: { children: 'Comenzar' },
+            cardProps: {
+              onPress: () => router.push('/options'),
+            },
           },
           {
-            text: 'Crea tu rutina',
+            text: { children: 'Crea tu rutina' },
           },
           {
-            text: 'Creditos',
-            onPress: () => setShowModal(true),
+            text: { children: 'Creditos' },
+            cardProps: {
+              onPress: () => setShowModal(true),
+            },
           },
         ]}
       >

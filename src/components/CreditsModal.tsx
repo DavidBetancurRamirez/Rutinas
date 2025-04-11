@@ -24,18 +24,20 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ visible, onClose }) => {
             <Text style={styles.title}>Universidad EIA</Text>
             <Ionicons name="close" onPress={onClose} size={30} />
           </View>
-          <CreditName
-            name="David Betancur"
-            githubUrl="https://github.com/DavidBetancurRamirez"
-          />
-          <CreditName
-            name="Pedro Juan Henao"
-            githubUrl="https://github.com/PedroJuanHenaoVelez"
-          />
-          <CreditName
-            name="Santiago Toro"
-            githubUrl="https://github.com/Santy30-Bull"
-          />
+          <View style={styles.creditsNameContainer}>
+            <CreditName
+              name="David Betancur"
+              githubUrl="https://github.com/DavidBetancurRamirez"
+            />
+            <CreditName
+              name="Pedro Juan Henao"
+              githubUrl="https://github.com/PedroJuanHenaoVelez"
+            />
+            <CreditName
+              name="Santiago Toro"
+              githubUrl="https://github.com/Santy30-Bull"
+            />
+          </View>
           <Text style={styles.company}>
             Para la Fundación{' '}
             <ExternalLink
@@ -99,6 +101,9 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     margin: 'auto',
+  },
+  creditsNameContainer: {
+    marginVertical: 5,
   },
   nameContainer: {
     flexDirection: 'row',

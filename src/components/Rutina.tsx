@@ -20,16 +20,25 @@ const Rutina: React.FC<RutinaProps> = ({ title }) => {
       title={title}
       cards={[
         {
-          onPress: () => handlePress(GAMES.INTERACTIVE),
-          text: 'Interactivo',
+          image: { source: require('@/assets/images/games/interactive.png') },
+          text: { children: 'Interactivo' },
+          cardProps: {
+            onPress: () => handlePress(GAMES.INTERACTIVE),
+          },
         },
         {
-          onPress: () => handlePress(GAMES.QUIZ),
-          text: 'Quiz',
+          image: { source: require('@/assets/images/games/sort.png') },
+          text: { children: 'Ordenar' },
+          cardProps: {
+            onPress: () => handlePress(GAMES.SORT),
+          },
         },
         {
-          onPress: () => handlePress(GAMES.SORT),
-          text: 'Ordenar',
+          image: { source: require('@/assets/images/games/quiz.png') },
+          text: { children: 'Quiz' },
+          cardProps: {
+            onPress: () => handlePress(GAMES.QUIZ),
+          },
         },
       ]}
     />
