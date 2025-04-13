@@ -1,6 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 
 import Card from '@/components/Card';
 import Screen from '@/components/Screen';
@@ -42,6 +49,9 @@ const routineSteps: Step[] = [
   },
 ];
 
+const SLOT_SIZE = 80;
+const SLOT_GAP = 10;
+
 const Sort = () => {
   // const { age, gender, routine } = useAppStore();
 
@@ -77,6 +87,13 @@ const Sort = () => {
   const isOptionUsed = (step: Step) =>
     userAnswers.some((answer) => answer?.id === step.id);
 
+  const screenWidth = Dimensions.get('window').width;
+
+  const itemsPerRow = Math.floor(screenWidth / (SLOT_SIZE + SLOT_GAP));
+
+  const totalSlots = Math.ceil(userAnswers.length / itemsPerRow) * itemsPerRow;
+  const emptySlotsCount = totalSlots - userAnswers.length;
+
   return (
     <Screen title="Ordenar">
       <View style={styles.grid}>
@@ -94,9 +111,16 @@ const Sort = () => {
             {answer ? (
               <Option image={answer.image} name={answer.name} />
             ) : (
-              <Text style={styles.placeholder}>?</Text>
+              <Text style={styles.placeholder}>{index}</Text>
             )}
           </TouchableOpacity>
+        ))}
+
+        {Array.from({ length: emptySlotsCount }).map((_, index) => (
+          <View
+            key={`filler-${index}`}
+            style={[styles.slot, styles.fillerSlot]}
+          />
         ))}
       </View>
 
@@ -121,6 +145,13 @@ const Sort = () => {
             </Card>
           );
         })}
+
+        {Array.from({ length: emptySlotsCount }).map((_, index) => (
+          <View
+            key={`filler-${index}`}
+            style={[styles.slot, styles.fillerSlot]}
+          />
+        ))}
       </View>
     </Screen>
   );
@@ -140,18 +171,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    gap: 10,
+    gap: SLOT_GAP,
     marginTop: 20,
   },
   slot: {
-    width: 80,
-    height: 80,
+    width: SLOT_SIZE,
+    height: SLOT_SIZE,
     borderWidth: 2,
     borderColor: '#999',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: SLOT_SIZE / 4,
     backgroundColor: '#f0f0f0',
+  },
+  fillerSlot: {
+    backgroundColor: '#e0e0e0',
+    borderColor: '#e0e0e0',
   },
   correctSlot: {
     borderColor: Colors.success,
@@ -166,11 +201,10 @@ const styles = StyleSheet.create({
   },
   option: {
     flexDirection: 'column',
-    backgroundColor: '#eaf6ff',
+    backgroundColor: Colors.background,
   },
   selectedOption: {
     borderColor: Colors.blue,
-    backgroundColor: '#d0ecff',
   },
   otherOption: {
     opacity: 0.8,
