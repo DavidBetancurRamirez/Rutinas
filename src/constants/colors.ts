@@ -7,6 +7,8 @@ export const Colors = {
   orange: '#F17105',
   violet: '#6A4C93',
   yellow: '#FFCA3A',
+  success: '#4CAF50',
+  error: '#F44336',
 };
 
 export const RoutineColors = {

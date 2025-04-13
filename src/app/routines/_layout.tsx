@@ -12,6 +12,7 @@ const Routines = () => {
         options={{
           title: 'Ducha',
           headerStyle: { backgroundColor: RoutineColors.shower },
+          headerTintColor: 'white',
         }}
       />
       <Stack.Screen
@@ -19,6 +20,7 @@ const Routines = () => {
         options={{
           title: 'Ir al baño',
           headerStyle: { backgroundColor: RoutineColors.bathroom },
+          headerTintColor: 'white',
         }}
       />
       <Stack.Screen
@@ -26,6 +28,7 @@ const Routines = () => {
         options={{
           title: 'Lavar los dientes',
           headerStyle: { backgroundColor: RoutineColors.teeth },
+          headerTintColor: 'white',
         }}
       />
     </Stack>

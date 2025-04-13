@@ -17,6 +17,7 @@ const Games = () => {
           headerStyle: {
             backgroundColor: routine ? RoutineColors[routine] : 'white',
           },
+          headerTintColor: 'white',
         }}
       />
       <Stack.Screen
@@ -26,6 +27,7 @@ const Games = () => {
           headerStyle: {
             backgroundColor: routine ? RoutineColors[routine] : 'white',
           },
+          headerTintColor: 'white',
         }}
       />
       <Stack.Screen
@@ -35,6 +37,7 @@ const Games = () => {
           headerStyle: {
             backgroundColor: routine ? RoutineColors[routine] : 'white',
           },
+          headerTintColor: 'white',
         }}
       />
     </Stack>
