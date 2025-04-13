@@ -1,24 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 import CreditsModal from '@/components/CreditsModal';
 import Screen from '@/components/Screen';
 import ViewContainer from '@/components/ViewContainer';
 
-import useAppStore from '@/stores';
-
 const Index = () => {
   const router = useRouter();
-  const { clearState } = useAppStore();
 
   const [showModal, setShowModal] = useState(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      clearState();
-    }, [clearState]),
-  );
 
   return (
     <ViewContainer>
@@ -32,7 +23,10 @@ const Index = () => {
             },
           },
           {
-            text: { children: 'Crea tu rutina' },
+            text: { children: 'Tus rutinas' },
+            cardProps: {
+              onPress: () => router.push('/routine_viewer'),
+            },
           },
           {
             text: { children: 'Creditos' },

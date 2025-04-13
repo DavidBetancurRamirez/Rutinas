@@ -4,13 +4,13 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   StyleSheet,
   useWindowDimensions,
   ScrollView,
 } from 'react-native';
 
 import Card from '@/components/Card';
+import RoutineOption from '@/components/RoutineOption';
 import Screen, { genericMargin } from '@/components/Screen';
 
 import { Colors } from '@/constants/colors';
@@ -20,6 +20,8 @@ import { Step } from '@/data/routineStepsData';
 import { useRoutineSteps } from '@/hooks/useRoutineSteps';
 
 import useAppStore from '@/stores';
+
+import { getFillerCount } from '@/utils/getFillerCount';
 
 const SLOT_SIZE = 90;
 const SLOT_GAP = 10;
@@ -40,11 +42,11 @@ const Sort = () => {
   const [shuffledOptions, setShuffledOptions] = useState<Step[]>([]);
 
   const { width: screenWidth } = useWindowDimensions();
-  const itemsPerRow = Math.floor(
-    (screenWidth - genericMargin) / (SLOT_SIZE + SLOT_GAP),
+  const fillerCount = getFillerCount(
+    screenWidth - genericMargin,
+    SLOT_SIZE + SLOT_GAP,
+    userAnswers.length,
   );
-  const totalSlots = Math.ceil(userAnswers.length / itemsPerRow) * itemsPerRow;
-  const emptySlotsCount = totalSlots - userAnswers.length;
 
   useFocusEffect(
     useCallback(() => {
@@ -106,14 +108,14 @@ const Sort = () => {
               disabled={!!answer}
             >
               {answer ? (
-                <Option image={answer.image} name={answer.name} />
+                <RoutineOption image={answer.image} name={answer.name} />
               ) : (
                 <Text style={styles.placeholder}>{index + 1}</Text>
               )}
             </TouchableOpacity>
           ))}
 
-          {Array.from({ length: emptySlotsCount }).map((_, index) => (
+          {Array.from({ length: fillerCount }).map((_, index) => (
             <View
               key={`filler-${index}`}
               style={[styles.slot, styles.fillerSlot]}
@@ -142,12 +144,12 @@ const Sort = () => {
                 ]}
                 onPress={() => !used && setSelectedOption(option)}
               >
-                <Option image={option.image} name={option.name} />
+                <RoutineOption image={option.image} name={option.name} />
               </Card>
             );
           })}
 
-          {Array.from({ length: emptySlotsCount }).map((_, index) => (
+          {Array.from({ length: fillerCount }).map((_, index) => (
             <View
               key={`filler-${index}`}
               style={[styles.slot, styles.fillerSlot]}
@@ -156,15 +158,6 @@ const Sort = () => {
         </View>
       </ScrollView>
     </Screen>
-  );
-};
-
-const Option = ({ image, name }: Omit<Step, 'id'>) => {
-  return (
-    <>
-      <Image source={image} style={styles.optionImage} />
-      <Text style={styles.optionText}>{name}</Text>
-    </>
   );
 };
 
@@ -225,15 +218,6 @@ const styles = StyleSheet.create({
   },
   disabledOption: {
     opacity: 0.4,
-  },
-  optionImage: {
-    width: 40,
-    height: 40,
-    marginBottom: 4,
-  },
-  optionText: {
-    fontSize: 12,
-    textAlign: 'center',
   },
 });
 

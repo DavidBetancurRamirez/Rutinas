@@ -31,6 +31,10 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="options" options={{ title: 'Modo de juego' }} />
+        <Stack.Screen
+          name="routine_viewer"
+          options={{ title: 'Tus rutinas' }}
+        />
         <Stack.Screen name="routines" options={{ headerShown: false }} />
         <Stack.Screen name="games" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
