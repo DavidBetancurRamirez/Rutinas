@@ -58,15 +58,18 @@ const Screen: React.FC<ScreenProps> = ({
   );
 };
 
+export const genericMargin = 10;
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    margin: 10,
+    margin: genericMargin,
     flex: 1,
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   content: {
     flex: 1,

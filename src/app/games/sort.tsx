@@ -6,67 +6,50 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
+  ScrollView,
 } from 'react-native';
 
 import Card from '@/components/Card';
-import Screen from '@/components/Screen';
+import Screen, { genericMargin } from '@/components/Screen';
 
 import { Colors } from '@/constants/colors';
 
 import { Step } from '@/data/routineStepsData';
 
-const routineSteps: Step[] = [
-  {
-    id: 'wake_up',
-    name: 'Despertarse',
-    image: require('@/assets/images/routines/bathroom.png'),
-  },
-  {
-    id: 'brush_teeth',
-    name: 'Cepillarse',
-    image: require('@/assets/images/routines/shower.png'),
-  },
-  {
-    id: 'eat_breakfast',
-    name: 'Desayunar',
-    image: require('@/assets/images/routines/teeth.png'),
-  },
-  {
-    id: 'wake_up2',
-    name: 'Despertarse',
-    image: require('@/assets/images/routines/bathroom.png'),
-  },
-  {
-    id: 'brush_teeth2',
-    name: 'Cepillarse',
-    image: require('@/assets/images/routines/shower.png'),
-  },
-  {
-    id: 'eat_breakfast2',
-    name: 'Desayunar',
-    image: require('@/assets/images/routines/teeth.png'),
-  },
-];
+import { useRoutineSteps } from '@/hooks/useRoutineSteps';
 
-const SLOT_SIZE = 80;
+import useAppStore from '@/stores';
+
+const SLOT_SIZE = 90;
 const SLOT_GAP = 10;
 
 const Sort = () => {
-  // const { age, gender, routine } = useAppStore();
+  const { age, gender, routine } = useAppStore();
+  const routineSteps = useRoutineSteps({
+    age,
+    gender,
+    routine,
+  });
 
   const [userAnswers, setUserAnswers] = useState<(Step | null)[]>(
     Array(routineSteps.length).fill(null),
   );
   const [selectedOption, setSelectedOption] = useState<Step | null>(null);
   const [incorrectIndex, setIncorrectIndex] = useState<number | null>(null);
-
   const [shuffledOptions, setShuffledOptions] = useState<Step[]>([]);
+
+  const { width: screenWidth } = useWindowDimensions();
+  const itemsPerRow = Math.floor(
+    (screenWidth - genericMargin) / (SLOT_SIZE + SLOT_GAP),
+  );
+  const totalSlots = Math.ceil(userAnswers.length / itemsPerRow) * itemsPerRow;
+  const emptySlotsCount = totalSlots - userAnswers.length;
 
   useFocusEffect(
     useCallback(() => {
       setShuffledOptions([...routineSteps].sort(() => Math.random() - 0.5));
-    }, []),
+    }, [routineSteps]),
   );
 
   const handleSlotPress = (index: number) => {
@@ -87,72 +70,91 @@ const Sort = () => {
   const isOptionUsed = (step: Step) =>
     userAnswers.some((answer) => answer?.id === step.id);
 
-  const screenWidth = Dimensions.get('window').width;
+  const isOptionUsedCorrectly = (option: Step): boolean => {
+    return routineSteps.some((correctStep, index) => {
+      return (
+        userAnswers[index]?.id === correctStep.id &&
+        option.id === correctStep.id
+      );
+    });
+  };
 
-  const itemsPerRow = Math.floor(screenWidth / (SLOT_SIZE + SLOT_GAP));
+  const sortedOptions = [...shuffledOptions].sort((a, b) => {
+    const aUsed = isOptionUsedCorrectly(a);
+    const bUsed = isOptionUsedCorrectly(b);
 
-  const totalSlots = Math.ceil(userAnswers.length / itemsPerRow) * itemsPerRow;
-  const emptySlotsCount = totalSlots - userAnswers.length;
+    if (aUsed === bUsed) return 0;
+    return aUsed ? 1 : -1;
+  });
 
   return (
-    <Screen title="Ordenar">
-      <View style={styles.grid}>
-        {userAnswers.map((answer, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.slot,
-              incorrectIndex === index && styles.incorrectSlot,
-              answer && styles.correctSlot,
-            ]}
-            onPress={() => handleSlotPress(index)}
-            disabled={!!answer}
-          >
-            {answer ? (
-              <Option image={answer.image} name={answer.name} />
-            ) : (
-              <Text style={styles.placeholder}>{index}</Text>
-            )}
-          </TouchableOpacity>
-        ))}
-
-        {Array.from({ length: emptySlotsCount }).map((_, index) => (
-          <View
-            key={`filler-${index}`}
-            style={[styles.slot, styles.fillerSlot]}
-          />
-        ))}
-      </View>
-
-      <View style={[styles.grid, { marginTop: 30 }]}>
-        {shuffledOptions.map((option, index) => {
-          const used = isOptionUsed(option);
-          return (
-            <Card
+    <Screen
+      title="Ordena la rutina de ducha"
+      titleProps={{ style: styles.title }}
+    >
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.grid}>
+          {userAnswers.map((answer, index) => (
+            <TouchableOpacity
               key={index}
               style={[
                 styles.slot,
-                styles.option,
-                selectedOption?.id === option.id && styles.selectedOption,
-                selectedOption &&
-                  selectedOption?.id !== option.id &&
-                  styles.otherOption,
-                used && styles.disabledOption,
+                incorrectIndex === index && styles.incorrectSlot,
+                answer && styles.correctSlot,
               ]}
-              onPress={() => !used && setSelectedOption(option)}
+              onPress={() => handleSlotPress(index)}
+              disabled={!!answer}
             >
-              <Option image={option.image} name={option.name} />
-            </Card>
-          );
-        })}
+              {answer ? (
+                <Option image={answer.image} name={answer.name} />
+              ) : (
+                <Text style={styles.placeholder}>{index + 1}</Text>
+              )}
+            </TouchableOpacity>
+          ))}
 
-        {Array.from({ length: emptySlotsCount }).map((_, index) => (
-          <View
-            key={`filler-${index}`}
-            style={[styles.slot, styles.fillerSlot]}
-          />
-        ))}
-      </View>
+          {Array.from({ length: emptySlotsCount }).map((_, index) => (
+            <View
+              key={`filler-${index}`}
+              style={[styles.slot, styles.fillerSlot]}
+            />
+          ))}
+        </View>
+
+        <Text style={styles.info}>
+          Selecciona una opcion de las siguientes y presiona en su espacio
+          correspondiente
+        </Text>
+        <View style={styles.grid}>
+          {sortedOptions.map((option) => {
+            const used = isOptionUsed(option);
+            return (
+              <Card
+                key={option.id}
+                style={[
+                  styles.slot,
+                  styles.option,
+                  selectedOption?.id === option.id && styles.selectedOption,
+                  selectedOption &&
+                    selectedOption?.id !== option.id &&
+                    styles.otherOption,
+                  used && styles.disabledOption,
+                ]}
+                onPress={() => !used && setSelectedOption(option)}
+              >
+                <Option image={option.image} name={option.name} />
+              </Card>
+            );
+          })}
+
+          {Array.from({ length: emptySlotsCount }).map((_, index) => (
+            <View
+              key={`filler-${index}`}
+              style={[styles.slot, styles.fillerSlot]}
+            />
+          ))}
+        </View>
+      </ScrollView>
     </Screen>
   );
 };
@@ -167,22 +169,28 @@ const Option = ({ image, name }: Omit<Step, 'id'>) => {
 };
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 24,
+  },
+  scrollView: {
+    marginVertical: 10,
+  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     gap: SLOT_GAP,
-    marginTop: 20,
   },
   slot: {
     width: SLOT_SIZE,
-    height: SLOT_SIZE,
+    minHeight: SLOT_SIZE,
     borderWidth: 2,
     borderColor: '#999',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: SLOT_SIZE / 4,
     backgroundColor: '#f0f0f0',
+    padding: 2,
   },
   fillerSlot: {
     backgroundColor: '#e0e0e0',
@@ -190,6 +198,7 @@ const styles = StyleSheet.create({
   },
   correctSlot: {
     borderColor: Colors.success,
+    backgroundColor: '#fff',
   },
   incorrectSlot: {
     borderColor: Colors.error,
@@ -199,9 +208,14 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#ccc',
   },
+  info: {
+    fontSize: 16,
+    marginTop: 20,
+    marginBottom: 10,
+  },
   option: {
     flexDirection: 'column',
-    backgroundColor: Colors.background,
+    backgroundColor: '#fff',
   },
   selectedOption: {
     borderColor: Colors.blue,
@@ -215,7 +229,7 @@ const styles = StyleSheet.create({
   optionImage: {
     width: 40,
     height: 40,
-    marginBottom: 5,
+    marginBottom: 4,
   },
   optionText: {
     fontSize: 12,
