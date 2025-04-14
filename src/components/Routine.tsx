@@ -2,13 +2,15 @@ import React from 'react';
 import { useRouter } from 'expo-router';
 
 import Screen from './Screen';
-import { GAMES } from '@/constants';
+
+import { GAMES, ROUTINES } from '@/constants';
+import { gameName, routineName } from '@/constants/names';
 
 interface RoutineProps {
-  title: string;
+  routine: ROUTINES;
 }
 
-const Routine: React.FC<RoutineProps> = ({ title }) => {
+const Routine: React.FC<RoutineProps> = ({ routine }) => {
   const router = useRouter();
 
   const handlePress = (game: GAMES) => {
@@ -17,25 +19,25 @@ const Routine: React.FC<RoutineProps> = ({ title }) => {
 
   return (
     <Screen
-      title={title}
+      title={`Juegos para la rutina de ${routineName[routine].toLowerCase()}`}
       cards={[
         {
           image: { source: require('@/assets/images/games/interactive.png') },
-          text: { children: 'Interactivo' },
+          text: { children: gameName[GAMES.INTERACTIVE] },
           cardProps: {
             onPress: () => handlePress(GAMES.INTERACTIVE),
           },
         },
         {
           image: { source: require('@/assets/images/games/sort.png') },
-          text: { children: 'Ordenar' },
+          text: { children: gameName[GAMES.SORT] },
           cardProps: {
             onPress: () => handlePress(GAMES.SORT),
           },
         },
         {
           image: { source: require('@/assets/images/games/quiz.png') },
-          text: { children: 'Quiz' },
+          text: { children: gameName[GAMES.QUIZ] },
           cardProps: {
             onPress: () => handlePress(GAMES.QUIZ),
           },

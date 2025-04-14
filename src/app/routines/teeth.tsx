@@ -2,8 +2,10 @@ import React from 'react';
 
 import Routine from '@/components/Routine';
 
+import { ROUTINES } from '@/constants';
+
 const Teeth = () => {
-  return <Routine title="Lavar los dientes" />;
+  return <Routine routine={ROUTINES.TEETH} />;
 };
 
 export default Teeth;

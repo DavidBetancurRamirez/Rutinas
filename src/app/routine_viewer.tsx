@@ -14,6 +14,7 @@ import useAppStore from '@/stores';
 
 import { createGridStyles } from '@/utils/routineGrid.styles';
 import { getFillerCount } from '@/utils/getFillerCount';
+import { routineName } from '@/constants/names';
 
 const SLOT_SIZE = 100;
 const SLOT_GAP = 10;
@@ -74,9 +75,18 @@ const RoutineViewer = () => {
             onValueChange={(itemValue) => setRoutine(itemValue)}
           >
             <Picker.Item label="Rutina" value={null} enabled={false} />
-            <Picker.Item label="Ducha" value={ROUTINES.SHOWER} />
-            <Picker.Item label="Baño" value={ROUTINES.BATHROOM} />
-            <Picker.Item label="Cepillado" value={ROUTINES.TEETH} />
+            <Picker.Item
+              label={routineName[ROUTINES.SHOWER]}
+              value={ROUTINES.SHOWER}
+            />
+            <Picker.Item
+              label={routineName[ROUTINES.BATHROOM]}
+              value={ROUTINES.BATHROOM}
+            />
+            <Picker.Item
+              label={routineName[ROUTINES.TEETH]}
+              value={ROUTINES.TEETH}
+            />
           </Picker>
         </View>
 

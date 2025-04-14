@@ -14,6 +14,7 @@ import RoutineOption, { FillEmptyOptions } from '@/components/RoutineOption';
 import Screen, { genericMargin } from '@/components/Screen';
 
 import { Colors } from '@/constants/colors';
+import { routineName } from '@/constants/names';
 
 import { Step } from '@/data/routineStepsData';
 
@@ -94,7 +95,7 @@ const Sort = () => {
 
   return (
     <Screen
-      title="Ordena la rutina de ducha"
+      title={`Ordena la rutina ${routine && `de ${routineName[routine].toLowerCase()}`}`}
       titleProps={{ style: styles.title }}
     >
       <ScrollView style={styles.scrollView}>
