@@ -4,11 +4,11 @@ import { useRouter } from 'expo-router';
 import Screen from './Screen';
 import { GAMES } from '@/constants';
 
-interface RutinaProps {
+interface RoutineProps {
   title: string;
 }
 
-const Rutina: React.FC<RutinaProps> = ({ title }) => {
+const Routine: React.FC<RoutineProps> = ({ title }) => {
   const router = useRouter();
 
   const handlePress = (game: GAMES) => {
@@ -45,4 +45,4 @@ const Rutina: React.FC<RutinaProps> = ({ title }) => {
   );
 };
 
-export default Rutina;
+export default Routine;

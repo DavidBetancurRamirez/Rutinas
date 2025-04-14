@@ -1,27 +1,44 @@
 import React from 'react';
-import { Text, Image, StyleSheet } from 'react-native';
+import { Text, Image, View } from 'react-native';
 
 import { Step } from '@/data/routineStepsData';
 
-const RoutineOption = ({ image, name }: Omit<Step, 'id'>) => {
+import { createGridStyles } from '@/utils/routineGrid.styles';
+
+interface RoutineOptionProps extends Omit<Step, 'id'> {
+  imageSize?: number;
+  textSize?: number;
+}
+
+const RoutineOption: React.FC<RoutineOptionProps> = ({
+  image,
+  imageSize,
+  name,
+  textSize,
+}) => {
+  const gridStyles = createGridStyles({ imageSize, textSize });
+
   return (
     <>
-      <Image source={image} style={styles.optionImage} />
-      <Text style={styles.optionText}>{name}</Text>
+      <Image source={image} style={gridStyles.optionImage} />
+      <Text style={gridStyles.optionText}>{name}</Text>
     </>
   );
 };
 
-const styles = StyleSheet.create({
-  optionImage: {
-    width: 40,
-    height: 40,
-    marginBottom: 4,
-  },
-  optionText: {
-    fontSize: 12,
-    textAlign: 'center',
-  },
-});
+export const FillEmptyOptions = (
+  length: number,
+  slotSize: number,
+  slotGap: number,
+) => {
+  const gridStyles = createGridStyles({ slotSize, slotGap });
+
+  return Array.from({ length }).map((_, index) => (
+    <View
+      key={`filler-${index}`}
+      style={[gridStyles.slot, gridStyles.fillerSlot]}
+    />
+  ));
+};
 
 export default RoutineOption;

@@ -133,19 +133,9 @@ export const routineStepsMap: Record<StepKey, Step[]> = {
       name: 'Secar',
     },
     {
-      id: 'desodorante',
-      image: require('@/data/routineImages/shower/female/desodorante.png'),
-      name: 'Usar desodorante',
-    },
-    {
       id: 'vestir',
       image: require('@/data/routineImages/shower/female/vestir.png'),
       name: 'Vestir',
-    },
-    {
-      id: 'peinar',
-      image: require('@/data/routineImages/shower/female/peinar.png'),
-      name: 'Peinar',
     },
   ],
   [`${AGES.CHILD}_${GENDERS.FEMALE}_${ROUTINES.BATHROOM}`]: [],

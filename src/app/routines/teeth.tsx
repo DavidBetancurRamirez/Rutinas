@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Rutina from '@/components/Rutina';
+import Routine from '@/components/Routine';
 
 const Teeth = () => {
-  return <Rutina title="Lavar los dientes" />;
+  return <Routine title="Lavar los dientes" />;
 };
 
 export default Teeth;

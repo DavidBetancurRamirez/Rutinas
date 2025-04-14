@@ -3,7 +3,7 @@ import { Picker } from '@react-native-picker/picker';
 import { ScrollView, useWindowDimensions } from 'react-native';
 import { View, StyleSheet } from 'react-native';
 
-import RoutineOption from '@/components/RoutineOption';
+import RoutineOption, { FillEmptyOptions } from '@/components/RoutineOption';
 import Screen, { genericMargin } from '@/components/Screen';
 
 import { AGES, GENDERS, ROUTINES } from '@/constants';
@@ -12,10 +12,13 @@ import { useRoutineSteps } from '@/hooks/useRoutineSteps';
 
 import useAppStore from '@/stores';
 
+import { createGridStyles } from '@/utils/routineGrid.styles';
 import { getFillerCount } from '@/utils/getFillerCount';
 
 const SLOT_SIZE = 100;
 const SLOT_GAP = 10;
+
+const gridStyles = createGridStyles({ slotSize: SLOT_SIZE, slotGap: SLOT_GAP });
 
 const RoutineViewer = () => {
   const {
@@ -78,21 +81,23 @@ const RoutineViewer = () => {
         </View>
 
         {shouldShowRoutine && (
-          <View style={styles.grid}>
+          <View style={gridStyles.grid}>
             {steps.map((step) => {
               return (
-                <View key={step.id} style={[styles.slot, styles.step]}>
-                  <RoutineOption image={step.image} name={step.name} />
+                <View
+                  key={step.id}
+                  style={[gridStyles.slot, gridStyles.option]}
+                >
+                  <RoutineOption
+                    image={step.image}
+                    imageSize={50}
+                    name={step.name}
+                  />
                 </View>
               );
             })}
 
-            {Array.from({ length: fillerCount }).map((_, index) => (
-              <View
-                key={`filler-${index}`}
-                style={[styles.slot, styles.fillerSlot]}
-              />
-            ))}
+            {FillEmptyOptions(fillerCount, SLOT_SIZE, SLOT_GAP)}
           </View>
         )}
       </ScrollView>
@@ -116,31 +121,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     minWidth: 150,
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    gap: SLOT_GAP,
-  },
-  slot: {
-    width: SLOT_SIZE,
-    minHeight: SLOT_SIZE,
-    borderWidth: 2,
-    borderColor: '#999',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: SLOT_SIZE / 4,
-    backgroundColor: '#f0f0f0',
-    padding: 2,
-  },
-  step: {
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-  },
-  fillerSlot: {
-    backgroundColor: '#e0e0e0',
-    borderColor: '#e0e0e0',
   },
 });
 

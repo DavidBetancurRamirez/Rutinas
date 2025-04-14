@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Rutina from '@/components/Rutina';
+import Routine from '@/components/Routine';
 
 const Shower = () => {
-  return <Rutina title="Ducha" />;
+  return <Routine title="Ducha" />;
 };
 
 export default Shower;
