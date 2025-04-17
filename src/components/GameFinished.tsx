@@ -1,28 +1,44 @@
 import { View, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import Card from './Card';
+
 import { Colors } from '@/constants/colors';
 
 type GameFinishedProps = {
-  onRetry: () => void;
+  backButtonText?: string;
   onBack: () => void;
+  onRetry: () => void;
+  retryButtonText?: string;
+  subtitle?: string;
+  title?: string;
 };
 
-const GameFinished = ({ onRetry, onBack }: GameFinishedProps) => {
+const GameFinished = ({
+  backButtonText = 'Regresar',
+  onBack,
+  onRetry,
+  retryButtonText = 'Repetir',
+  subtitle = 'Has completado la rutina correctamente',
+  title = '¡Felicitaciones!',
+}: GameFinishedProps) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.emoji}>🎉</Text>
-      <Text style={styles.title}>¡Felicitaciones!</Text>
-      <Text style={styles.subtitle}>
-        Has completado la rutina correctamente
-      </Text>
+      <Ionicons
+        name="trophy-outline"
+        size={60}
+        color={Colors.success}
+        style={styles.emoji}
+      />
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.subtitle}>{subtitle}</Text>
 
       <View style={styles.buttons}>
-        <Card onPress={onBack} style={styles.button} text="Regresar" />
+        <Card onPress={onBack} style={styles.button} text={backButtonText} />
         <Card
           onPress={onRetry}
           style={[styles.button, styles.secondary]}
-          text="Repetir"
+          text={retryButtonText}
         />
       </View>
     </View>
@@ -41,11 +57,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2e7d32',
+    color: Colors.success,
   },
   subtitle: {
     fontSize: 18,
-    color: '#4caf50',
+    color: Colors.green,
     marginVertical: 10,
     textAlign: 'center',
   },
