@@ -12,6 +12,7 @@ import CardWithIcon, { CardWithIconProps } from '@/components/CardWithIcon';
 import { Colors } from '@/constants/colors';
 
 interface ScreenProps extends ViewProps {
+  childrenProps?: ViewProps;
   containerStyle?: ViewProps['style'];
   cards?: CardWithIconProps[];
   title: string;
@@ -20,6 +21,7 @@ interface ScreenProps extends ViewProps {
 
 const Screen: React.FC<ScreenProps> = ({
   children,
+  childrenProps,
   containerStyle,
   cards,
   titleProps,
@@ -52,21 +54,28 @@ const Screen: React.FC<ScreenProps> = ({
             })}
           </View>
         )}
-        {children && <View style={styles.childrenContainer}>{children}</View>}
+        {children && (
+          <View style={styles.childrenContainer} {...childrenProps}>
+            {children}
+          </View>
+        )}
       </View>
     </View>
   );
 };
 
+export const genericMargin = 10;
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    margin: 10,
+    margin: genericMargin,
     flex: 1,
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -89,7 +98,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   childrenContainer: {
-    alignSelf: 'stretch',
+    flex: 1,
   },
 });
 
