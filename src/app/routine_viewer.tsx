@@ -7,6 +7,7 @@ import RoutineOption, { FillEmptyOptions } from '@/components/RoutineOption';
 import Screen, { genericMargin } from '@/components/Screen';
 
 import { AGES, GENDERS, ROUTINES } from '@/constants';
+import { routineName } from '@/constants/names';
 
 import { useRoutineSteps } from '@/hooks/useRoutineSteps';
 
@@ -14,7 +15,6 @@ import useAppStore from '@/stores';
 
 import { createGridStyles } from '@/utils/routineGrid.styles';
 import { getFillerCount } from '@/utils/getFillerCount';
-import { routineName } from '@/constants/names';
 
 const SLOT_SIZE = 100;
 const SLOT_GAP = 10;
@@ -47,8 +47,8 @@ const RoutineViewer = () => {
 
   return (
     <Screen title="Tus rutinas">
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.pickerRow}>
+      <View style={{ flex: 1 }}>
+        <View style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
             selectedValue={age}
@@ -90,27 +90,29 @@ const RoutineViewer = () => {
           </Picker>
         </View>
 
-        {shouldShowRoutine && (
-          <View style={gridStyles.grid}>
-            {steps.map((step) => {
-              return (
-                <View
-                  key={step.id}
-                  style={[gridStyles.slot, gridStyles.option]}
-                >
-                  <RoutineOption
-                    image={step.image}
-                    imageSize={50}
-                    name={step.name}
-                  />
-                </View>
-              );
-            })}
+        <ScrollView style={styles.scrollView}>
+          {shouldShowRoutine && (
+            <View style={gridStyles.grid}>
+              {steps.map((step) => {
+                return (
+                  <View
+                    key={step.id}
+                    style={[gridStyles.slot, gridStyles.option]}
+                  >
+                    <RoutineOption
+                      image={step.image}
+                      imageSize={50}
+                      name={step.name}
+                    />
+                  </View>
+                );
+              })}
 
-            {FillEmptyOptions(fillerCount, SLOT_SIZE, SLOT_GAP)}
-          </View>
-        )}
-      </ScrollView>
+              {FillEmptyOptions(fillerCount, SLOT_SIZE, SLOT_GAP)}
+            </View>
+          )}
+        </ScrollView>
+      </View>
     </Screen>
   );
 };
@@ -119,11 +121,11 @@ const styles = StyleSheet.create({
   scrollView: {
     marginVertical: 10,
   },
-  pickerRow: {
+  pickerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    marginBottom: 20,
+    marginVertical: 10,
     gap: 10,
   },
   picker: {
