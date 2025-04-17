@@ -58,12 +58,12 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
     aspectRatio: 1,
     width: '40%',
+    maxWidth: 150,
     marginBottom: 10,
     marginHorizontal: 'auto',
   },
