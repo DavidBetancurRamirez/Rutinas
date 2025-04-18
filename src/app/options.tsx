@@ -10,6 +10,7 @@ import { Colors } from '@/constants/colors';
 import { AGES, GENDERS } from '@/constants';
 
 import useAppStore from '@/stores';
+import { genderName } from '@/constants/names';
 
 const opacityOption = 0.7;
 
@@ -24,7 +25,7 @@ const Options = () => {
         <View style={styles.optionContainer}>
           <CardWithIcon
             icon={{ name: 'male' }}
-            text={{ children: 'Hombre' }}
+            text={{ children: genderName[GENDERS.MALE] }}
             cardProps={{
               onPress: () => setGender(GENDERS.MALE),
               style: {
@@ -36,7 +37,7 @@ const Options = () => {
           />
           <CardWithIcon
             icon={{ name: 'female' }}
-            text={{ children: 'Mujer' }}
+            text={{ children: genderName[GENDERS.FEMALE] }}
             cardProps={{
               onPress: () => setGender(GENDERS.FEMALE),
               style: {

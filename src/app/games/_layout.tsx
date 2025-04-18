@@ -4,6 +4,8 @@ import { Stack } from 'expo-router';
 import { RoutineColors } from '@/constants/colors';
 
 import useAppStore from '@/stores';
+import { gameName } from '@/constants/names';
+import { GAMES } from '@/constants';
 
 const Games = () => {
   const { routine } = useAppStore();
@@ -13,7 +15,7 @@ const Games = () => {
       <Stack.Screen
         name="interactive"
         options={{
-          title: 'Interactivo',
+          title: gameName[GAMES.INTERACTIVE],
           headerStyle: {
             backgroundColor: routine ? RoutineColors[routine] : 'white',
           },
@@ -23,7 +25,7 @@ const Games = () => {
       <Stack.Screen
         name="quiz"
         options={{
-          title: 'Quiz',
+          title: gameName[GAMES.QUIZ],
           headerStyle: {
             backgroundColor: routine ? RoutineColors[routine] : 'white',
           },
@@ -33,7 +35,7 @@ const Games = () => {
       <Stack.Screen
         name="sort"
         options={{
-          title: 'Ordenar',
+          title: gameName[GAMES.SORT],
           headerStyle: {
             backgroundColor: routine ? RoutineColors[routine] : 'white',
           },

@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import Screen from '@/components/Screen';
 
 import { RoutineColors } from '@/constants/colors';
+import { routineName } from '@/constants/names';
 import { ROUTINES } from '@/constants';
 
 import useAppStore from '@/stores';
@@ -23,7 +24,7 @@ const Index = () => {
       cards={[
         {
           image: { source: require('@/assets/images/routines/shower.png') },
-          text: { children: 'Ducha' },
+          text: { children: routineName[ROUTINES.SHOWER] },
           cardProps: {
             onPress: () => handlePress(ROUTINES.SHOWER),
             style: { backgroundColor: RoutineColors.shower },
@@ -31,7 +32,7 @@ const Index = () => {
         },
         {
           image: { source: require('@/assets/images/routines/bathroom.png') },
-          text: { children: 'Ir al baño' },
+          text: { children: routineName[ROUTINES.BATHROOM] },
           cardProps: {
             onPress: () => handlePress(ROUTINES.BATHROOM),
             style: { backgroundColor: RoutineColors.bathroom },
@@ -39,7 +40,7 @@ const Index = () => {
         },
         {
           image: { source: require('@/assets/images/routines/teeth.png') },
-          text: { children: 'Lavar los dientes' },
+          text: { children: routineName[ROUTINES.TEETH] },
           cardProps: {
             onPress: () => handlePress(ROUTINES.TEETH),
             style: { backgroundColor: RoutineColors.teeth },

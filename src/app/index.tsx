@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 
 import CreditsModal from '@/components/CreditsModal';
 import Screen from '@/components/Screen';
-import ViewContainer from '@/components/ViewContainer';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Index = () => {
   const router = useRouter();
@@ -12,9 +12,10 @@ const Index = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <ViewContainer>
+    <SafeAreaView style={{ flex: 1 }}>
       <Screen
         title="Bienvenid@ a Rutinas"
+        childrenProps={{ style: { alignSelf: 'stretch' } }}
         cards={[
           {
             text: { children: 'Comenzar' },
@@ -40,29 +41,29 @@ const Index = () => {
           <Image
             resizeMode="contain"
             style={styles.logo}
-            source={require('../assets/images/logo_aula_abierta.png')}
+            source={require('@/assets/images/logo_aula_abierta.png')}
           />
           <Image
             resizeMode="contain"
             style={styles.logo}
-            source={require('../assets/images/logo_eia.png')}
+            source={require('@/assets/images/logo_eia.png')}
           />
         </View>
       </Screen>
       <CreditsModal visible={showModal} onClose={() => setShowModal(false)} />
-    </ViewContainer>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
     aspectRatio: 1,
     width: '40%',
+    maxWidth: 150,
     marginBottom: 10,
     marginHorizontal: 'auto',
   },
