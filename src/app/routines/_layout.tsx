@@ -2,6 +2,8 @@ import React from 'react';
 import { Stack } from 'expo-router';
 
 import { RoutineColors } from '@/constants/colors';
+import { routineName } from '@/constants/names';
+import { ROUTINES } from '@/constants';
 
 const Routines = () => {
   return (
@@ -10,22 +12,25 @@ const Routines = () => {
       <Stack.Screen
         name="shower"
         options={{
-          title: 'Ducha',
+          title: routineName[ROUTINES.SHOWER],
           headerStyle: { backgroundColor: RoutineColors.shower },
+          headerTintColor: 'white',
         }}
       />
       <Stack.Screen
         name="bathroom"
         options={{
-          title: 'Ir al baño',
+          title: routineName[ROUTINES.BATHROOM],
           headerStyle: { backgroundColor: RoutineColors.bathroom },
+          headerTintColor: 'white',
         }}
       />
       <Stack.Screen
         name="teeth"
         options={{
-          title: 'Lavar los dientes',
+          title: routineName[ROUTINES.TEETH],
           headerStyle: { backgroundColor: RoutineColors.teeth },
+          headerTintColor: 'white',
         }}
       />
     </Stack>

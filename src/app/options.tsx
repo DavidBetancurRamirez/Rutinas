@@ -1,21 +1,16 @@
 import React from 'react';
 import { useRouter } from 'expo-router';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ViewStyle,
-  ImageSourcePropType,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import Card from '@/components/Card';
+import CardWithIcon from '@/components/CardWithIcon';
 import Screen from '@/components/Screen';
 
 import { Colors } from '@/constants/colors';
 import { AGES, GENDERS } from '@/constants';
 
 import useAppStore from '@/stores';
+import { genderName } from '@/constants/names';
 
 const opacityOption = 0.7;
 
@@ -28,44 +23,58 @@ const Options = () => {
       <View style={styles.container}>
         <Text style={styles.subTitle}>Género</Text>
         <View style={styles.optionContainer}>
-          <OptionCard
-            image={require('../assets/images/icon_male.png')}
-            onPress={() => setGender(GENDERS.MALE)}
-            text="Hombre"
-            style={{
-              backgroundColor: Colors.blue,
-              opacity: gender === GENDERS.FEMALE ? opacityOption : 1,
+          <CardWithIcon
+            icon={{ name: 'male' }}
+            text={{ children: genderName[GENDERS.MALE] }}
+            cardProps={{
+              onPress: () => setGender(GENDERS.MALE),
+              style: {
+                backgroundColor: Colors.blue,
+                opacity: gender === GENDERS.FEMALE ? opacityOption : 1,
+                ...styles.cardStyle,
+              },
             }}
           />
-          <OptionCard
-            image={require('../assets/images/icon_female.png')}
-            onPress={() => setGender(GENDERS.FEMALE)}
-            text="Mujer"
-            style={{
-              backgroundColor: Colors.violet,
-              opacity: gender === GENDERS.MALE ? opacityOption : 1,
+          <CardWithIcon
+            icon={{ name: 'female' }}
+            text={{ children: genderName[GENDERS.FEMALE] }}
+            cardProps={{
+              onPress: () => setGender(GENDERS.FEMALE),
+              style: {
+                backgroundColor: Colors.violet,
+                opacity: gender === GENDERS.MALE ? opacityOption : 1,
+                ...styles.cardStyle,
+              },
             }}
           />
         </View>
 
         <Text style={styles.subTitle}>Edad</Text>
         <View style={styles.optionContainer}>
-          <OptionCard
-            image={require('../assets/images/icon_kids.png')}
-            onPress={() => setAge(AGES.CHILD)}
-            text="0-11 años"
-            style={{
-              backgroundColor: Colors.yellow,
-              opacity: age === AGES.TEEN ? opacityOption : 1,
+          <CardWithIcon
+            image={{ source: require('@/assets/images/options/icon_kids.png') }}
+            text={{ children: '0-11 años' }}
+            cardProps={{
+              onPress: () => setAge(AGES.CHILD),
+              style: {
+                backgroundColor: Colors.yellow,
+                opacity: age === AGES.TEEN ? opacityOption : 1,
+                ...styles.cardStyle,
+              },
             }}
           />
-          <OptionCard
-            image={require('../assets/images/icon_teens.png')}
-            onPress={() => setAge(AGES.TEEN)}
-            text="+12 años"
-            style={{
-              backgroundColor: Colors.orange,
-              opacity: age === AGES.CHILD ? opacityOption : 1,
+          <CardWithIcon
+            image={{
+              source: require('@/assets/images/options/icon_teens.png'),
+            }}
+            text={{ children: '+12 años' }}
+            cardProps={{
+              onPress: () => setAge(AGES.TEEN),
+              style: {
+                backgroundColor: Colors.orange,
+                opacity: age === AGES.CHILD ? opacityOption : 1,
+                ...styles.cardStyle,
+              },
             }}
           />
         </View>
@@ -78,27 +87,6 @@ const Options = () => {
         />
       </View>
     </Screen>
-  );
-};
-
-interface OptionCardProps {
-  style?: ViewStyle;
-  image: ImageSourcePropType;
-  text: string;
-  onPress: () => void;
-}
-
-const OptionCard: React.FC<OptionCardProps> = ({
-  style,
-  image,
-  text,
-  onPress,
-}) => {
-  return (
-    <Card style={[styles.cardStyle, style]} onPress={onPress}>
-      <Image source={image} style={styles.image} />
-      <Text style={styles.optionText}>{text}</Text>
-    </Card>
   );
 };
 
@@ -119,20 +107,6 @@ const styles = StyleSheet.create({
   },
   cardStyle: {
     width: '45%',
-    padding: 15,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    tintColor: 'white',
-    height: 50,
-    width: 50,
-  },
-  optionText: {
-    color: 'white',
-    fontSize: 18,
-    marginTop: 5,
   },
   button: {
     backgroundColor: Colors.green,

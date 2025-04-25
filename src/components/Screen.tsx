@@ -7,19 +7,21 @@ import {
   type ViewProps,
 } from 'react-native';
 
-import Card, { CardProps } from '@/components/Card';
+import CardWithIcon, { CardWithIconProps } from '@/components/CardWithIcon';
 
 import { Colors } from '@/constants/colors';
 
 interface ScreenProps extends ViewProps {
+  childrenProps?: ViewProps;
   containerStyle?: ViewProps['style'];
-  cards?: CardProps[];
+  cards?: CardWithIconProps[];
   title: string;
   titleProps?: TextProps;
 }
 
 const Screen: React.FC<ScreenProps> = ({
   children,
+  childrenProps,
   containerStyle,
   cards,
   titleProps,
@@ -34,33 +36,46 @@ const Screen: React.FC<ScreenProps> = ({
         {cards && (
           <View style={styles.cardsContainer}>
             {cards.map((option, index) => {
-              const { style: optionStyle, ...rest } = option;
+              const { cardProps, text, ...rest } = option;
               return (
-                <Card
+                <CardWithIcon
                   key={index}
-                  style={[styles.card, optionStyle]}
-                  textProps={{ style: styles.cardText }}
+                  text={{
+                    ...text,
+                    style: [styles.cardText, text?.style],
+                  }}
+                  cardProps={{
+                    ...cardProps,
+                    style: [styles.card, cardProps?.style],
+                  }}
                   {...rest}
                 />
               );
             })}
           </View>
         )}
-        {children && <View style={styles.childrenContainer}>{children}</View>}
+        {children && (
+          <View style={styles.childrenContainer} {...childrenProps}>
+            {children}
+          </View>
+        )}
       </View>
     </View>
   );
 };
 
+export const genericMargin = 10;
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    margin: 10,
+    margin: genericMargin,
     flex: 1,
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -71,7 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 40,
+    gap: 30,
   },
   card: {
     width: '80%',
@@ -81,10 +96,9 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 25,
     fontWeight: 'bold',
-    justifyContent: 'center',
   },
   childrenContainer: {
-    alignSelf: 'stretch',
+    flex: 1,
   },
 });
 

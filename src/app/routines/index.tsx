@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import Screen from '@/components/Screen';
 
 import { RoutineColors } from '@/constants/colors';
+import { routineName } from '@/constants/names';
 import { ROUTINES } from '@/constants';
 
 import useAppStore from '@/stores';
@@ -22,19 +23,28 @@ const Index = () => {
       title="Elige tu rutina"
       cards={[
         {
-          onPress: () => handlePress(ROUTINES.SHOWER),
-          style: { backgroundColor: RoutineColors.shower },
-          text: 'Ducha',
+          image: { source: require('@/assets/images/routines/shower.png') },
+          text: { children: routineName[ROUTINES.SHOWER] },
+          cardProps: {
+            onPress: () => handlePress(ROUTINES.SHOWER),
+            style: { backgroundColor: RoutineColors.shower },
+          },
         },
         {
-          onPress: () => handlePress(ROUTINES.BATHROOM),
-          style: { backgroundColor: RoutineColors.bathroom },
-          text: 'Ir al baño',
+          image: { source: require('@/assets/images/routines/bathroom.png') },
+          text: { children: routineName[ROUTINES.BATHROOM] },
+          cardProps: {
+            onPress: () => handlePress(ROUTINES.BATHROOM),
+            style: { backgroundColor: RoutineColors.bathroom },
+          },
         },
         {
-          onPress: () => handlePress(ROUTINES.TEETH),
-          style: { backgroundColor: RoutineColors.teeth },
-          text: 'Lavar los dientes',
+          image: { source: require('@/assets/images/routines/teeth.png') },
+          text: { children: routineName[ROUTINES.TEETH] },
+          cardProps: {
+            onPress: () => handlePress(ROUTINES.TEETH),
+            style: { backgroundColor: RoutineColors.teeth },
+          },
         },
       ]}
     />
