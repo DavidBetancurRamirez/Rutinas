@@ -137,60 +137,72 @@ export const questionBankMap: Record<StepKey, Question[]> = {
   // TEEN - MALE
   [`${AGES.TEEN}_${GENDERS.MALE}_${ROUTINES.SHOWER}`]: [
     {
+      // Todos los dias
       id: 'q1',
       question: '¿Cuántas veces a la semana te duchas?',
       options: ['1', '3 o más', 'Nunca'],
       correctAnswer: '3 o más',
     },
     {
+      // ¿Que usas para bañar?
+      // Jabon y shampoo
       id: 'q2',
       question: '¿Qué usas para el cuerpo?',
       options: ['Jabón', 'Shampoo', 'Desodorante'],
       correctAnswer: 'Jabón',
     },
     {
+      //? Buena
       id: 'q3',
       question: '¿Después de ducharte qué haces?',
       options: ['Secarte', 'Cepillarte los dientes', 'Ver TV'],
       correctAnswer: 'Secarte',
     },
     {
+      //? Buena
       id: 'q4',
       question: '¿Qué debes hacer antes de meterte a la ducha?',
       options: ['Quitarte la ropa', 'Llamar a alguien', 'Desayunar'],
       correctAnswer: 'Quitarte la ropa',
     },
     {
+      //? Buena
       id: 'q5',
       question: '¿Qué zona íntima debes lavar con cuidado?',
       options: ['El pene', 'Los codos', 'Las cejas'],
       correctAnswer: 'El pene',
     },
     {
+      // Quitar huelen a jabon.
+      //! No es importante
       id: 'q6',
       question: '¿Por qué es importante lavar bien tus axilas?',
       options: ['Porque sudan', 'Porque se ven', 'Porque huelen a jabón'],
       correctAnswer: 'Porque sudan',
     },
     {
+      //? Buena
       id: 'q7',
       question: '¿Con qué debes lavar tu zona íntima?',
       options: ['Solo agua o jabón neutro', 'Shampoo fuerte', 'Cloro'],
       correctAnswer: 'Solo agua o jabón neutro',
     },
     {
+      //? Buena
       id: 'q8',
       question: '¿Qué debes hacer si usaste mucho shampoo?',
       options: ['Enjuagarlo bien', 'Dejarlo ahí', 'Secarlo con toalla'],
       correctAnswer: 'Enjuagarlo bien',
     },
     {
+      //? Buena
       id: 'q9',
       question: '¿Cuánto tiempo debería durar una ducha?',
       options: ['5 a 10 minutos', '30 minutos', '1 hora'],
       correctAnswer: '5 a 10 minutos',
     },
     {
+      //? Buena
       id: 'q10',
       question: '¿Qué debes revisar antes de salir de la ducha?',
       options: [
@@ -201,24 +213,28 @@ export const questionBankMap: Record<StepKey, Question[]> = {
       correctAnswer: 'Que te hayas enjuagado bien',
     },
     {
+      //! Cambiar pregunta
       id: 'q11',
       question: '¿Qué parte del cuerpo acumula más suciedad?',
       options: ['Pies', 'Espalda', 'Orejas'],
       correctAnswer: 'Pies',
     },
     {
+      //? Buena
       id: 'q12',
       question: '¿Con qué puedes frotar tu cuerpo para quitar la suciedad?',
       options: ['Esponja o mano', 'Papel', 'Toalla seca'],
       correctAnswer: 'Esponja o mano',
     },
     {
+      //? Buena
       id: 'q13',
       question: '¿Después de secarte, qué debes hacer?',
       options: ['Vestirte', 'Volver a ducharte', 'Tocarte el pelo mojado'],
       correctAnswer: 'Vestirte',
     },
     {
+      //? Buena
       id: 'q14',
       question: '¿Qué debes hacer con la toalla después de usarla?',
       options: [
@@ -229,6 +245,7 @@ export const questionBankMap: Record<StepKey, Question[]> = {
       correctAnswer: 'Colgarla para que se seque',
     },
     {
+      // Correcta: Tener mal olor y problemas en la piel
       id: 'q15',
       question: '¿Qué pasa si no te duchas con frecuencia?',
       options: [
