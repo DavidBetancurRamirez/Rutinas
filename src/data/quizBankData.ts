@@ -92,7 +92,6 @@ export const questionBankMap: Record<StepKey, Question[]> = {
       options: ['Usar desodorante', 'Dormir', 'Comer'],
       correctAnswer: 'Usar desodorante',
     },
-    
   ],
   [`${AGES.CHILD}_${GENDERS.FEMALE}_${ROUTINES.TEETH}`]: [
     {
@@ -134,15 +133,6 @@ export const questionBankMap: Record<StepKey, Question[]> = {
       correctAnswer: 'Tirar la cadena',
     },
   ],
-
-
-
-
-
-
-
-
-
 
   // TEEN - MALE
   [`${AGES.TEEN}_${GENDERS.MALE}_${ROUTINES.SHOWER}`]: [
@@ -203,7 +193,11 @@ export const questionBankMap: Record<StepKey, Question[]> = {
     {
       id: 'q10',
       question: '¿Qué debes revisar antes de salir de la ducha?',
-      options: ['Que te hayas enjuagado bien', 'Que haya comida', 'Que tengas batería en el celular'],
+      options: [
+        'Que te hayas enjuagado bien',
+        'Que haya comida',
+        'Que tengas batería en el celular',
+      ],
       correctAnswer: 'Que te hayas enjuagado bien',
     },
     {
@@ -227,16 +221,24 @@ export const questionBankMap: Record<StepKey, Question[]> = {
     {
       id: 'q14',
       question: '¿Qué debes hacer con la toalla después de usarla?',
-      options: ['Colgarla para que se seque', 'Tirarla al piso', 'Meterla al cajón'],
+      options: [
+        'Colgarla para que se seque',
+        'Tirarla al piso',
+        'Meterla al cajón',
+      ],
       correctAnswer: 'Colgarla para que se seque',
     },
     {
       id: 'q15',
       question: '¿Qué pasa si no te duchas con frecuencia?',
-      options: ['Mal olor y problemas en la piel', 'Te da sueño', 'Te crece el cabello'],
+      options: [
+        'Mal olor y problemas en la piel',
+        'Te da sueño',
+        'Te crece el cabello',
+      ],
       correctAnswer: 'Mal olor y problemas en la piel',
     },
-  ],  
+  ],
   [`${AGES.TEEN}_${GENDERS.MALE}_${ROUTINES.TEETH}`]: [
     {
       id: 'q1',
@@ -319,16 +321,24 @@ export const questionBankMap: Record<StepKey, Question[]> = {
     {
       id: 'q14',
       question: '¿Qué debes hacer si tienes brackets?',
-      options: ['Cepillar mejor y usar cepillos especiales', 'Quitarlos', 'No cepillarse'],
+      options: [
+        'Cepillar mejor y usar cepillos especiales',
+        'Quitarlos',
+        'No cepillarse',
+      ],
       correctAnswer: 'Cepillar mejor y usar cepillos especiales',
     },
     {
       id: 'q15',
       question: '¿Debes usar enjuague bucal?',
-      options: ['Sí, ayuda a eliminar bacterias', 'No, es solo para adultos', 'Solo si estás resfriado'],
+      options: [
+        'Sí, ayuda a eliminar bacterias',
+        'No, es solo para adultos',
+        'Solo si estás resfriado',
+      ],
       correctAnswer: 'Sí, ayuda a eliminar bacterias',
     },
-  ],  
+  ],
   [`${AGES.TEEN}_${GENDERS.MALE}_${ROUTINES.BATHROOM}`]: [
     {
       id: 'q1',
@@ -411,27 +421,24 @@ export const questionBankMap: Record<StepKey, Question[]> = {
     {
       id: 'q14',
       question: '¿Cuándo es necesario lavarse las manos?',
-      options: ['Después de ir al baño', 'Antes de dormir', 'Después de ver TV'],
+      options: [
+        'Después de ir al baño',
+        'Antes de dormir',
+        'Después de ver TV',
+      ],
       correctAnswer: 'Después de ir al baño',
     },
     {
       id: 'q15',
       question: '¿Qué debes revisar antes de salir del baño?',
-      options: ['Higiene, cadena tirada y lavamanos limpio', 'Si hay papel para llevar', 'Que nadie te vea'],
+      options: [
+        'Higiene, cadena tirada y lavamanos limpio',
+        'Si hay papel para llevar',
+        'Que nadie te vea',
+      ],
       correctAnswer: 'Higiene, cadena tirada y lavamanos limpio',
     },
   ],
-  
-
-
-
-
-
-
-
-
-
-
 
   // TEEN - FEMALE
   [`${AGES.TEEN}_${GENDERS.FEMALE}_${ROUTINES.SHOWER}`]: [
@@ -470,7 +477,11 @@ export const questionBankMap: Record<StepKey, Question[]> = {
     {
       id: 'q3',
       question: '¿Cuándo cepillas tus dientes?',
-      options: ['Antes y después de comer', 'Al despertar solamente', 'Antes de jugar'],
+      options: [
+        'Antes y después de comer',
+        'Al despertar solamente',
+        'Antes de jugar',
+      ],
       correctAnswer: 'Antes y después de comer',
     },
   ],

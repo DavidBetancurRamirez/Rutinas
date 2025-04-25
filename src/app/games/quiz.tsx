@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Modal, Animated } from 'react-native';
+import { Text, View, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import Screen from '@/components/Screen';
@@ -14,7 +14,10 @@ const Quiz = () => {
   const { age, gender, routine } = useAppStore();
   const key = `${age}_${gender}_${routine}` as StepKey;
 
-  const fullQuestions: Question[] = questionBankMap[key] ?? [];
+  const fullQuestions: Question[] = React.useMemo(
+    () => questionBankMap[key] ?? [],
+    [key],
+  );
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -30,7 +33,6 @@ const Quiz = () => {
 
   const currentQuestion = questions[currentIndex];
   const totalQuestions = questions.length;
-  
 
   const handleSelect = (option: string) => {
     setSelectedAnswer(option);
@@ -63,8 +65,12 @@ const Quiz = () => {
   if (questions.length === 0) {
     return (
       <Screen title="Quiz">
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 18, textAlign: 'center' }}>No hay preguntas disponibles 😕</Text>
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <Text style={{ fontSize: 18, textAlign: 'center' }}>
+            No hay preguntas disponibles 😕
+          </Text>
         </View>
       </Screen>
     );
@@ -75,29 +81,59 @@ const Quiz = () => {
 
   return (
     <Screen title="Quiz">
-      <View style={{ flex: 1, alignItems: 'center', paddingHorizontal: 16, paddingTop: 12 }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          paddingHorizontal: 16,
+          paddingTop: 12,
+        }}
+      >
         {/* Barra de progreso */}
         <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 8 }}>
           Pregunta {currentIndex + 1} de {totalQuestions}
         </Text>
-        <View style={{ width: '100%', maxWidth: 500, height: 10, backgroundColor: '#eee', borderRadius: 8, overflow: 'hidden', marginBottom: 24 }}>
+        <View
+          style={{
+            width: '100%',
+            maxWidth: 500,
+            height: 10,
+            backgroundColor: '#eee',
+            borderRadius: 8,
+            overflow: 'hidden',
+            marginBottom: 24,
+          }}
+        >
           <View
             style={{
               width: `${quizFinished ? 100 : ((currentIndex + (showResult ? 1 : 0)) / totalQuestions) * 100}%`,
               height: '100%',
-              backgroundColor: '#4CAF50'
+              backgroundColor: '#4CAF50',
             }}
           />
         </View>
 
         {/* Info general */}
         <View style={{ gap: 12, width: '100%', maxWidth: 500 }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>Modo de juego: {routine}</Text>
-          <Text style={{ fontSize: 16, textAlign: 'center' }}>Edad: {age} - Género: {gender}</Text>
+          <Text
+            style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}
+          >
+            Modo de juego: {routine}
+          </Text>
+          <Text style={{ fontSize: 16, textAlign: 'center' }}>
+            Edad: {age} - Género: {gender}
+          </Text>
 
           {/* Pregunta */}
           <View style={{ marginTop: 24 }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 12 }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: '600',
+                textAlign: 'center',
+                marginBottom: 12,
+              }}
+            >
               {currentQuestion.question}
             </Text>
 
@@ -129,8 +165,8 @@ const Quiz = () => {
                         showResult && isCorrect
                           ? 'checkmark-circle-outline'
                           : showResult && isSelected
-                          ? 'close-circle-outline'
-                          : 'ellipse-outline'
+                            ? 'close-circle-outline'
+                            : 'ellipse-outline'
                       }
                       size={20}
                       color="#333"
@@ -170,11 +206,16 @@ const Quiz = () => {
               elevation: 5,
             }}
           >
-            <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>
+            <Text
+              style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}
+            >
               ¡Has terminado!
             </Text>
-            <Text style={{ fontSize: 18, textAlign: 'center', marginBottom: 6 }}>
-              Respondiste correctamente {correctCount}/{questions.length} preguntas
+            <Text
+              style={{ fontSize: 18, textAlign: 'center', marginBottom: 6 }}
+            >
+              Respondiste correctamente {correctCount}/{questions.length}{' '}
+              preguntas
             </Text>
 
             {isPerfect && (
@@ -191,7 +232,9 @@ const Quiz = () => {
                 borderRadius: 12,
               }}
             >
-              <Text style={{ color: 'white', fontSize: 16 }}>Jugar otra vez</Text>
+              <Text style={{ color: 'white', fontSize: 16 }}>
+                Jugar otra vez
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
