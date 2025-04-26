@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet, Dimensions, Text } from 'react-native';
+import { View } from 'react-native';
 import Screen from '@/components/Screen';
 import useAppStore from '@/stores';
 import InteractivoDucha from '@/components/InteractivoDucha';

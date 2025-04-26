@@ -14,6 +14,7 @@ type GameFinishedProps = {
   subtitle: string;
   title?: string;
   visible: boolean;
+  winner?: boolean;
 };
 
 const GameFinished = ({
@@ -25,7 +26,11 @@ const GameFinished = ({
   subtitle,
   title = '¡Felicitaciones!',
   visible,
+  winner = true,
 }: GameFinishedProps) => {
+  const tintColor1 = winner ? Colors.success : Colors.red;
+  const tintColor2 = winner ? Colors.green : Colors.error;
+
   return (
     <Modal
       visible={visible}
@@ -35,24 +40,28 @@ const GameFinished = ({
     >
       <View style={styles.container}>
         <View style={styles.content}>
-          <Ionicons
-            name="trophy-outline"
-            size={60}
-            color={Colors.success}
-            style={styles.emoji}
-          />
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          {winner && (
+            <Ionicons
+              name="trophy-outline"
+              size={60}
+              color={Colors.success}
+              style={styles.emoji}
+            />
+          )}
+          <Text style={[styles.title, { color: tintColor1 }]}>{title}</Text>
+          <Text style={[styles.subtitle, { color: tintColor2 }]}>
+            {subtitle}
+          </Text>
 
           <View style={styles.buttons}>
             <Card
               onPress={onBack}
-              style={styles.button}
+              style={[styles.button, { backgroundColor: tintColor2 }]}
               text={backButtonText}
             />
             <Card
               onPress={onRetry}
-              style={[styles.button, styles.secondary]}
+              style={[styles.button, { backgroundColor: tintColor1 }]}
               text={retryButtonText}
             />
           </View>
@@ -91,16 +100,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: Colors.success,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
-    color: Colors.green,
-    marginVertical: 10,
+    marginVertical: 15,
     textAlign: 'center',
   },
   buttons: {
-    marginTop: 10,
+    marginTop: 20,
     flexDirection: 'row',
     gap: 20,
   },
@@ -108,10 +116,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 12,
-    backgroundColor: Colors.green,
-  },
-  secondary: {
-    backgroundColor: Colors.success,
   },
 });
 

@@ -26,8 +26,8 @@ export interface AppStoreState {
   routine: ROUTINES | '';
   clearState: () => void;
   setAge: (age: AGES) => void;
-  setRoutine: (routine: ROUTINES) => void;
   setGender: (gender: GENDERS) => void;
+  setRoutine: (routine: ROUTINES) => void;
 }
 
 export const appStoreInitialState: Pick<

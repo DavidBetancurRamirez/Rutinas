@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import Card from '@/components/Card';
+import GameFinished from '@/components/GameFinished';
 import RoutineOption, { FillEmptyOptions } from '@/components/RoutineOption';
 import Screen, { genericMargin } from '@/components/Screen';
 
@@ -24,7 +25,6 @@ import useAppStore from '@/stores';
 
 import { createGridStyles } from '@/utils/routineGrid.styles';
 import { getFillerCount } from '@/utils/getFillerCount';
-import GameFinished from '@/components/GameFinished';
 
 const SLOT_SIZE = 90;
 const SLOT_GAP = 10;
@@ -40,14 +40,14 @@ const Sort = () => {
     routine,
   });
 
+  const [gameFinished, setGameFinished] = useState(false);
+
   const [userAnswers, setUserAnswers] = useState<(Step | null)[]>(
     Array(routineSteps.length).fill(null),
   );
   const [selectedOption, setSelectedOption] = useState<Step | null>(null);
   const [incorrectIndex, setIncorrectIndex] = useState<number | null>(null);
   const [shuffledOptions, setShuffledOptions] = useState<Step[]>([]);
-
-  const [gameFinished, setGameFinished] = useState(false);
 
   useEffect(() => {
     const allCorrect = userAnswers.every(
@@ -114,21 +114,17 @@ const Sort = () => {
     setGameFinished(false);
   };
 
-  const handleBack = () => {
-    router.back();
-  };
-
   return (
     <Screen
       title={`Ordena la rutina ${routine && `de ${routineName[routine].toLowerCase()}`}`}
       titleProps={{ style: styles.title }}
     >
       <GameFinished
-        onBack={handleBack}
+        onBack={() => router.back()}
         onClose={() => setGameFinished(false)}
         onRetry={handleRetry}
-        visible={gameFinished}
         subtitle="Has completado la rutina correctamente"
+        visible={gameFinished}
       />
       <ScrollView style={styles.scrollView}>
         <View style={gridStyles.grid}>
@@ -199,8 +195,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   incorrectSlot: {
-    borderColor: Colors.error,
-    backgroundColor: '#ffe5e5',
+    borderColor: Colors.red,
+    backgroundColor: Colors.error,
   },
   placeholder: {
     fontSize: 30,
