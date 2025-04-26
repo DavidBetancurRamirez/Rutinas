@@ -20,7 +20,7 @@ export const routineStepsMap: Record<StepKey, Step[]> = {
     {
       id: 'pasta_cepillo',
       image: require('@/data/routineImages/teeth/male/pasta_cepillo.png'),
-      name: 'Hechar pasta al cepillo',
+      name: 'Echar pasta al cepillo',
     },
     {
       id: 'mojar_cepillo',
@@ -211,7 +211,7 @@ export const routineStepsMap: Record<StepKey, Step[]> = {
     {
       id: 'pasta_cepillo',
       image: require('@/data/routineImages/teeth/female/pasta_cepillo.png'),
-      name: 'Hechar pasta al cepillo',
+      name: 'Echar pasta al cepillo',
     },
     {
       id: 'mojar_cepillo',
@@ -402,7 +402,7 @@ export const routineStepsMap: Record<StepKey, Step[]> = {
     {
       id: 'pasta_cepillo',
       image: require('@/data/routineImages/teeth/male/pasta_cepillo.png'),
-      name: 'Hechar pasta al cepillo',
+      name: 'Echar pasta al cepillo',
     },
     {
       id: 'mojar_cepillo',
@@ -618,7 +618,7 @@ export const routineStepsMap: Record<StepKey, Step[]> = {
     {
       id: 'pasta_cepillo',
       image: require('@/data/routineImages/teeth/female/pasta_cepillo.png'),
-      name: 'Hechar pasta al cepillo',
+      name: 'Echar pasta al cepillo',
     },
     {
       id: 'mojar_cepillo',

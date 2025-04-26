@@ -123,6 +123,13 @@ const Sort = () => {
       title={`Ordena la rutina ${routine && `de ${routineName[routine].toLowerCase()}`}`}
       titleProps={{ style: styles.title }}
     >
+      <GameFinished
+        onBack={handleBack}
+        onClose={() => setGameFinished(false)}
+        onRetry={handleRetry}
+        visible={gameFinished}
+        subtitle="Has completado la rutina correctamente"
+      />
       <ScrollView style={styles.scrollView}>
         <View style={gridStyles.grid}>
           {userAnswers.map((answer, index) => (
@@ -147,40 +154,34 @@ const Sort = () => {
           {FillEmptyOptions(fillerCount, SLOT_SIZE, SLOT_GAP)}
         </View>
 
-        {gameFinished ? (
-          <GameFinished onRetry={handleRetry} onBack={handleBack} />
-        ) : (
-          <>
-            <Text style={styles.info}>
-              Selecciona una opcion de las siguientes y presiona en su espacio
-              correspondiente
-            </Text>
-            <View style={gridStyles.grid}>
-              {sortedOptions.map((option) => {
-                const used = isOptionUsed(option);
-                return (
-                  <Card
-                    key={option.id}
-                    style={[
-                      gridStyles.slot,
-                      gridStyles.option,
-                      selectedOption?.id === option.id && styles.selectedOption,
-                      selectedOption &&
-                        selectedOption?.id !== option.id &&
-                        styles.otherOption,
-                      used && styles.disabledOption,
-                    ]}
-                    onPress={() => !used && setSelectedOption(option)}
-                  >
-                    <RoutineOption image={option.image} name={option.name} />
-                  </Card>
-                );
-              })}
+        <Text style={styles.info}>
+          Selecciona una opcion de las siguientes y presiona en su espacio
+          correspondiente
+        </Text>
+        <View style={gridStyles.grid}>
+          {sortedOptions.map((option) => {
+            const used = isOptionUsed(option);
+            return (
+              <Card
+                key={option.id}
+                style={[
+                  gridStyles.slot,
+                  gridStyles.option,
+                  selectedOption?.id === option.id && styles.selectedOption,
+                  selectedOption &&
+                    selectedOption?.id !== option.id &&
+                    styles.otherOption,
+                  used && styles.disabledOption,
+                ]}
+                onPress={() => !used && setSelectedOption(option)}
+              >
+                <RoutineOption image={option.image} name={option.name} />
+              </Card>
+            );
+          })}
 
-              {FillEmptyOptions(fillerCount, SLOT_SIZE, SLOT_GAP)}
-            </View>
-          </>
-        )}
+          {FillEmptyOptions(fillerCount, SLOT_SIZE, SLOT_GAP)}
+        </View>
       </ScrollView>
     </Screen>
   );
