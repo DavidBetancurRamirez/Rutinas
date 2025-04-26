@@ -1,11 +1,13 @@
 import React from 'react';
 import { View } from 'react-native';
-import Screen from '@/components/Screen';
-import useAppStore from '@/stores';
+
 import InteractivoDucha from '@/components/InteractivoDucha';
+import Screen from '@/components/Screen';
+
+import useAppStore from '@/stores';
 
 const Interactive = () => {
-  const { age, gender, routine } = useAppStore();
+  const { age, gender } = useAppStore();
 
   const isMale12Plus = gender === 'male' && Number(age) >= 12;
 
