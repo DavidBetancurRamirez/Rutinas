@@ -688,7 +688,7 @@ const InteractivoDuchaM12: React.FC = () => {
                         />
                     </TouchableOpacity>
                     {showerOn && (
-                        <Text style={styles.message}>¡Ya estás limpio! 🎉</Text>
+                        <Text style={styles.message}>¡Ya estás limpia! 🎉</Text>
                     )}
                 </>
             ) : (
@@ -725,7 +725,7 @@ const InteractivoDuchaM12: React.FC = () => {
                         )
                     ))}
                     {Object.values(fixedClothes).every((fixed) => fixed) && (
-                        <Text style={styles.finalMessage}>¡Listo! Estás vestido 🎉</Text>
+                        <Text style={styles.finalMessage}>¡Listo! Estás vestida 🎉</Text>
                     )}
                 </>
             )}
