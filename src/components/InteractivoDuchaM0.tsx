@@ -16,12 +16,12 @@ import {
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
-const characterWidth = width * 0.25;
-const characterHeight = height * 0.4;
+const characterWidth = width * 0.375;
+const characterHeight = height * 0.6;
 const isMobile = Platform.OS === 'android' || Platform.OS === 'ios';
 
 // Define clothing key type
-type ClothingKey = 'shirt' | 'pants' | 'socks' | 'underwear';
+type ClothingKey = 'dress' | 'pants' | 'socks' | 'underwear';
 
 type ClothingItem = {
     key: ClothingKey;
@@ -41,17 +41,17 @@ const styles = StyleSheet.create({
         width: characterWidth,
         height: characterHeight,
         resizeMode: 'contain',
-        left: (width - characterWidth) / 2,
+        left: width - characterWidth - 10,
         top: 80,
         zIndex: 0,
     },
     basket: {
         position: 'absolute',
-        width: characterWidth * 1.5,
-        height: characterHeight,
+        width: characterWidth * 1.2,
+        height: characterHeight * 0.8,
         resizeMode: 'contain',
         left: 10,
-        top: characterHeight * 0.5,
+        top: characterHeight * 0.3,
         zIndex: 8,
     },
     message: {
@@ -87,11 +87,11 @@ const styles = StyleSheet.create({
     },
     shower: {
         position: 'absolute',
-        width: characterWidth * 1.8,
-        height: characterHeight,
+        width: characterWidth * 1.2, // Smaller but not too small
+        height: characterHeight * 0.8, // Slightly shorter than character
         resizeMode: 'contain',
-        left: 10,
-        top: characterHeight * 0.4,
+        left: 15, // Slightly adjusted for spacing
+        top: 80, // Aligned with character's top
         zIndex: 10,
     },
     clothesItem: {
@@ -167,39 +167,39 @@ const styles = StyleSheet.create({
     },
 });
 
-// Define stage 1 clothing positions for reuse in stage 4 with zIndex for layering
+// Clothing positions for first and last phases
 const stage1ClothingPositions: Record<ClothingKey, object> = {
-    shirt: {
+    dress: {
         ...styles.clothesItem,
-        width: characterWidth,
-        height: characterHeight * 0.8,
-        left: (width - characterWidth) / 2,
-        top: characterHeight * 0.26,
-        zIndex: 14, // Topmost layer
+        width: characterWidth * 0.7,
+        height: characterHeight * 0.48,
+        left: width - characterWidth - 10 + (characterWidth * 0.30) / 2,
+        top: characterHeight * 0.42,
+        zIndex: 14,
     },
     pants: {
         ...styles.clothesItem,
-        width: characterWidth,
-        height: characterHeight * 0.52,
-        left: (width - characterWidth) / 2,
-        top: characterHeight * 0.75,
-        zIndex: 13, // Below shirt
+        width: characterWidth * 0.6,
+        height: characterHeight * 0.312,
+        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        top: characterHeight * 0.60,
+        zIndex: 13,
     },
     underwear: {
         ...styles.clothesItem,
-        width: characterWidth,
-        height: characterHeight * 0.15,
-        left: (width - characterWidth) / 2,
-        top: characterHeight * 0.78,
-        zIndex: 12, // Below pants
+        width: characterWidth * 0.6,
+        height: characterHeight * 0.09,
+        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        top: characterHeight * 0.66,
+        zIndex: 12,
     },
     socks: {
         ...styles.clothesItem,
-        width: characterWidth,
-        height: characterHeight * 0.3,
-        left: (width - characterWidth) / 2,
-        top: characterHeight * 1.1,
-        zIndex: 11, // Bottommost layer
+        width: characterWidth * 0.6,
+        height: characterHeight * 0.18,
+        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        top: characterHeight * 0.80,
+        zIndex: 11,
     },
 };
 
@@ -231,14 +231,14 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
 
                 // Get clothing item's dimensions from style
                 const itemStyle = style as { left?: number; top?: number; width?: number; height?: number };
-                const itemWidth = itemStyle.width || 80; // Fallback to default
+                const itemWidth = itemStyle.width || 80;
                 const itemHeight = itemStyle.height || 80;
                 const itemLeft = (itemStyle.left || 0) + dx;
                 const itemTop = (itemStyle.top || 0) + dy;
                 const itemRight = itemLeft + itemWidth;
                 const itemBottom = itemTop + itemHeight;
 
-                // Character's bounding box
+                // Basket's bounding box
                 const targetLeft = characterDimensions.left;
                 const targetTop = characterDimensions.top;
                 const targetRight = targetLeft + characterDimensions.width;
@@ -281,17 +281,20 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
-            onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-                useNativeDriver: false,
-            }),
+            onPanResponderMove: Animated.event(
+                [null, { dx: pan.x, dy: pan.y }],
+                { useNativeDriver: false }
+            ),
             onPanResponderRelease: (_: GestureResponderEvent, gesture: PanResponderGestureState) => {
                 const { moveX, moveY } = gesture;
 
-                const showerLeft = 10;
-                const showerTop = characterHeight * 0.5;
+                // Define shower area boundaries based on new shower size
+                const showerLeft = 15;
+                const showerTop = 80;
                 const showerRight = showerLeft + characterWidth * 1.2;
-                const showerBottom = showerTop + characterHeight * 1.5;
+                const showerBottom = showerTop + characterHeight * 0.8;
 
+                // Check if the character is dropped in the shower area
                 if (
                     moveX >= showerLeft &&
                     moveX <= showerRight &&
@@ -300,8 +303,11 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
                 ) {
                     onEnterShower();
                 } else {
+                    // Reset position with spring animation
                     Animated.spring(pan, {
                         toValue: { x: 0, y: 0 },
+                        friction: 7,
+                        tension: 40,
                         useNativeDriver: false,
                     }).start();
                 }
@@ -311,12 +317,21 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
 
     return (
         <Animated.View
-            style={[{ transform: pan.getTranslateTransform() }]}
+            style={[
+                {
+                    transform: pan.getTranslateTransform(),
+                },
+                Platform.select({
+                    ios: {},
+                    android: {},
+                }),
+            ]}
             {...panResponder.panHandlers}
         >
             <Image
-                source={require('@/assets/images/Chico (Sin Ropa).png')}
+                source={require('@/assets/images/Niña (Sin Ropa).png')}
                 style={styles.characterShower}
+                resizeMode="contain"
             />
         </Animated.View>
     );
@@ -383,7 +398,7 @@ const DraggableSoap: React.FC<DraggableSoapProps> = ({
     );
 };
 
-const InteractivoDucha: React.FC = () => {
+const InteractivoDuchaM0: React.FC = () => {
     const navigation = useNavigation();
     const [messageVisible, setMessageVisible] = useState(true);
     const [showShowerStage, setShowShowerStage] = useState(false);
@@ -397,7 +412,7 @@ const InteractivoDucha: React.FC = () => {
     const [clothes, setClothes] = useState<ClothingItem[]>([
         {
             key: 'underwear',
-            source: require('@/assets/images/Ropa Interior (Hombre).png'),
+            source: require('@/assets/images/Ropa Interior (Mujer).png'),
             style: stage1ClothingPositions.underwear,
         },
         {
@@ -411,9 +426,9 @@ const InteractivoDucha: React.FC = () => {
             style: stage1ClothingPositions.pants,
         },
         {
-            key: 'shirt',
-            source: require('@/assets/images/Camisa.png'),
-            style: stage1ClothingPositions.shirt,
+            key: 'dress',
+            source: require('@/assets/images/Vestido.png'),
+            style: stage1ClothingPositions.dress,
         },
     ]);
 
@@ -460,8 +475,8 @@ const InteractivoDucha: React.FC = () => {
                         ...item,
                         style: {
                             ...styles.clothesItem,
-                            width: characterWidth * 0.8,
-                            height: characterHeight * 0.3,
+                            width: characterWidth * 0.48,
+                            height: characterHeight * 0.18,
                             left: 10,
                             top: position ? position.top : 100,
                         },
@@ -482,7 +497,7 @@ const InteractivoDucha: React.FC = () => {
     const bodyParts = [
         {
             id: 'rostro',
-            image: require('@/assets/images/Rostro.png'),
+            image: require('@/assets/images/Rostro Mujer.png'),
             position: { top: 100, left: 140, width: 80, height: 80 },
         },
         {
@@ -498,12 +513,7 @@ const InteractivoDucha: React.FC = () => {
         {
             id: 'nalgas',
             image: require('@/assets/images/Nalgas.png'),
-            position: { top: 300, left: 180, width: 90, height: 90 },
-        },
-        {
-            id: 'pene',
-            image: require('@/assets/images/Pene.png'),
-            position: { top: 300, left: 100, width: 70, height: 70 },
+            position: { top: 300, left: 140, width: 90, height: 90 },
         },
         {
             id: 'pies',
@@ -516,7 +526,7 @@ const InteractivoDucha: React.FC = () => {
         setCleanedParts((prev) => {
             if (!prev.includes(part)) {
                 const updated = [...prev, part];
-                if (updated.length === 6) {
+                if (updated.length === 5) {
                     setCanTurnOnShower(true);
                 }
                 return updated;
@@ -526,14 +536,13 @@ const InteractivoDucha: React.FC = () => {
     };
 
     const [fixedClothes, setFixedClothes] = useState<Record<ClothingKey, boolean>>({
-        shirt: false,
+        dress: false,
         pants: false,
         socks: false,
         underwear: false,
     });
 
     const handleDressUpDrop = (itemKey: ClothingKey, dropX: number, moveY: number) => {
-        // Snap the clothing item to its stage 1 position on the character
         setFixedClothes((prev) => ({
             ...prev,
             [itemKey]: true,
@@ -542,9 +551,9 @@ const InteractivoDucha: React.FC = () => {
             prev.map((item) =>
                 item.key === itemKey
                     ? {
-                          ...item,
-                          style: stage1ClothingPositions[itemKey],
-                      }
+                        ...item,
+                        style: stage1ClothingPositions[itemKey],
+                    }
                     : item
             )
         );
@@ -559,12 +568,11 @@ const InteractivoDucha: React.FC = () => {
         }
     }, [showerOn]);
 
-    // Navigate back to previous page after all clothes are placed
     useEffect(() => {
         if (Object.values(fixedClothes).every((fixed) => fixed)) {
             const timer = setTimeout(() => {
-                navigation.goBack(); // Navigate back to the selection screen
-            }, 3000); // 3-second delay
+                navigation.goBack();
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [fixedClothes, navigation]);
@@ -578,7 +586,7 @@ const InteractivoDucha: React.FC = () => {
                     </Text>
 
                     <Image
-                        source={require('@/assets/images/Chico (Sin Ropa).png')}
+                        source={require('@/assets/images/Niña (Sin Ropa).png')}
                         style={styles.character}
                     />
 
@@ -595,10 +603,10 @@ const InteractivoDucha: React.FC = () => {
                             onDrop={handleDrop}
                             itemKey={item.key}
                             characterDimensions={{
-                                top: characterHeight * 0.5,
+                                top: characterHeight * 0.3,
                                 left: 10,
-                                width: characterWidth * 1.5,
-                                height: characterHeight,
+                                width: characterWidth * 1.2,
+                                height: characterHeight * 0.8,
                             }}
                         />
                     ))}
@@ -627,7 +635,7 @@ const InteractivoDucha: React.FC = () => {
                     <Text style={styles.instructions}>
                         {canTurnOnShower
                             ? '¡Buen trabajo! Ahora presiona la ducha para enjuagarte 🚿'
-                            : `¡Hora de enjabonarse! 🧼 Limpia todas las partes del cuerpo (${cleanedParts.length}/6)`}
+                            : `¡Hora de enjabonarse! 🧼 Limpia todas las partes del cuerpo (${cleanedParts.length}/5)`}
                     </Text>
 
                     {bodyParts.map((part) => (
@@ -679,7 +687,7 @@ const InteractivoDucha: React.FC = () => {
                         ¡Hora de vestirse! 👕 Arrastra cada prenda al personaje.
                     </Text>
                     <Image
-                        source={require('@/assets/images/Chico (Sin Ropa).png')}
+                        source={require('@/assets/images/Niña (Sin Ropa).png')}
                         style={styles.character}
                     />
                     {clothes.map((item) => (
@@ -699,7 +707,7 @@ const InteractivoDucha: React.FC = () => {
                                 itemKey={item.key}
                                 characterDimensions={{
                                     top: 80,
-                                    left: (width - characterWidth) / 2,
+                                    left: width - characterWidth - 10,
                                     width: characterWidth * 1.5,
                                     height: characterHeight * 1.5,
                                 }}
@@ -715,4 +723,4 @@ const InteractivoDucha: React.FC = () => {
     );
 };
 
-export default InteractivoDucha;
+export default InteractivoDuchaM0;
