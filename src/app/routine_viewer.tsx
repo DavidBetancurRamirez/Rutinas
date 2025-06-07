@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Picker } from '@react-native-picker/picker';
 import { ScrollView, useWindowDimensions } from 'react-native';
 import { View, StyleSheet } from 'react-native';
 
 import RoutineOption, { FillEmptyOptions } from '@/components/RoutineOption';
+import RoutinePickers from '@/components/RoutinePickers';
 import Screen, { genericMargin } from '@/components/Screen';
 
 import { AGES, GENDERS, ROUTINES } from '@/constants';
-import { routineName } from '@/constants/names';
 
 import { useRoutineSteps } from '@/hooks/useRoutineSteps';
 
@@ -48,47 +47,14 @@ const RoutineViewer = () => {
   return (
     <Screen title="Tus rutinas">
       <View style={{ flex: 1 }}>
-        <View style={styles.pickerContainer}>
-          <Picker
-            style={styles.picker}
-            selectedValue={age}
-            onValueChange={(itemValue) => setAge(itemValue)}
-          >
-            <Picker.Item label="Edad" value={null} enabled={false} />
-            <Picker.Item label="Niño/a" value={AGES.CHILD} />
-            <Picker.Item label="Adolescente" value={AGES.TEEN} />
-          </Picker>
-
-          <Picker
-            style={styles.picker}
-            selectedValue={gender}
-            onValueChange={(itemValue) => setGender(itemValue)}
-          >
-            <Picker.Item label="Género" value={null} enabled={false} />
-            <Picker.Item label="Hombre" value={GENDERS.MALE} />
-            <Picker.Item label="Mujer" value={GENDERS.FEMALE} />
-          </Picker>
-
-          <Picker
-            style={styles.picker}
-            selectedValue={routine}
-            onValueChange={(itemValue) => setRoutine(itemValue)}
-          >
-            <Picker.Item label="Rutina" value={null} enabled={false} />
-            <Picker.Item
-              label={routineName[ROUTINES.SHOWER]}
-              value={ROUTINES.SHOWER}
-            />
-            <Picker.Item
-              label={routineName[ROUTINES.BATHROOM]}
-              value={ROUTINES.BATHROOM}
-            />
-            <Picker.Item
-              label={routineName[ROUTINES.TEETH]}
-              value={ROUTINES.TEETH}
-            />
-          </Picker>
-        </View>
+        <RoutinePickers
+          age={age}
+          setAge={setAge}
+          gender={gender}
+          setGender={setGender}
+          routine={routine}
+          setRoutine={setRoutine}
+        />
 
         <ScrollView style={styles.scrollView}>
           {shouldShowRoutine && (
@@ -120,19 +86,6 @@ const RoutineViewer = () => {
 const styles = StyleSheet.create({
   scrollView: {
     marginVertical: 10,
-  },
-  pickerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    marginVertical: 10,
-    gap: 10,
-  },
-  picker: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    minWidth: 150,
   },
 });
 
