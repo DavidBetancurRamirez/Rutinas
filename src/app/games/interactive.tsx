@@ -13,6 +13,11 @@ import InteractivoDientesH0 from '@/components/InteractivoDientesH0';
 import InteractivoDientesM12 from '@/components/InteractivoDientesM12';
 import InteractivoDientesM0 from '@/components/InteractivoDientesM0';
 
+import InteractivoBañoH0 from '@/components/InteractivoBañoH0';
+import InteractivoBañoH12 from '@/components/InteractivoBañoH12';
+import InteractivoBañoM0 from '@/components/InteractivoBañoM0';
+import InteractivoBañoM12 from '@/components/InteractivoBañoM12';
+
 const Interactive = () => {
   const { age, gender, routine } = useAppStore();
   if (routine === 'shower') {
@@ -39,6 +44,20 @@ const Interactive = () => {
         ) : gender === 'female' ? (
           <View>
             {age === AGES.TEEN ? <InteractivoDientesM12 /> : <InteractivoDientesM0 />}
+          </View>
+        ) : null}
+      </Screen>
+    )
+  }else if (routine === 'bathroom'){
+    return(
+      <Screen title="Interactivo">
+        {gender === 'male' ? (
+          <View>
+            {age === AGES.TEEN ? <InteractivoBañoH12 /> : <InteractivoBañoH0 />}
+          </View>
+        ) : gender === 'female' ? (
+          <View>
+            {age === AGES.TEEN ? <InteractivoBañoM12 /> : <InteractivoBañoM0 />}
           </View>
         ) : null}
       </Screen>
