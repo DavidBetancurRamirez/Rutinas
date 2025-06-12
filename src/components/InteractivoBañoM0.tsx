@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, PanResponder, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
+import GameFinished from '@/components/GameFinished';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -31,42 +32,59 @@ const IMAGES = {
     dryHands: require('@/assets/images/Secar Manos.png'),
 };
 
-const InteractivoBañoM0 = () => {
+const InteractivoBañoM0: React.FC = () => {
     const [stage, setStage] = useState(1);
     const [showFeedback, setShowFeedback] = useState(false);
-    const [choice, setChoice] = useState<'pee' | 'poop' | null>(null); // Typed choice state
-    const [isLidUp, setIsLidUp] = useState(false); // Track toilet lid state
-    const [isPantsDone, setIsPantsDone] = useState(false); // Track pants lowering
-    const [isUnderwearDone, setIsUnderwearDone] = useState(false); // Track underwear lowering
-    const [isSittingDone, setIsSittingDone] = useState(false); // Track sitting completion
-    const [isPaperPressed, setIsPaperPressed] = useState(false); // Track paper press
-    const [isWipeDone, setIsWipeDone] = useState(false); // Track wipe completion
-    const [isPaperDropped, setIsPaperDropped] = useState(false); // Track paper drop
-    const [isLidLowered, setIsLidLowered] = useState(false); // Track lid lowering
-    const [isFlushed, setIsFlushed] = useState(false); // Track flush
-    const [isPantsPulledUp, setIsPantsPulledUp] = useState(false); // Track pants pull-up
-    const [isUnderwearPulledUp, setIsUnderwearPulledUp] = useState(false); // Track underwear pull-up
-    const [isSoapUsed, setIsSoapUsed] = useState(false); // Track soap use
-    const [isScrubbed, setIsScrubbed] = useState(false); // Track scrubbing
-    const [isHandsWashed, setIsHandsWashed] = useState(false); // Track hand washing
-    const [isHandsDried, setIsHandsDried] = useState(false); // Track hand drying
-
-    // Navigation hook
+    const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [choice, setChoice] = useState<'pee' | 'poop' | null>(null);
+    const [isLidUp, setIsLidUp] = useState(false);
+    const [isPantsDone, setIsPantsDone] = useState(false);
+    const [isUnderwearDone, setIsUnderwearDone] = useState(false);
+    const [isSittingDone, setIsSittingDone] = useState(false);
+    const [isPaperPressed, setIsPaperPressed] = useState(false);
+    const [isWipeDone, setIsWipeDone] = useState(false);
+    const [isPaperDropped, setIsPaperDropped] = useState(false);
+    const [isLidLowered, setIsLidLowered] = useState(false);
+    const [isFlushed, setIsFlushed] = useState(false);
+    const [isPantsPulledUp, setIsPantsPulledUp] = useState(false);
+    const [isUnderwearPulledUp, setIsUnderwearPulledUp] = useState(false);
+    const [isSoapUsed, setIsSoapUsed] = useState(false);
+    const [isScrubbed, setIsScrubbed] = useState(false);
+    const [isHandsWashed, setIsHandsWashed] = useState(false);
+    const [isHandsDried, setIsHandsDried] = useState(false);
     const navigation = useNavigation();
 
-    // Counter for stage 3 (number of completed drags)
     const completedCount = (isPantsDone ? 1 : 0) + (isUnderwearDone ? 1 : 0);
-
-    // Counter for stage 6 (number of completed actions)
     const actionCount = (isPaperDropped ? 1 : 0) + (isLidLowered ? 1 : 0) + (isFlushed ? 1 : 0);
-
-    // Counter for stage 7 (number of completed pull-ups)
     const pullUpCount = (isPantsPulledUp ? 1 : 0) + (isUnderwearPulledUp ? 1 : 0);
-
-    // Counter for stage 8 (number of completed wash actions)
     const washCount = (isSoapUsed ? 1 : 0) + (isScrubbed ? 1 : 0) + (isHandsWashed ? 1 : 0) + (isHandsDried ? 1 : 0);
 
-    // PanResponder for pants in stage 3
+    const handleBack = () => {
+        navigation.goBack();
+    };
+
+    const handleRetry = () => {
+        setStage(1);
+        setShowFeedback(false);
+        setFeedbackMessage('');
+        setChoice(null);
+        setIsLidUp(false);
+        setIsPantsDone(false);
+        setIsUnderwearDone(false);
+        setIsSittingDone(false);
+        setIsPaperPressed(false);
+        setIsWipeDone(false);
+        setIsPaperDropped(false);
+        setIsLidLowered(false);
+        setIsFlushed(false);
+        setIsPantsPulledUp(false);
+        setIsUnderwearPulledUp(false);
+        setIsSoapUsed(false);
+        setIsScrubbed(false);
+        setIsHandsWashed(false);
+        setIsHandsDried(false);
+    };
+
     const pantsPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 3,
         onPanResponderMove: () => { },
@@ -79,6 +97,7 @@ const InteractivoBañoM0 = () => {
             if (stage === 3 && gestureState.dy > 100 && !isPantsDone) {
                 setIsPantsDone(true);
                 if (isUnderwearDone) {
+                    setFeedbackMessage('¡Correcto! 🎉');
                     setShowFeedback(true);
                     setTimeout(() => {
                         setShowFeedback(false);
@@ -91,7 +110,6 @@ const InteractivoBañoM0 = () => {
         },
     });
 
-    // PanResponder for underwear in stage 3
     const underwearPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 3,
         onPanResponderMove: () => { },
@@ -104,6 +122,7 @@ const InteractivoBañoM0 = () => {
             if (stage === 3 && gestureState.dy > 100 && !isUnderwearDone) {
                 setIsUnderwearDone(true);
                 if (isPantsDone) {
+                    setFeedbackMessage('¡Correcto! 🎉');
                     setShowFeedback(true);
                     setTimeout(() => {
                         setShowFeedback(false);
@@ -116,7 +135,6 @@ const InteractivoBañoM0 = () => {
         },
     });
 
-    // PanResponder for toilet lid in stage 2
     const toiletPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 2,
         onPanResponderMove: () => { },
@@ -128,6 +146,7 @@ const InteractivoBañoM0 = () => {
         onPanResponderRelease: (e, gestureState) => {
             if (stage === 2 && gestureState.dy < -100 && !isLidUp) {
                 setIsLidUp(true);
+                setFeedbackMessage('¡Correcto! 🎉');
                 setShowFeedback(true);
                 setTimeout(() => {
                     setShowFeedback(false);
@@ -138,7 +157,6 @@ const InteractivoBañoM0 = () => {
         },
     });
 
-    // PanResponder for dropping paper in stage 6
     const dropPaperPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6,
         onPanResponderMove: () => { },
@@ -154,7 +172,6 @@ const InteractivoBañoM0 = () => {
         },
     });
 
-    // PanResponder for lowering lid in stage 6
     const lowerLidPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6 && isPaperDropped,
         onPanResponderMove: () => { },
@@ -170,7 +187,6 @@ const InteractivoBañoM0 = () => {
         },
     });
 
-    // PanResponder for flushing in stage 6
     const flushPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6 && isLidLowered,
         onPanResponderMove: () => { },
@@ -182,6 +198,7 @@ const InteractivoBañoM0 = () => {
         onPanResponderRelease: (e, gestureState) => {
             if (stage === 6 && gestureState.dy < -100 && isLidLowered && !isFlushed) {
                 setIsFlushed(true);
+                setFeedbackMessage('¡Correcto! 🎉');
                 setShowFeedback(true);
                 setTimeout(() => {
                     setShowFeedback(false);
@@ -194,7 +211,6 @@ const InteractivoBañoM0 = () => {
         },
     });
 
-    // PanResponder for pulling up pants in stage 7
     const pullUpPantsPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 7,
         onPanResponderMove: () => { },
@@ -207,6 +223,7 @@ const InteractivoBañoM0 = () => {
             if (stage === 7 && gestureState.dy < -100 && !isPantsPulledUp) {
                 setIsPantsPulledUp(true);
                 if (isUnderwearPulledUp) {
+                    setFeedbackMessage('¡Correcto! 🎉');
                     setShowFeedback(true);
                     setTimeout(() => {
                         setShowFeedback(false);
@@ -219,7 +236,6 @@ const InteractivoBañoM0 = () => {
         },
     });
 
-    // PanResponder for pulling up underwear in stage 7
     const pullUpUnderwearPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 7,
         onPanResponderMove: () => { },
@@ -232,6 +248,7 @@ const InteractivoBañoM0 = () => {
             if (stage === 7 && gestureState.dy < -100 && !isUnderwearPulledUp) {
                 setIsUnderwearPulledUp(true);
                 if (isPantsPulledUp) {
+                    setFeedbackMessage('¡Correcto! 🎉');
                     setShowFeedback(true);
                     setTimeout(() => {
                         setShowFeedback(false);
@@ -244,10 +261,10 @@ const InteractivoBañoM0 = () => {
         },
     });
 
-    // Handle selection for stage 1 (pee or poop)
     const handlePress = (selectedChoice: 'pee' | 'poop') => {
         if (stage === 1) {
             setChoice(selectedChoice);
+            setFeedbackMessage('¡Buena elección!');
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
@@ -256,10 +273,10 @@ const InteractivoBañoM0 = () => {
         }
     };
 
-    // Handle sitting press for stage 4
     const handleSittingPress = () => {
         if (stage === 4 && !isSittingDone) {
             setIsSittingDone(true);
+            setFeedbackMessage('¡Correcto! 🎉');
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
@@ -269,17 +286,16 @@ const InteractivoBañoM0 = () => {
         }
     };
 
-    // Handle paper press for stage 5
     const handlePaperPress = () => {
         if (stage === 5 && !isPaperPressed) {
             setIsPaperPressed(true);
         }
     };
 
-    // Handle wipe press for stage 5
     const handleWipePress = () => {
         if (stage === 5 && isPaperPressed && !isWipeDone) {
             setIsWipeDone(true);
+            setFeedbackMessage('¡Correcto! 🎉');
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
@@ -290,31 +306,28 @@ const InteractivoBañoM0 = () => {
         }
     };
 
-    // Handle soap press for stage 8
     const handleSoapPress = () => {
         if (stage === 8 && !isSoapUsed) {
             setIsSoapUsed(true);
         }
     };
 
-    // Handle scrub press for stage 8
     const handleScrubPress = () => {
         if (stage === 8 && isSoapUsed && !isScrubbed) {
             setIsScrubbed(true);
         }
     };
 
-    // Handle wash hands press for stage 8
     const handleWashPress = () => {
         if (stage === 8 && isScrubbed && !isHandsWashed) {
             setIsHandsWashed(true);
         }
     };
 
-    // Handle dry hands press for stage 8
     const handleDryPress = () => {
         if (stage === 8 && isHandsWashed && !isHandsDried) {
             setIsHandsDried(true);
+            setFeedbackMessage('¡Correcto! 🎉');
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
@@ -326,18 +339,6 @@ const InteractivoBañoM0 = () => {
             }, 2000);
         }
     };
-
-    // Navigate back to selection screen after 3 seconds in stage 9
-    useEffect(() => {
-        if (stage === 9) {
-            console.log("Reached stage 9, starting navigation timeout"); // Debug log
-            const timeout = setTimeout(() => {
-                console.log("Navigating back to selection screen"); // Debug log
-                navigation.goBack();
-            }, 3000);
-            return () => clearTimeout(timeout);
-        }
-    }, [stage, navigation]);
 
     return (
         <Screen title="Interactivo - Ir al Baño">
@@ -364,7 +365,7 @@ const InteractivoBañoM0 = () => {
                     )}
                 </View>
 
-                <View style={styles.gameArea}>
+                <View style={[styles.gameArea, stage === 9 && styles.gameAreaGameFinished]}>
                     {stage === 1 ? (
                         <View style={styles.choiceContainer}>
                             {/* Pee Option */}
@@ -599,16 +600,21 @@ const InteractivoBañoM0 = () => {
                             </View>
                         </View>
                     ) : stage === 9 ? (
-                        <View style={styles.finalTextContainer}>
-                            <Text style={styles.finalText}>
-                                ¡Bien hecho, ya sabes como entrar al baño! 🎉
-                            </Text>
+                        <View style={styles.gameFinishedContainer}>
+                            <GameFinished
+                                onBack={handleBack}
+                                onRetry={handleRetry}
+                                backButtonText='Regresar'
+                                retryButtonText='Repetir'
+                                subtitle='Has completado la rutina correctamente'
+                                title='¡Felicitaciones!'
+                            />
                         </View>
                     ) : null}
 
                     {/* Feedback */}
-                    {showFeedback && (
-                        <Text style={styles.feedback}>¡Correcto! 🎉</Text>
+                    {showFeedback && stage !== 9 && (
+                        <Text style={styles.feedback}>{feedbackMessage}</Text>
                     )}
                 </View>
             </View>
@@ -622,18 +628,28 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 16,
         paddingTop: 12,
-        backgroundColor: '#F0F8FF', // Light blue background
+        backgroundColor: '#F0F8FF',
+    },
+    backButtonText: {
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#FF4500',
+        textShadowColor: '#FFF',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 2,
+        lineHeight: width * 0.06,
     },
     instructionContainer: {
         position: 'absolute',
-        top: 20, // Fixed position near top
-        width: width * 0.9, // 90% of screen width
-        backgroundColor: '#FFD700', // Bright yellow
-        padding: width * 0.03, // Responsive padding
+        top: 20,
+        width: width * 0.9,
+        backgroundColor: '#FFD700',
+        padding: width * 0.03,
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 20, // Above all elements
+        zIndex: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
@@ -641,14 +657,14 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     instruction: {
-        fontSize: width * 0.05 > 20 ? 20 : width * 0.05, // Responsive font size, capped at 20
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FF4500', // Vibrant orange
+        color: '#FF4500',
         textShadowColor: '#FFF',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
-        lineHeight: width * 0.06, // Improve readability
+        lineHeight: width * 0.06,
     },
     gameArea: {
         flex: 1,
@@ -658,9 +674,23 @@ const styles = StyleSheet.create({
         width: '100%',
         marginTop: 80,
     },
+    gameAreaGameFinished: {
+        marginTop: 200,
+    },
+    gameFinishedContainer: {
+        flex: 1,
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#FF4500',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        zIndex: 30,
+    },
     choiceContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around', // Space images horizontally
+        justifyContent: 'space-around',
         top: 100,
         zIndex: 5,
     },
@@ -694,7 +724,7 @@ const styles = StyleSheet.create({
         top: 100,
         justifyContent: 'space-between',
         width: '120%',
-        marginVertical: 5, // Tight vertical gap
+        marginVertical: 5,
     },
     imageWrapper: {
         justifyContent: 'center',
@@ -823,26 +853,29 @@ const styles = StyleSheet.create({
         textShadowRadius: 2,
         zIndex: 15,
     },
-    finalTextContainer: {
-        width: width * 0.9,
-        minHeight: 100,
-        padding: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        top: '50%',
-        transform: [{ translateY: -50 }],
-        zIndex: 10,
-    },
-    finalText: {
-        fontSize: 24,
+    title: {
+        fontSize: 28,
         fontWeight: 'bold',
-        textAlign: 'center',
-        color: '#FF4500',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        padding: 10,
-        borderRadius: 10,
+        color: '#FF69B4',
+        position: 'absolute',
+        top: 10,
+        textShadowColor: '#FFF',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 2,
+        zIndex: 15,
     },
+    subtitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#FF69B4',
+        position: 'absolute',
+        top: 10,
+        textShadowColor: '#FFF',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 2,
+        zIndex: 15,
+    },
+
 });
 
 export default InteractivoBañoM0;

@@ -34,6 +34,7 @@ const IMAGES = {
 const InteractivoBañoM12 = () => {
     const [stage, setStage] = useState(1);
     const [showFeedback, setShowFeedback] = useState(false);
+    const [feedbackMessage, setFeedbackMessage] = useState(''); // Nuevo estado para el mensaje
     const [choice, setChoice] = useState<'pee' | 'poop' | null>(null); // Typed choice state
     const [isLidUp, setIsLidUp] = useState(false); // Track toilet lid state
     const [isPantsDone, setIsPantsDone] = useState(false); // Track pants lowering
@@ -69,7 +70,7 @@ const InteractivoBañoM12 = () => {
     // PanResponder for pants in stage 3
     const pantsPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 3,
-        onPanResponderMove: () => { },
+        onPanResponderMove: () => {},
         onPanResponderGrant: () => {
             if (stage === 3 && !isPantsDone) {
                 // No offset needed
@@ -79,6 +80,7 @@ const InteractivoBañoM12 = () => {
             if (stage === 3 && gestureState.dy > 100 && !isPantsDone) {
                 setIsPantsDone(true);
                 if (isUnderwearDone) {
+                    setFeedbackMessage('¡Correcto! 🎉');
                     setShowFeedback(true);
                     setTimeout(() => {
                         setShowFeedback(false);
@@ -94,7 +96,7 @@ const InteractivoBañoM12 = () => {
     // PanResponder for underwear in stage 3
     const underwearPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 3,
-        onPanResponderMove: () => { },
+        onPanResponderMove: () => {},
         onPanResponderGrant: () => {
             if (stage === 3 && !isUnderwearDone) {
                 // No offset needed
@@ -104,6 +106,7 @@ const InteractivoBañoM12 = () => {
             if (stage === 3 && gestureState.dy > 100 && !isUnderwearDone) {
                 setIsUnderwearDone(true);
                 if (isPantsDone) {
+                    setFeedbackMessage('¡Correcto! 🎉');
                     setShowFeedback(true);
                     setTimeout(() => {
                         setShowFeedback(false);
@@ -119,7 +122,7 @@ const InteractivoBañoM12 = () => {
     // PanResponder for toilet lid in stage 2
     const toiletPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 2,
-        onPanResponderMove: () => { },
+        onPanResponderMove: () => {},
         onPanResponderGrant: () => {
             if (stage === 2 && !isLidUp) {
                 // No offset needed
@@ -128,6 +131,7 @@ const InteractivoBañoM12 = () => {
         onPanResponderRelease: (e, gestureState) => {
             if (stage === 2 && gestureState.dy < -100 && !isLidUp) {
                 setIsLidUp(true);
+                setFeedbackMessage('¡Correcto! 🎉');
                 setShowFeedback(true);
                 setTimeout(() => {
                     setShowFeedback(false);
@@ -141,7 +145,7 @@ const InteractivoBañoM12 = () => {
     // PanResponder for dropping paper in stage 6
     const dropPaperPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6,
-        onPanResponderMove: () => { },
+        onPanResponderMove: () => {},
         onPanResponderGrant: () => {
             if (stage === 6 && !isPaperDropped) {
                 // No offset needed
@@ -157,7 +161,7 @@ const InteractivoBañoM12 = () => {
     // PanResponder for lowering lid in stage 6
     const lowerLidPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6 && isPaperDropped,
-        onPanResponderMove: () => { },
+        onPanResponderMove: () => {},
         onPanResponderGrant: () => {
             if (stage === 6 && isPaperDropped && !isLidLowered) {
                 // No offset needed
@@ -173,7 +177,7 @@ const InteractivoBañoM12 = () => {
     // PanResponder for flushing in stage 6
     const flushPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6 && isLidLowered,
-        onPanResponderMove: () => { },
+        onPanResponderMove: () => {},
         onPanResponderGrant: () => {
             if (stage === 6 && isLidLowered && !isFlushed) {
                 // No offset needed
@@ -182,6 +186,7 @@ const InteractivoBañoM12 = () => {
         onPanResponderRelease: (e, gestureState) => {
             if (stage === 6 && gestureState.dy < -100 && isLidLowered && !isFlushed) {
                 setIsFlushed(true);
+                setFeedbackMessage('¡Correcto! 🎉');
                 setShowFeedback(true);
                 setTimeout(() => {
                     setShowFeedback(false);
@@ -197,7 +202,7 @@ const InteractivoBañoM12 = () => {
     // PanResponder for pulling up pants in stage 7
     const pullUpPantsPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 7,
-        onPanResponderMove: () => { },
+        onPanResponderMove: () => {},
         onPanResponderGrant: () => {
             if (stage === 7 && !isPantsPulledUp) {
                 // No offset needed
@@ -207,6 +212,7 @@ const InteractivoBañoM12 = () => {
             if (stage === 7 && gestureState.dy < -100 && !isPantsPulledUp) {
                 setIsPantsPulledUp(true);
                 if (isUnderwearPulledUp) {
+                    setFeedbackMessage('¡Correcto! 🎉');
                     setShowFeedback(true);
                     setTimeout(() => {
                         setShowFeedback(false);
@@ -222,7 +228,7 @@ const InteractivoBañoM12 = () => {
     // PanResponder for pulling up underwear in stage 7
     const pullUpUnderwearPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 7,
-        onPanResponderMove: () => { },
+        onPanResponderMove: () => {},
         onPanResponderGrant: () => {
             if (stage === 7 && !isUnderwearPulledUp) {
                 // No offset needed
@@ -232,6 +238,7 @@ const InteractivoBañoM12 = () => {
             if (stage === 7 && gestureState.dy < -100 && !isUnderwearPulledUp) {
                 setIsUnderwearPulledUp(true);
                 if (isPantsPulledUp) {
+                    setFeedbackMessage('¡Correcto! 🎉');
                     setShowFeedback(true);
                     setTimeout(() => {
                         setShowFeedback(false);
@@ -248,6 +255,7 @@ const InteractivoBañoM12 = () => {
     const handlePress = (selectedChoice: 'pee' | 'poop') => {
         if (stage === 1) {
             setChoice(selectedChoice);
+            setFeedbackMessage('¡Buena elección!');
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
@@ -260,6 +268,7 @@ const InteractivoBañoM12 = () => {
     const handleSittingPress = () => {
         if (stage === 4 && !isSittingDone) {
             setIsSittingDone(true);
+            setFeedbackMessage('¡Correcto! 🎉');
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
@@ -280,6 +289,7 @@ const InteractivoBañoM12 = () => {
     const handleWipePress = () => {
         if (stage === 5 && isPaperPressed && !isWipeDone) {
             setIsWipeDone(true);
+            setFeedbackMessage('¡Correcto! 🎉');
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
@@ -315,6 +325,7 @@ const InteractivoBañoM12 = () => {
     const handleDryPress = () => {
         if (stage === 8 && isHandsWashed && !isHandsDried) {
             setIsHandsDried(true);
+            setFeedbackMessage('¡Correcto! 🎉');
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
@@ -608,7 +619,7 @@ const InteractivoBañoM12 = () => {
 
                     {/* Feedback */}
                     {showFeedback && (
-                        <Text style={styles.feedback}>¡Correcto! 🎉</Text>
+                        <Text style={styles.feedback}>{feedbackMessage}</Text>
                     )}
                 </View>
             </View>
