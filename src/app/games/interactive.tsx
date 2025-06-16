@@ -3,20 +3,20 @@ import { View } from 'react-native';
 import Screen from '@/components/Screen';
 import useAppStore from '@/stores';
 import { AGES } from '@/constants';
-import InteractivoDuchaH12 from '@/components/InteractivoDuchaH12';
-import InteractivoDuchaH0 from '@/components/InteractivoDuchaH0';
-import InteractivoDuchaM12 from '@/components/InteractivoDuchaM12';
-import InteractivoDuchaM0 from '@/components/InteractivoDuchaM0';
+import InteractivoDuchaH12 from '@/components/Ducha/InteractivoDuchaH12';
+import InteractivoDuchaH0 from '@/components/Ducha/InteractivoDuchaH0';
+import InteractivoDuchaM12 from '@/components/Ducha/InteractivoDuchaM12';
+import InteractivoDuchaM0 from '@/components/Ducha/InteractivoDuchaM0';
 
-import InteractivoDientesH12 from '@/components/InteractivoDientesH12';
-import InteractivoDientesH0 from '@/components/InteractivoDientesH0';
-import InteractivoDientesM12 from '@/components/InteractivoDientesM12';
-import InteractivoDientesM0 from '@/components/InteractivoDientesM0';
+import InteractivoDientesH12 from '@/components/Dientes/InteractivoDientesH12';
+import InteractivoDientesH0 from '@/components/Dientes/InteractivoDientesH0';
+import InteractivoDientesM12 from '@/components/Dientes/InteractivoDientesM12';
+import InteractivoDientesM0 from '@/components/Dientes/InteractivoDientesM0';
 
-import InteractivoBañoH0 from '@/components/InteractivoBañoH0';
-import InteractivoBañoH12 from '@/components/InteractivoBañoH12';
-import InteractivoBañoM0 from '@/components/InteractivoBañoM0';
-import InteractivoBañoM12 from '@/components/InteractivoBañoM12';
+import InteractivoBañoH0 from '@/components/Baño/InteractivoBañoH0';
+import InteractivoBañoH12 from '@/components/Baño/InteractivoBañoH12';
+import InteractivoBañoM0 from '@/components/Baño/InteractivoBañoM0';
+import InteractivoBañoM12 from '@/components/Baño/InteractivoBañoM12';
 
 const Interactive = () => {
   const { age, gender, routine } = useAppStore();

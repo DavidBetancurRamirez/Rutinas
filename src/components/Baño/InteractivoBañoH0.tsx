@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, PanResponder, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
-import GameFinished from './GameFinished';
+import GameFinished from '../GameFinished';
 import { useRouter } from 'expo-router';
 
 // Get screen width for responsive instruction container

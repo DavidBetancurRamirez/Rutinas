@@ -14,7 +14,7 @@ import {
     ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import GameFinished from './GameFinished';
+import GameFinished from '../GameFinished';
 import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
@@ -141,7 +141,7 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
             {...panResponder.panHandlers}
         >
             <Image
-                source={require('@/assets/images/Chico (Sin Ropa).png')}
+                source={require('@/assets/images/Chica (Sin Ropa).png')}
                 style={styles.characterShower}
                 resizeMode="contain"
             />
@@ -210,7 +210,7 @@ const DraggableSoap: React.FC<DraggableSoapProps> = ({
     );
 };
 
-const InteractivoDuchaH0: React.FC = () => {
+const InteractivoDuchaM12: React.FC = () => {
     const navigation = useNavigation();
     const [stage, setStage] = useState(1);
     const [messageVisible, setMessageVisible] = useState(true);
@@ -227,7 +227,7 @@ const InteractivoDuchaH0: React.FC = () => {
     const [clothes, setClothes] = useState<ClothingItem[]>([
         {
             key: 'underwear',
-            source: require('@/assets/images/Ropa Interior (Hombre).png'),
+            source: require('@/assets/images/Ropa Interior (Mujer).png'),
             style: stage1ClothingPositions.underwear,
         },
         {
@@ -237,12 +237,12 @@ const InteractivoDuchaH0: React.FC = () => {
         },
         {
             key: 'pants',
-            source: require('@/assets/images/Pantalon.png'),
+            source: require('@/assets/images/Brasier.png'),
             style: stage1ClothingPositions.pants,
         },
         {
             key: 'shirt',
-            source: require('@/assets/images/Camisa.png'),
+            source: require('@/assets/images/Vestido.png'),
             style: stage1ClothingPositions.shirt,
         },
     ]);
@@ -253,9 +253,12 @@ const InteractivoDuchaH0: React.FC = () => {
         }
     };
 
+    const handleBack = () => {
+        navigation.goBack();
+    };
+
     const handleRetry = () => {
         setStage(1);
-        setGameFinished(false);
         setMessageVisible(true);
         setShowShowerStage(false);
         setShowSoapStage(false);
@@ -264,11 +267,12 @@ const InteractivoDuchaH0: React.FC = () => {
         setCanTurnOnShower(false);
         setCleanedParts([]);
         setShowDressUpStage(false);
+        setGameFinished(false);
         setRemovedClothes([]);
         setClothes([
             {
                 key: 'underwear',
-                source: require('@/assets/images/Ropa Interior (Hombre).png'),
+                source: require('@/assets/images/Ropa Interior (Mujer).png'),
                 style: stage1ClothingPositions.underwear,
             },
             {
@@ -278,12 +282,12 @@ const InteractivoDuchaH0: React.FC = () => {
             },
             {
                 key: 'pants',
-                source: require('@/assets/images/Pantalon.png'),
+                source: require('@/assets/images/Brasier.png'),
                 style: stage1ClothingPositions.pants,
             },
             {
                 key: 'shirt',
-                source: require('@/assets/images/Camisa.png'),
+                source: require('@/assets/images/Vestido.png'),
                 style: stage1ClothingPositions.shirt,
             },
         ]);
@@ -356,7 +360,7 @@ const InteractivoDuchaH0: React.FC = () => {
     const bodyParts = [
         {
             id: 'rostro',
-            image: require('@/assets/images/Rostro.png'),
+            image: require('@/assets/images/Rostro Mujer.png'),
             position: { top: 100, left: 140, width: 80, height: 80 },
         },
         {
@@ -375,14 +379,19 @@ const InteractivoDuchaH0: React.FC = () => {
             position: { top: 300, left: 180, width: 90, height: 90 },
         },
         {
-            id: 'pene',
-            image: require('@/assets/images/Pene.png'),
+            id: 'vagina',
+            image: require('@/assets/images/Vagina.png'),
             position: { top: 300, left: 100, width: 70, height: 70 },
         },
         {
             id: 'pies',
             image: require('@/assets/images/Pies.png'),
-            position: { top: 400, left: 140, width: 80, height: 70 },
+            position: { top: 400, left: 100, width: 80, height: 70 },
+        },
+        {
+            id: 'pechos',
+            image: require('@/assets/images/Pecho.png'),
+            position: { top: 400, left: 180, width: 80, height: 70 },
         },
     ];
 
@@ -390,7 +399,7 @@ const InteractivoDuchaH0: React.FC = () => {
         setCleanedParts((prev) => {
             if (!prev.includes(part)) {
                 const updated = [...prev, part];
-                if (updated.length === 6) {
+                if (updated.length === 7) {
                     setCanTurnOnShower(true);
                 }
                 return updated;
@@ -457,7 +466,7 @@ const InteractivoDuchaH0: React.FC = () => {
                         Arrastra la ropa sucia y ponla en el cesto 🧺
                     </Text>
                     <Image
-                        source={require('@/assets/images/Chico (Sin Ropa).png')}
+                        source={require('@/assets/images/Chica (Sin Ropa).png')}
                         style={styles.character}
                     />
                     <Image
@@ -502,7 +511,7 @@ const InteractivoDuchaH0: React.FC = () => {
                     <Text style={styles.instructions}>
                         {canTurnOnShower
                             ? '¡Buen trabajo! Ahora presiona la ducha para enjuagarte 🚿'
-                            : `¡Hora de enjabonarse! 🧼 Limpia todas las partes del cuerpo (${cleanedParts.length}/6)`}
+                            : `¡Hora de enjabonarse! 🧼 Limpia todas las partes del cuerpo (${cleanedParts.length}/7)`}
                     </Text>
                     {bodyParts.map((part) => (
                         <Image
@@ -542,7 +551,7 @@ const InteractivoDuchaH0: React.FC = () => {
                         />
                     </TouchableOpacity>
                     {showerOn && (
-                        <Text style={styles.message}>¡Ya estás limpio! 🎉</Text>
+                        <Text style={styles.message}>¡Ya estás limpia! 🎉</Text>
                     )}
                 </>
             ) : stage === 4 ? (
@@ -551,7 +560,7 @@ const InteractivoDuchaH0: React.FC = () => {
                         ¡Hora de vestirse! 👕 Arrastra cada prenda al personaje.
                     </Text>
                     <Image
-                        source={require('@/assets/images/Chico (Sin Ropa).png')}
+                        source={require('@/assets/images/Chica (Sin Ropa).png')}
                         style={styles.character}
                     />
                     {clothes.map((item) => (
@@ -670,24 +679,6 @@ const styles = StyleSheet.create({
         top: 80,
         zIndex: 10,
     },
-    finalMessage: {
-        position: 'absolute',
-        bottom: -400,
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#2F855A',
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 12,
-        textAlign: 'center',
-        zIndex: 15,
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-    },
     showerOver: {
         position: 'absolute',
         top: 50,
@@ -747,10 +738,10 @@ const styles = StyleSheet.create({
 const stage1ClothingPositions: Record<ClothingKey, object> = {
     shirt: {
         ...styles.clothesItem,
-        width: characterWidth,
-        height: characterHeight * 0.8,
-        left: (width - characterWidth) / 2,
-        top: characterHeight * 0.20,
+        width: characterWidth * 1.2,
+        height: characterHeight * 0.96,
+        left: (width - characterWidth * 1.2) / 2,
+        top: characterHeight * 0.25,
         zIndex: 14,
     },
     pants: {
@@ -758,7 +749,7 @@ const stage1ClothingPositions: Record<ClothingKey, object> = {
         width: characterWidth,
         height: characterHeight * 0.52,
         left: (width - characterWidth) / 2,
-        top: characterHeight * 0.68,
+        top: characterHeight * 0.32,
         zIndex: 13,
     },
     underwear: {
@@ -779,4 +770,4 @@ const stage1ClothingPositions: Record<ClothingKey, object> = {
     },
 };
 
-export default InteractivoDuchaH0;
+export default InteractivoDuchaM12;

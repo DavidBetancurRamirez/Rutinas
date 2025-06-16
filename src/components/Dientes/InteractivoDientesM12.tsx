@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, PanResponder, Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
-import GameFinished from './GameFinished';
+import GameFinished from '../GameFinished';
 import { useRouter } from 'expo-router';
 
 // Get screen width for responsive instruction container
@@ -23,12 +23,12 @@ const IMAGES = {
     mouthwash: require('@/assets/images/Enjuague.png'),
 };
 
-const InteractivoDientesH12 = () => {
+const InteractivoDientesM12 = () => {
     const [stage, setStage] = useState(1);
     const [showFeedback, setShowFeedback] = useState(false);
     const [useToothpasteWith, setUseToothpasteWith] = useState(false);
     const [useFaucetOpen, setUseFaucetOpen] = useState(false);
-    const [useMouthwash, setUseMouthwash] = useState(false);
+    const [useMouthwash, setUseMouthwash] = useState(false); // New state for mouthwash
     const [timer, setTimer] = useState(5);
     const [isBrushing, setIsBrushing] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
@@ -98,7 +98,7 @@ const InteractivoDientesH12 = () => {
                 setShowFeedback(false);
                 setStage(3);
             }, 2000);
-        } else if (stage === 7) { 
+        } else if (stage === 7) {
             setUseMouthwash(true);
             setShowFeedback(true);
             setTimeout(() => {
@@ -138,7 +138,7 @@ const InteractivoDientesH12 = () => {
                 setTimer((prev) => {
                     if (prev <= 1) {
                         clearInterval(interval);
-                        setStage(stage === 3 ? 4 : stage === 4 ? 5 : 6); // 3->4, 4->5, 5->6
+                        setStage(stage === 3 ? 4 : stage === 4 ? 5 : 6);
                         setIsBrushing(false);
                         setTimer(5);
                         return 0;
@@ -154,8 +154,7 @@ const InteractivoDientesH12 = () => {
                         setIsHolding(false);
                         setTimer(3);
                         setTimeout(() => {
-                            console.log("Advancing to stage 7"); // Debug log
-                            setStage(7); // Advance to mouthwash
+                            setStage(7);
                         }, 1000);
                         return 0;
                     }
@@ -491,4 +490,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default InteractivoDientesH12;
+export default InteractivoDientesM12;

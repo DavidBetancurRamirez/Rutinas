@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, PanResponder, Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
-import GameFinished from './GameFinished';
+import GameFinished from '../GameFinished';
 import { useRouter } from 'expo-router';
 
 // Get screen width for responsive instruction container
@@ -19,13 +19,16 @@ const IMAGES = {
     wash: require('@/assets/images/Agua.png'),
     spit: require('@/assets/images/Escupir (Sin).png'),
     spit2: require('@/assets/images/Escupir (Con).png'),
+    tongue: require('@/assets/images/lengua.png'),
+    mouthwash: require('@/assets/images/Enjuague.png'),
 };
 
-const InteractivoDientesM0 = () => {
+const InteractivoDientesH12 = () => {
     const [stage, setStage] = useState(1);
     const [showFeedback, setShowFeedback] = useState(false);
     const [useToothpasteWith, setUseToothpasteWith] = useState(false);
     const [useFaucetOpen, setUseFaucetOpen] = useState(false);
+    const [useMouthwash, setUseMouthwash] = useState(false);
     const [timer, setTimer] = useState(5);
     const [isBrushing, setIsBrushing] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
@@ -43,28 +46,29 @@ const InteractivoDientesM0 = () => {
         setIsBrushing(false);
         setIsHolding(false);
         setUseSpitWith(false);
+        setUseMouthwash(false);
     };
 
-    // Animated value for toothbrush movement (stages 3 and 4)
+    // Animated value for toothbrush movement (stages 3, 4, and 5)
     const pan = new Animated.ValueXY({ x: 0, y: 0 });
 
     // Navigation hook
     const navigation = useNavigation();
 
-    // PanResponder for horizontal (stage 3) or vertical (stage 4) dragging
+    // PanResponder for horizontal (stage 3) or vertical (stages 4 and 5) dragging
     const panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => stage === 3 || stage === 4,
+        onStartShouldSetPanResponder: () => stage === 3 || stage === 4 || stage === 5,
         onPanResponderMove: Animated.event(
             [
                 null,
-                stage === 3 ? { dx: pan.x } : { dy: pan.y }, // Horizontal for stage 3, vertical for stage 4
+                stage === 3 ? { dx: pan.x } : { dy: pan.y },
             ],
             { useNativeDriver: false }
         ),
         onPanResponderGrant: () => {
-            if ((stage === 3 || stage === 4) && !isBrushing) {
+            if ((stage === 3 || stage === 4 || stage === 5) && !isBrushing) {
                 setIsBrushing(true);
-                setTimer(5); // Start timer when dragging begins
+                setTimer(5);
             }
         },
         onPanResponderRelease: () => {
@@ -78,7 +82,7 @@ const InteractivoDientesM0 = () => {
         },
     });
 
-    // Handle stage progression for stages 1, 2, and 6
+    // Handle stage progression for stages 1, 2, 6, 7, and 8
     const handlePress = () => {
         if (stage === 1) {
             setUseToothpasteWith(true);
@@ -94,7 +98,14 @@ const InteractivoDientesM0 = () => {
                 setShowFeedback(false);
                 setStage(3);
             }, 2000);
-        } else if (stage === 6) {
+        } else if (stage === 7) { 
+            setUseMouthwash(true);
+            setShowFeedback(true);
+            setTimeout(() => {
+                setShowFeedback(false);
+                setStage(8);
+            }, 2000);
+        } else if (stage === 8) {
             setUseSpitWith(true);
             setShowFeedback(true);
             setTimeout(() => {
@@ -104,30 +115,30 @@ const InteractivoDientesM0 = () => {
         }
     };
 
-    // Handle hold for stage 5
+    // Handle hold for stage 6 (gargling)
     const handleHoldStart = () => {
-        if (stage === 5) {
+        if (stage === 6) {
             setIsHolding(true);
             setTimer(3);
         }
     };
 
     const handleHoldEnd = () => {
-        if (stage === 5) {
+        if (stage === 6) {
             setIsHolding(false);
             setTimer(3);
         }
     };
 
-    // Timer logic for stages 3, 4, and 5
+    // Timer logic for stages 3, 4, 5, and 6
     useEffect(() => {
         let interval: number;
-        if ((stage === 3 || stage === 4) && isBrushing && timer > 0) {
+        if ((stage === 3 || stage === 4 || stage === 5) && isBrushing && timer > 0) {
             interval = setInterval(() => {
                 setTimer((prev) => {
                     if (prev <= 1) {
                         clearInterval(interval);
-                        setStage(stage === 3 ? 4 : 5);
+                        setStage(stage === 3 ? 4 : stage === 4 ? 5 : 6); // 3->4, 4->5, 5->6
                         setIsBrushing(false);
                         setTimer(5);
                         return 0;
@@ -135,7 +146,7 @@ const InteractivoDientesM0 = () => {
                     return prev - 1;
                 });
             }, 1000);
-        } else if (stage === 5 && isHolding && timer > 0) {
+        } else if (stage === 6 && isHolding && timer > 0) {
             interval = setInterval(() => {
                 setTimer((prev) => {
                     if (prev <= 1) {
@@ -143,7 +154,8 @@ const InteractivoDientesM0 = () => {
                         setIsHolding(false);
                         setTimer(3);
                         setTimeout(() => {
-                            setStage(6);
+                            console.log("Advancing to stage 7"); // Debug log
+                            setStage(7); // Advance to mouthwash
                         }, 1000);
                         return 0;
                     }
@@ -165,7 +177,7 @@ const InteractivoDientesM0 = () => {
             />
             <View style={styles.container}>
                 <View style={styles.instructionContainer}>
-                    {stage !== 7 && (
+                    {stage !== 9 && (
                         <Text style={styles.instruction}>
                             {stage === 1
                                 ? '¡Toca la crema dental para ponerla en el cepillo! 🦷✨'
@@ -176,8 +188,12 @@ const InteractivoDientesM0 = () => {
                                         : stage === 4
                                             ? '¡Cepilla de arriba a abajo con ganas! 🪥🔝'
                                             : stage === 5
-                                                ? 'Lava tu boca con el agua y haz gárgaras! 🥤😜'
-                                                : '¡Toca para escupir y terminar! 😛💧'}
+                                                ? '¡Cepilla tu lengua de arriba a abajo! 😛🪥'
+                                                : stage === 6
+                                                    ? 'Lava tu boca con el agua y haz gárgaras! 🥤😜'
+                                                    : stage === 7
+                                                        ? '¡Toca el enjuague bucal para usarlo! 🧴✨'
+                                                        : '¡Toca para escupir y terminar! 😛💧'}
                         </Text>
                     )}
                 </View>
@@ -208,11 +224,14 @@ const InteractivoDientesM0 = () => {
                                 <Image source={IMAGES.toothbrush} style={styles.targetImage} />
                             </View>
                         </>
-                    ) : stage === 3 || stage === 4 ? (
+                    ) : stage === 3 || stage === 4 || stage === 5 ? (
                         <>
-                            {/* Mouth Image */}
+                            {/* Mouth or Tongue Image */}
                             <View style={styles.targetContainer}>
-                                <Image source={IMAGES.mouth} style={styles.mouthImage} />
+                                <Image
+                                    source={stage === 5 ? IMAGES.tongue : IMAGES.mouth}
+                                    style={stage === 5 ? styles.tongueImage : styles.mouthImage}
+                                />
                             </View>
 
                             {/* Draggable Toothbrush */}
@@ -223,7 +242,7 @@ const InteractivoDientesM0 = () => {
                                     {
                                         transform: [
                                             { translateX: stage === 3 ? pan.x : 0 },
-                                            { translateY: stage === 4 ? pan.y : 0 },
+                                            { translateY: stage === 4 || stage === 5 ? pan.y : 0 },
                                         ],
                                         top: 220,
                                         right: 120,
@@ -240,7 +259,7 @@ const InteractivoDientesM0 = () => {
                                 </Text>
                             )}
                         </>
-                    ) : stage === 5 ? (
+                    ) : stage === 6 ? (
                         <>
                             {/* Water Image */}
                             <TouchableOpacity
@@ -257,7 +276,19 @@ const InteractivoDientesM0 = () => {
                                 </Text>
                             )}
                         </>
-                    ) : stage === 6 ? (
+                    ) : stage === 7 ? (
+                        <>
+                            {/* Mouthwash Image */}
+                            <TouchableOpacity onPress={handlePress}>
+                                <View style={styles.mouthwashContainer}>
+                                    <Image
+                                        source={useMouthwash ? IMAGES.mouthwash : IMAGES.mouthwash}
+                                        style={styles.mouthwashImage}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </>
+                    ) : stage === 8 ? (
                         <>
                             {/* Spit Image */}
                             <TouchableOpacity onPress={handlePress}>
@@ -371,6 +402,11 @@ const styles = StyleSheet.create({
         height: 200,
         resizeMode: 'contain',
     },
+    tongueImage: {
+        width: 300,
+        height: 200,
+        resizeMode: 'contain',
+    },
     waterContainer: {
         position: 'absolute',
         top: 200,
@@ -391,6 +427,18 @@ const styles = StyleSheet.create({
     spitImage: {
         width: 300,
         height: 300,
+        top: 250,
+        resizeMode: 'contain',
+    },
+    mouthwashContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 5,
+    },
+    mouthwashImage: {
+        width: 200,
+        height: 200,
         top: 250,
         resizeMode: 'contain',
     },
@@ -443,4 +491,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default InteractivoDientesM0;
+export default InteractivoDientesH12;

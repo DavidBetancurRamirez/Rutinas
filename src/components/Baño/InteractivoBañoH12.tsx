@@ -2,41 +2,42 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, PanResponder, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
-import GameFinished from './GameFinished';
-import { router, useRouter } from 'expo-router';
+import GameFinished from '../GameFinished';
+import { useRouter } from 'expo-router';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
 
 // Image imports
 const IMAGES = {
-    pee: require('@/assets/images/Pis Mujer.png'),
+    pee: require('@/assets/images/Pis Hombre.png'),
     poop: require('@/assets/images/Popo.png'),
     toilet: require('@/assets/images/Inodoro.png'),
     toiletLidUp: require('@/assets/images/Levantar Tapa.png'),
-    pantsDown: require('@/assets/images/Bajar Pantalones (Mujer).png'),
-    underwearDown: require('@/assets/images/Bajar Ropa Interior (Mujer).png'),
-    womanSitting: require('@/assets/images/Mujer Sentada.png'),
-    womanPee: require('@/assets/images/Mujer Pis.png'),
-    womanPoop: require('@/assets/images/Mujer Popo.png'),
+    pantsDown: require('@/assets/images/Bajar Pantalones (Hombre).png'),
+    underwearDown: require('@/assets/images/Bajar Ropa Interior (Hombre).png'),
+    manSitting: require('@/assets/images/Hombre Sentado.png'),
+    menPeeBefore: require('@/assets/images/Hombre Antes Pis.png'),
+    menPeeAfter: require('@/assets/images/Hombre Despues Pis.png'),
+    manPoop: require('@/assets/images/Hombre Popo.png'),
     toiletPaper: require('@/assets/images/Papel.png'),
-    wipePee: require('@/assets/images/Limpiar Pis (Mujer).png'),
-    wipePoop: require('@/assets/images/Limpiar Popo (Mujer).png'),
+    wipePee: require('@/assets/images/Limpiar Pene.png'),
+    wipePoop: require('@/assets/images/Limpiar Popo (Hombre).png'),
     dropPaper: require('@/assets/images/Tirar Papel.png'),
     lowerLid: require('@/assets/images/Cerrar Tapa.png'),
     flush: require('@/assets/images/Vaciar.png'),
-    pullUpPants: require('@/assets/images/Levantar Pantalones (Mujer).png'),
-    pullUpUnderwear: require('@/assets/images/Levantar Ropa Interior (Mujer).png'),
+    pullUpPants: require('@/assets/images/Subir Pantalones (Hombre).png'),
+    pullUpUnderwear: require('@/assets/images/Subir Ropa Interior (Hombre).png'),
     useSoap: require('@/assets/images/Usar Jabon.png'),
     scrub: require('@/assets/images/Frotar Manos.png'),
     washHands: require('@/assets/images/Lavar Manos.png'),
     dryHands: require('@/assets/images/Secar Manos.png'),
 };
 
-const InteractivoBañoM12 = () => {
+const InteractivoBañoH12 = () => {
     const [stage, setStage] = useState(1);
     const [showFeedback, setShowFeedback] = useState(false);
-    const [feedbackMessage, setFeedbackMessage] = useState(''); // Nuevo estado para el mensaje
+    const [feedbackMessage, setFeedbackMessage] = useState(''); // New state for feedback message
     const [choice, setChoice] = useState<'pee' | 'poop' | null>(null); // Typed choice state
     const [isLidUp, setIsLidUp] = useState(false); // Track toilet lid state
     const [isPantsDone, setIsPantsDone] = useState(false); // Track pants lowering
@@ -55,10 +56,6 @@ const InteractivoBañoM12 = () => {
     const [isHandsDried, setIsHandsDried] = useState(false); // Track hand drying
     const [gameFinished, setGameFinished] = useState(false);
     const router = useRouter();
-    
-    const handleBack = () => {
-        navigation.goBack();
-    };
 
     const handleRetry = () => {
         setStage(1);
@@ -199,7 +196,7 @@ const InteractivoBañoM12 = () => {
             }
         },
         onPanResponderRelease: (e, gestureState) => {
-            if (stage === 6 && gestureState.dy > 100 && isPaperDropped && !isLidLowered) {
+            if (stage === 6 && gestureState.dy > 0 && isPaperDropped && !isLidLowered) {
                 setIsLidLowered(true);
             }
         },
@@ -389,7 +386,7 @@ const InteractivoBañoM12 = () => {
                                     : stage === 3
                                         ? '¡Desliza hacia abajo para bajar los pantalones y la ropa interior! 👖✨'
                                         : stage === 4
-                                            ? `¡Toca para sentarte y hacer ${choice === 'pee' ? 'pis' : 'popó'}! 🚽✨`
+                                            ? `¡Toca para hacer ${choice === 'pee' ? 'pis' : 'popó'}! 🚽✨`
                                             : stage === 5
                                                 ? `¡Toca el papel y luego limpia el ${choice === 'pee' ? 'pis' : 'popó'}! 🧻✨`
                                                 : stage === 6
@@ -463,9 +460,11 @@ const InteractivoBañoM12 = () => {
                                     source={
                                         isSittingDone
                                             ? choice === 'pee'
-                                                ? IMAGES.womanPee
-                                                : IMAGES.womanPoop
-                                            : IMAGES.womanSitting
+                                                ? IMAGES.menPeeAfter
+                                                : IMAGES.manPoop
+                                            : choice === 'pee'
+                                                ? IMAGES.menPeeBefore
+                                                : IMAGES.manSitting
                                     }
                                     style={styles.toiletUsingImage}
                                 />
@@ -659,11 +658,10 @@ const styles = StyleSheet.create({
     },
     gameFinishedContainer: {
         flex: 1,
-        marginTop: 200,
+        marginTop: 100,
         fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FF4500',
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
@@ -706,6 +704,7 @@ const styles = StyleSheet.create({
     choiceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
+        top: 100,
         zIndex: 5,
     },
     choiceWrapper: {
@@ -889,4 +888,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default InteractivoBañoM12;
+export default InteractivoBañoH12;
