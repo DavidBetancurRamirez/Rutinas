@@ -3,6 +3,8 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, PanRespond
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
 import GameFinished from '@/components/GameFinished';
+import { useRouter } from 'expo-router';
+
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -53,18 +55,17 @@ const InteractivoBañoM0: React.FC = () => {
     const [isHandsWashed, setIsHandsWashed] = useState(false);
     const [isHandsDried, setIsHandsDried] = useState(false);
     const navigation = useNavigation();
-
+    const [gameFinished, setGameFinished] = useState(false);
+    const router = useRouter();
+    
     const completedCount = (isPantsDone ? 1 : 0) + (isUnderwearDone ? 1 : 0);
     const actionCount = (isPaperDropped ? 1 : 0) + (isLidLowered ? 1 : 0) + (isFlushed ? 1 : 0);
     const pullUpCount = (isPantsPulledUp ? 1 : 0) + (isUnderwearPulledUp ? 1 : 0);
     const washCount = (isSoapUsed ? 1 : 0) + (isScrubbed ? 1 : 0) + (isHandsWashed ? 1 : 0) + (isHandsDried ? 1 : 0);
 
-    const handleBack = () => {
-        navigation.goBack();
-    };
-
     const handleRetry = () => {
         setStage(1);
+        setGameFinished(false);
         setShowFeedback(false);
         setFeedbackMessage('');
         setChoice(null);
@@ -331,7 +332,7 @@ const InteractivoBañoM0: React.FC = () => {
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
-                setStage(9);
+                setGameFinished(true);
                 setIsSoapUsed(false);
                 setIsScrubbed(false);
                 setIsHandsWashed(false);
@@ -342,6 +343,13 @@ const InteractivoBañoM0: React.FC = () => {
 
     return (
         <Screen title="Interactivo - Ir al Baño">
+            <GameFinished
+                onBack={() => router.back()}
+                onClose={() => setGameFinished(false)}
+                onRetry={handleRetry}
+                subtitle="Has completado la rutina correctamente"
+                visible={gameFinished}
+            />
             <View style={styles.container}>
                 <View style={styles.instructionContainer}>
                     {stage !== 9 && (
@@ -599,19 +607,7 @@ const InteractivoBañoM0: React.FC = () => {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    ) : stage === 9 ? (
-                        <View style={styles.gameFinishedContainer}>
-                            <GameFinished
-                                onBack={handleBack}
-                                onRetry={handleRetry}
-                                backButtonText='Regresar'
-                                retryButtonText='Repetir'
-                                subtitle='Has completado la rutina correctamente'
-                                title='¡Felicitaciones!'
-                            />
-                        </View>
                     ) : null}
-
                     {/* Feedback */}
                     {showFeedback && stage !== 9 && (
                         <Text style={styles.feedback}>{feedbackMessage}</Text>

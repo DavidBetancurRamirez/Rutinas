@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, PanRespond
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
 import GameFinished from './GameFinished';
+import { useRouter } from 'expo-router';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -53,13 +54,12 @@ const InteractivoBañoH12 = () => {
     const [isScrubbed, setIsScrubbed] = useState(false); // Track scrubbing
     const [isHandsWashed, setIsHandsWashed] = useState(false); // Track hand washing
     const [isHandsDried, setIsHandsDried] = useState(false); // Track hand drying
-
-    const handleBack = () => {
-        navigation.goBack();
-    };
+    const [gameFinished, setGameFinished] = useState(false);
+    const router = useRouter();
 
     const handleRetry = () => {
         setStage(1);
+        setGameFinished(false);
         setShowFeedback(false);
         setFeedbackMessage('');
         setChoice(null);
@@ -98,7 +98,7 @@ const InteractivoBañoH12 = () => {
     // PanResponder for pants in stage 3
     const pantsPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 3,
-        onPanResponderMove: () => {},
+        onPanResponderMove: () => { },
         onPanResponderGrant: () => {
             if (stage === 3 && !isPantsDone) {
                 // No offset needed
@@ -124,7 +124,7 @@ const InteractivoBañoH12 = () => {
     // PanResponder for underwear in stage 3
     const underwearPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 3,
-        onPanResponderMove: () => {},
+        onPanResponderMove: () => { },
         onPanResponderGrant: () => {
             if (stage === 3 && !isUnderwearDone) {
                 // No offset needed
@@ -150,7 +150,7 @@ const InteractivoBañoH12 = () => {
     // PanResponder for toilet lid in stage 2
     const toiletPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 2,
-        onPanResponderMove: () => {},
+        onPanResponderMove: () => { },
         onPanResponderGrant: () => {
             if (stage === 2 && !isLidUp) {
                 // No offset needed
@@ -173,7 +173,7 @@ const InteractivoBañoH12 = () => {
     // PanResponder for dropping paper in stage 6
     const dropPaperPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6,
-        onPanResponderMove: () => {},
+        onPanResponderMove: () => { },
         onPanResponderGrant: () => {
             if (stage === 6 && !isPaperDropped) {
                 // No offset needed
@@ -189,7 +189,7 @@ const InteractivoBañoH12 = () => {
     // PanResponder for lowering lid in stage 6
     const lowerLidPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6 && isPaperDropped,
-        onPanResponderMove: () => {},
+        onPanResponderMove: () => { },
         onPanResponderGrant: () => {
             if (stage === 6 && isPaperDropped && !isLidLowered) {
                 // No offset needed
@@ -205,7 +205,7 @@ const InteractivoBañoH12 = () => {
     // PanResponder for flushing in stage 6
     const flushPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 6 && isLidLowered,
-        onPanResponderMove: () => {},
+        onPanResponderMove: () => { },
         onPanResponderGrant: () => {
             if (stage === 6 && isLidLowered && !isFlushed) {
                 // No offset needed
@@ -230,7 +230,7 @@ const InteractivoBañoH12 = () => {
     // PanResponder for pulling up pants in stage 7
     const pullUpPantsPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 7,
-        onPanResponderMove: () => {},
+        onPanResponderMove: () => { },
         onPanResponderGrant: () => {
             if (stage === 7 && !isPantsPulledUp) {
                 // No offset needed
@@ -256,7 +256,7 @@ const InteractivoBañoH12 = () => {
     // PanResponder for pulling up underwear in stage 7
     const pullUpUnderwearPanResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => stage === 7,
-        onPanResponderMove: () => {},
+        onPanResponderMove: () => { },
         onPanResponderGrant: () => {
             if (stage === 7 && !isUnderwearPulledUp) {
                 // No offset needed
@@ -357,7 +357,7 @@ const InteractivoBañoH12 = () => {
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
-                setStage(9);
+                setGameFinished(true);
                 setIsSoapUsed(false);
                 setIsScrubbed(false);
                 setIsHandsWashed(false);
@@ -366,18 +366,15 @@ const InteractivoBañoH12 = () => {
         }
     };
 
-    // Navigate back to selection screen after 3 seconds in stage 9
-    useEffect(() => {
-        if (stage === 9) {
-            const timeout = setTimeout(() => {
-                navigation.goBack();
-            }, 3000);
-            return () => clearTimeout(timeout);
-        }
-    }, [stage, navigation]);
-
     return (
         <Screen title="Interactivo - Ir al Baño">
+            <GameFinished
+                onBack={() => router.back()}
+                onClose={() => setGameFinished(false)}
+                onRetry={handleRetry}
+                subtitle="Has completado la rutina correctamente"
+                visible={gameFinished}
+            />
             <View style={styles.container}>
                 <View style={styles.instructionContainer}>
                     {stage !== 9 && (
@@ -637,19 +634,7 @@ const InteractivoBañoH12 = () => {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    ) : stage === 9 ? (
-                        <View style={styles.gameFinishedContainer}>
-                            <GameFinished
-                                onBack={handleBack}
-                                onRetry={handleRetry}
-                                backButtonText='Regresar'
-                                retryButtonText='Repetir'
-                                subtitle='Has completado la rutina correctamente'
-                                title='¡Felicitaciones!'
-                            />
-                        </View>
                     ) : null}
-
                     {/* Feedback */}
                     {showFeedback && (
                         <Text style={styles.feedback}>{feedbackMessage}</Text>

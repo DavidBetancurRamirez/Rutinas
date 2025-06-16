@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import GameFinished from './GameFinished';
+import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 const characterWidth = width * 0.375;
@@ -220,7 +221,8 @@ const InteractivoDuchaM0: React.FC = () => {
     const [canTurnOnShower, setCanTurnOnShower] = useState(false);
     const [cleanedParts, setCleanedParts] = useState<string[]>([]);
     const [showDressUpStage, setShowDressUpStage] = useState<boolean>(false);
-    const [showGameFinished, setShowGameFinished] = useState<boolean>(false);
+    const [gameFinished, setGameFinished] = useState(false);
+    const router = useRouter();
     const [removedClothes, setRemovedClothes] = useState<ClothingItem[]>([]);
     const [clothes, setClothes] = useState<ClothingItem[]>([
         {
@@ -251,10 +253,6 @@ const InteractivoDuchaM0: React.FC = () => {
         }
     };
 
-    const handleBack = () => {
-        navigation.goBack();
-    };
-
     const handleRetry = () => {
         setStage(1);
         setMessageVisible(true);
@@ -265,7 +263,7 @@ const InteractivoDuchaM0: React.FC = () => {
         setCanTurnOnShower(false);
         setCleanedParts([]);
         setShowDressUpStage(false);
-        setShowGameFinished(false);
+        setGameFinished(false);
         setRemovedClothes([]);
         setClothes([
             {
@@ -433,8 +431,7 @@ const InteractivoDuchaM0: React.FC = () => {
     useEffect(() => {
         if (showDressUpStage && Object.values(fixedClothes).every((fixed) => fixed)) {
             const timer = setTimeout(() => {
-                setShowGameFinished(true);
-                setStage(5);
+                setGameFinished(true);
             }, 1000);
             return () => clearTimeout(timer);
         }
@@ -442,6 +439,13 @@ const InteractivoDuchaM0: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <GameFinished
+                onBack={() => router.back()}
+                onClose={() => setGameFinished(false)}
+                onRetry={handleRetry}
+                subtitle="Has completado la rutina correctamente"
+                visible={gameFinished}
+            />
             {stage === 1 ? (
                 <>
                     <Text style={styles.instructions}>
@@ -570,17 +574,6 @@ const InteractivoDuchaM0: React.FC = () => {
                         )
                     ))}
                 </>
-            ) : stage === 5 ? (
-                <View style={styles.gameFinishedContainer}>
-                    <GameFinished
-                        onBack={handleBack}
-                        onRetry={handleRetry}
-                        backButtonText='Regresar'
-                        retryButtonText='Repetir'
-                        subtitle='Has completado la rutina correctamente'
-                        title='¡Felicitaciones!'
-                    />
-                </View>
             ) : null}
         </View>
     );

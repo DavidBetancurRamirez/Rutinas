@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, PanResponder, Animated
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
 import GameFinished from '@/components/GameFinished';
+import { useRouter } from 'expo-router';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -29,13 +30,12 @@ const InteractivoDientesH0 = () => {
     const [isBrushing, setIsBrushing] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
     const [useSpitWith, setUseSpitWith] = useState(false);
-
-    const handleBack = () => {
-        navigation.goBack();
-    };
+    const [gameFinished, setGameFinished] = useState(false);
+    const router = useRouter();
 
     const handleRetry = () => {
         setStage(1);
+        setGameFinished(false);
         setShowFeedback(false);
         setUseToothpasteWith(false);
         setUseFaucetOpen(false);
@@ -99,7 +99,7 @@ const InteractivoDientesH0 = () => {
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
-                setStage(7);
+                setGameFinished(true);
             }, 2000);
         }
     };
@@ -156,6 +156,13 @@ const InteractivoDientesH0 = () => {
 
     return (
         <Screen title="Interactivo - Cepillado de Dientes">
+            <GameFinished
+                onBack={() => router.back()}
+                onClose={() => setGameFinished(false)}
+                onRetry={handleRetry}
+                subtitle="Has completado la rutina correctamente"
+                visible={gameFinished}
+            />
             <View style={styles.container}>
                 <View style={styles.instructionContainer}>
                     {stage !== 7 && (
@@ -262,19 +269,7 @@ const InteractivoDientesH0 = () => {
                                 </View>
                             </TouchableOpacity>
                         </>
-                    ) : stage === 7 ? (
-                        <View style={styles.gameFinishedContainer}>
-                            <GameFinished
-                                onBack={handleBack}
-                                onRetry={handleRetry}
-                                backButtonText='Regresar'
-                                retryButtonText='Repetir'
-                                subtitle='Has completado la rutina correctamente'
-                                title='¡Felicitaciones!'
-                            />
-                        </View>
                     ) : null}
-
                     {/* Feedback */}
                     {showFeedback && (
                         <Text style={styles.feedback}>¡Correcto! 🎉</Text>

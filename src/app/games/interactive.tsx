@@ -63,6 +63,6 @@ const Interactive = () => {
       </Screen>
     )
   }
-};
+}
 
 export default Interactive;

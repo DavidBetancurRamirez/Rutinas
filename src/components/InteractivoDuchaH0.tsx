@@ -12,8 +12,9 @@ import {
     PanResponderGestureState,
     TouchableOpacity,
     ViewStyle,
+    ImageSourcePropType,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import GameFinished from './GameFinished';
 
 const { width, height } = Dimensions.get('window');
@@ -21,9 +22,18 @@ const characterWidth = width * 0.375;
 const characterHeight = height * 0.6;
 const isMobile = Platform.OS === 'android' || Platform.OS === 'ios';
 
+// Define types early to avoid reference errors
+type ClothingKey = 'shirt' | 'pants' | 'socks' | 'underwear';
+
+type ClothingItem = {
+    key: ClothingKey;
+    source: ImageSourcePropType;
+    style: ViewStyle;
+};
+
 type DraggableItemProps = {
-    source: any;
-    style: object;
+    source: ImageSourcePropType;
+    style: ViewStyle;
     onDrop: (itemKey: ClothingKey, moveX: number, moveY: number) => void;
     itemKey: ClothingKey;
     characterDimensions: { top: number; left: number; width: number; height: number };
@@ -43,8 +53,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
             onStartShouldSetPanResponder: () => true,
             onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
                 useNativeDriver: false,
-            }),
-            onPanResponderRelease: (_: GestureResponderEvent, gesture: PanResponderGestureState) => {
+            }), onPanResponderRelease: (_: GestureResponderEvent, gesture: PanResponderGestureState) => {
                 const { moveX, moveY, dx, dy } = gesture;
 
                 const itemStyle = style as { left?: number; top?: number; width?: number; height?: number };
@@ -149,7 +158,7 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
 };
 
 interface DraggableSoapProps {
-    source: any;
+    source: ImageSourcePropType;
     position: { top: number; left: number };
     bodyParts: {
         id: string;
@@ -210,7 +219,7 @@ const DraggableSoap: React.FC<DraggableSoapProps> = ({
 };
 
 const InteractivoDuchaH0: React.FC = () => {
-    const navigation = useNavigation();
+    const router = useRouter();
     const [stage, setStage] = useState(1);
     const [messageVisible, setMessageVisible] = useState(true);
     const [showShowerStage, setShowShowerStage] = useState(false);
@@ -220,8 +229,8 @@ const InteractivoDuchaH0: React.FC = () => {
     const [canTurnOnShower, setCanTurnOnShower] = useState(false);
     const [cleanedParts, setCleanedParts] = useState<string[]>([]);
     const [showDressUpStage, setShowDressUpStage] = useState<boolean>(false);
-    const [showGameFinished, setShowGameFinished] = useState<boolean>(false);
     const [removedClothes, setRemovedClothes] = useState<ClothingItem[]>([]);
+    const [gameFinished, setGameFinished] = useState(false);
     const [clothes, setClothes] = useState<ClothingItem[]>([
         {
             key: 'underwear',
@@ -251,12 +260,9 @@ const InteractivoDuchaH0: React.FC = () => {
         }
     };
 
-    const handleBack = () => {
-        navigation.goBack();
-    };
-
     const handleRetry = () => {
         setStage(1);
+        setGameFinished(false);
         setMessageVisible(true);
         setShowShowerStage(false);
         setShowSoapStage(false);
@@ -265,7 +271,6 @@ const InteractivoDuchaH0: React.FC = () => {
         setCanTurnOnShower(false);
         setCleanedParts([]);
         setShowDressUpStage(false);
-        setShowGameFinished(false);
         setRemovedClothes([]);
         setClothes([
             {
@@ -433,8 +438,7 @@ const InteractivoDuchaH0: React.FC = () => {
     useEffect(() => {
         if (showDressUpStage && Object.values(fixedClothes).every((fixed) => fixed)) {
             const timer = setTimeout(() => {
-                setShowGameFinished(true);
-                setStage(5);
+                setGameFinished(true);
             }, 1000);
             return () => clearTimeout(timer);
         }
@@ -442,6 +446,13 @@ const InteractivoDuchaH0: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <GameFinished
+                onBack={() => router.back()}
+                onClose={() => setGameFinished(false)}
+                onRetry={handleRetry}
+                subtitle="Has completado la rutina correctamente"
+                visible={gameFinished}
+            />
             {stage === 1 ? (
                 <>
                     <Text style={styles.instructions}>
@@ -570,17 +581,6 @@ const InteractivoDuchaH0: React.FC = () => {
                         )
                     ))}
                 </>
-            ) : stage === 5 ? (
-                <View style={styles.gameFinishedContainer}>
-                    <GameFinished
-                        onBack={handleBack}
-                        onRetry={handleRetry}
-                        backButtonText='Regresar'
-                        retryButtonText='Repetir'
-                        subtitle='Has completado la rutina correctamente'
-                        title='¡Felicitaciones!'
-                    />
-                </View>
             ) : null}
         </View>
     );
@@ -594,17 +594,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     gameFinishedContainer: {
-    flex: 1,
-    marginTop: 200,
-    fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#FF4500',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    zIndex: 30,
-},
+        flex: 1,
+        marginTop: 200,
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#FF4500',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        zIndex: 30,
+    },
     character: {
         position: 'absolute',
         width: characterWidth,
@@ -625,7 +625,7 @@ const styles = StyleSheet.create({
     },
     message: {
         position: 'absolute',
-        bottom: -400,
+        bottom: 20, // Adjusted to ensure visibility
         alignSelf: 'center',
         fontSize: 28,
         fontWeight: 'bold',
@@ -677,7 +677,7 @@ const styles = StyleSheet.create({
     },
     finalMessage: {
         position: 'absolute',
-        bottom: -400,
+        bottom: 20, // Adjusted to ensure visibility
         fontSize: 28,
         fontWeight: 'bold',
         color: '#2F855A',
@@ -736,17 +736,7 @@ const styles = StyleSheet.create({
     },
 });
 
-// Define clothing key type
-type ClothingKey = 'shirt' | 'pants' | 'socks' | 'underwear';
-
-type ClothingItem = {
-    key: ClothingKey;
-    source: any;
-    style: object;
-};
-
-// Clothing positions for first and last phases
-const stage1ClothingPositions: Record<ClothingKey, object> = {
+const stage1ClothingPositions: Record<ClothingKey, ViewStyle> = {
     shirt: {
         ...styles.clothesItem,
         width: characterWidth * 0.6,

@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, PanResponder, Animated
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
 import GameFinished from './GameFinished';
+import { useRouter } from 'expo-router';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -32,13 +33,12 @@ const InteractivoDientesM12 = () => {
     const [isBrushing, setIsBrushing] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
     const [useSpitWith, setUseSpitWith] = useState(false);
-
-    const handleBack = () => {
-        navigation.goBack();
-    };
+    const [gameFinished, setGameFinished] = useState(false);
+    const router = useRouter();
 
     const handleRetry = () => {
         setStage(1);
+        setGameFinished(false);
         setShowFeedback(false);
         setUseToothpasteWith(false);
         setUseFaucetOpen(false);
@@ -61,14 +61,14 @@ const InteractivoDientesM12 = () => {
         onPanResponderMove: Animated.event(
             [
                 null,
-                stage === 3 ? { dx: pan.x } : { dy: pan.y }, // Horizontal for stage 3, vertical for stages 4 and 5
+                stage === 3 ? { dx: pan.x } : { dy: pan.y },
             ],
             { useNativeDriver: false }
         ),
         onPanResponderGrant: () => {
             if ((stage === 3 || stage === 4 || stage === 5) && !isBrushing) {
                 setIsBrushing(true);
-                setTimer(5); // Start timer when dragging begins
+                setTimer(5);
             }
         },
         onPanResponderRelease: () => {
@@ -98,19 +98,19 @@ const InteractivoDientesM12 = () => {
                 setShowFeedback(false);
                 setStage(3);
             }, 2000);
-        } else if (stage === 7) { // New mouthwash stage
+        } else if (stage === 7) {
             setUseMouthwash(true);
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
                 setStage(8);
             }, 2000);
-        } else if (stage === 8) { // Spitting stage (was 6)
+        } else if (stage === 8) {
             setUseSpitWith(true);
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
-                setStage(9); // Advance to final text (was 7)
+                setGameFinished(true);
             }, 2000);
         }
     };
@@ -167,6 +167,13 @@ const InteractivoDientesM12 = () => {
 
     return (
         <Screen title="Interactivo - Cepillado de Dientes">
+            <GameFinished
+                onBack={() => router.back()}
+                onClose={() => setGameFinished(false)}
+                onRetry={handleRetry}
+                subtitle="Has completado la rutina correctamente"
+                visible={gameFinished}
+            />
             <View style={styles.container}>
                 <View style={styles.instructionContainer}>
                     {stage !== 9 && (
@@ -292,19 +299,7 @@ const InteractivoDientesM12 = () => {
                                 </View>
                             </TouchableOpacity>
                         </>
-                    ) : stage === 9 ? (
-                        <View style={styles.gameFinishedContainer}>
-                            <GameFinished
-                                onBack={handleBack}
-                                onRetry={handleRetry}
-                                backButtonText='Regresar'
-                                retryButtonText='Repetir'
-                                subtitle='Has completado la rutina correctamente'
-                                title='¡Felicitaciones!'
-                            />
-                        </View>
                     ) : null}
-
                     {/* Feedback */}
                     {showFeedback && (
                         <Text style={styles.feedback}>¡Correcto! 🎉</Text>

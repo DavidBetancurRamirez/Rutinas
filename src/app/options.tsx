@@ -12,7 +12,7 @@ import { AGES, GENDERS } from '@/constants';
 import useAppStore from '@/stores';
 import { genderName } from '@/constants/names';
 
-const opacityOption = 0.7;
+const opacityOption = 0.8;
 
 const Options = () => {
   const router = useRouter();
@@ -24,7 +24,7 @@ const Options = () => {
         <Text style={styles.subTitle}>Género</Text>
         <View style={styles.optionContainer}>
           <CardWithIcon
-            icon={{ name: 'male' }}
+            image={{ source: require('@/assets/images/options/icon_man.png') }}
             text={{ children: genderName[GENDERS.MALE] }}
             cardProps={{
               onPress: () => setGender(GENDERS.MALE),
@@ -36,7 +36,9 @@ const Options = () => {
             }}
           />
           <CardWithIcon
-            icon={{ name: 'female' }}
+            image={{
+              source: require('@/assets/images/options/icon_woman.png'),
+            }}
             text={{ children: genderName[GENDERS.FEMALE] }}
             cardProps={{
               onPress: () => setGender(GENDERS.FEMALE),

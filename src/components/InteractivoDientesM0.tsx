@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, PanResponder, Animated
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
 import GameFinished from './GameFinished';
+import { useRouter } from 'expo-router';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -29,13 +30,12 @@ const InteractivoDientesM0 = () => {
     const [isBrushing, setIsBrushing] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
     const [useSpitWith, setUseSpitWith] = useState(false);
-
-    const handleBack = () => {
-        navigation.goBack();
-    };
+    const [gameFinished, setGameFinished] = useState(false);
+    const router = useRouter();
 
     const handleRetry = () => {
         setStage(1);
+        setGameFinished(false);
         setShowFeedback(false);
         setUseToothpasteWith(false);
         setUseFaucetOpen(false);
@@ -99,7 +99,7 @@ const InteractivoDientesM0 = () => {
             setShowFeedback(true);
             setTimeout(() => {
                 setShowFeedback(false);
-                setStage(7);
+                setGameFinished(true);
             }, 2000);
         }
     };
@@ -107,17 +107,15 @@ const InteractivoDientesM0 = () => {
     // Handle hold for stage 5
     const handleHoldStart = () => {
         if (stage === 5) {
-            console.log("Hold started for stage 5"); // Debug log
             setIsHolding(true);
-            setTimer(3); // Changed from 5 to 3 seconds
+            setTimer(3);
         }
     };
 
     const handleHoldEnd = () => {
         if (stage === 5) {
-            console.log("Hold ended for stage 5"); // Debug log
             setIsHolding(false);
-            setTimer(3); // Changed from 5 to 3 seconds
+            setTimer(3);
         }
     };
 
@@ -129,7 +127,7 @@ const InteractivoDientesM0 = () => {
                 setTimer((prev) => {
                     if (prev <= 1) {
                         clearInterval(interval);
-                        setStage(stage === 3 ? 4 : 5); // Move to stage 4 or 5
+                        setStage(stage === 3 ? 4 : 5);
                         setIsBrushing(false);
                         setTimer(5);
                         return 0;
@@ -143,9 +141,8 @@ const InteractivoDientesM0 = () => {
                     if (prev <= 1) {
                         clearInterval(interval);
                         setIsHolding(false);
-                        setTimer(3); // Changed from 5 to 3 seconds
+                        setTimer(3);
                         setTimeout(() => {
-                            console.log("Advancing to stage 6"); // Debug log
                             setStage(6);
                         }, 1000);
                         return 0;
@@ -159,6 +156,13 @@ const InteractivoDientesM0 = () => {
 
     return (
         <Screen title="Interactivo - Cepillado de Dientes">
+            <GameFinished
+                onBack={() => router.back()}
+                onClose={() => setGameFinished(false)}
+                onRetry={handleRetry}
+                subtitle="Has completado la rutina correctamente"
+                visible={gameFinished}
+            />
             <View style={styles.container}>
                 <View style={styles.instructionContainer}>
                     {stage !== 7 && (
@@ -265,19 +269,7 @@ const InteractivoDientesM0 = () => {
                                 </View>
                             </TouchableOpacity>
                         </>
-                    ) : stage === 7 ? (
-                        <View style={styles.gameFinishedContainer}>
-                            <GameFinished
-                                onBack={handleBack}
-                                onRetry={handleRetry}
-                                backButtonText='Regresar'
-                                retryButtonText='Repetir'
-                                subtitle='Has completado la rutina correctamente'
-                                title='¡Felicitaciones!'
-                            />
-                        </View>
                     ) : null}
-
                     {/* Feedback */}
                     {showFeedback && (
                         <Text style={styles.feedback}>¡Correcto! 🎉</Text>
