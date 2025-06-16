@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, PanResponder, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
+import GameFinished from './GameFinished';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -52,6 +53,32 @@ const InteractivoBañoH12 = () => {
     const [isScrubbed, setIsScrubbed] = useState(false); // Track scrubbing
     const [isHandsWashed, setIsHandsWashed] = useState(false); // Track hand washing
     const [isHandsDried, setIsHandsDried] = useState(false); // Track hand drying
+
+    const handleBack = () => {
+        navigation.goBack();
+    };
+
+    const handleRetry = () => {
+        setStage(1);
+        setShowFeedback(false);
+        setFeedbackMessage('');
+        setChoice(null);
+        setIsLidUp(false);
+        setIsPantsDone(false);
+        setIsUnderwearDone(false);
+        setIsSittingDone(false);
+        setIsPaperPressed(false);
+        setIsWipeDone(false);
+        setIsPaperDropped(false);
+        setIsLidLowered(false);
+        setIsFlushed(false);
+        setIsPantsPulledUp(false);
+        setIsUnderwearPulledUp(false);
+        setIsSoapUsed(false);
+        setIsScrubbed(false);
+        setIsHandsWashed(false);
+        setIsHandsDried(false);
+    };
 
     // Navigation hook
     const navigation = useNavigation();
@@ -342,9 +369,7 @@ const InteractivoBañoH12 = () => {
     // Navigate back to selection screen after 3 seconds in stage 9
     useEffect(() => {
         if (stage === 9) {
-            console.log("Reached stage 9, starting navigation timeout"); // Debug log
             const timeout = setTimeout(() => {
-                console.log("Navigating back to selection screen"); // Debug log
                 navigation.goBack();
             }, 3000);
             return () => clearTimeout(timeout);
@@ -613,10 +638,15 @@ const InteractivoBañoH12 = () => {
                             </View>
                         </View>
                     ) : stage === 9 ? (
-                        <View style={styles.finalTextContainer}>
-                            <Text style={styles.finalText}>
-                                ¡Bien hecho, ya sabes como entrar al baño! 🎉
-                            </Text>
+                        <View style={styles.gameFinishedContainer}>
+                            <GameFinished
+                                onBack={handleBack}
+                                onRetry={handleRetry}
+                                backButtonText='Regresar'
+                                retryButtonText='Repetir'
+                                subtitle='Has completado la rutina correctamente'
+                                title='¡Felicitaciones!'
+                            />
                         </View>
                     ) : null}
 
@@ -636,18 +666,32 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 16,
         paddingTop: 12,
-        backgroundColor: '#F0F8FF', // Light blue background
+        backgroundColor: '#F0F8FF',
+    },
+    gameAreaGameFinished: {
+        marginTop: 200,
+    },
+    gameFinishedContainer: {
+        flex: 1,
+        marginTop: 100,
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        zIndex: 30,
     },
     instructionContainer: {
         position: 'absolute',
-        top: 20, // Fixed position near top
-        width: width * 0.9, // 90% of screen width
-        backgroundColor: '#FFD700', // Bright yellow
-        padding: width * 0.03, // Responsive padding
+        top: 20,
+        width: width * 0.9,
+        backgroundColor: '#FFD700',
+        padding: width * 0.03,
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 20, // Above all elements
+        zIndex: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
@@ -655,14 +699,14 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     instruction: {
-        fontSize: width * 0.05 > 20 ? 20 : width * 0.05, // Responsive font size, capped at 20
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FF4500', // Vibrant orange
+        color: '#FF4500',
         textShadowColor: '#FFF',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
-        lineHeight: width * 0.06, // Improve readability
+        lineHeight: width * 0.06,
     },
     gameArea: {
         flex: 1,
@@ -674,7 +718,7 @@ const styles = StyleSheet.create({
     },
     choiceContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around', // Space images horizontally
+        justifyContent: 'space-around',
         top: 100,
         zIndex: 5,
     },
@@ -708,7 +752,7 @@ const styles = StyleSheet.create({
         top: 100,
         justifyContent: 'space-between',
         width: '120%',
-        marginVertical: 5, // Tight vertical gap
+        marginVertical: 5,
     },
     imageWrapper: {
         justifyContent: 'center',

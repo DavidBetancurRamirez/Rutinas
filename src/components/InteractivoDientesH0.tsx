@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, PanResponder, Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
+import GameFinished from '@/components/GameFinished';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -29,6 +30,21 @@ const InteractivoDientesH0 = () => {
     const [isHolding, setIsHolding] = useState(false);
     const [useSpitWith, setUseSpitWith] = useState(false);
 
+    const handleBack = () => {
+        navigation.goBack();
+    };
+
+    const handleRetry = () => {
+        setStage(1);
+        setShowFeedback(false);
+        setUseToothpasteWith(false);
+        setUseFaucetOpen(false);
+        setTimer(5);
+        setIsBrushing(false);
+        setIsHolding(false);
+        setUseSpitWith(false);
+    };
+
     // Animated value for toothbrush movement (stages 3 and 4)
     const pan = new Animated.ValueXY({ x: 0, y: 0 });
 
@@ -41,14 +57,14 @@ const InteractivoDientesH0 = () => {
         onPanResponderMove: Animated.event(
             [
                 null,
-                stage === 3 ? { dx: pan.x } : { dy: pan.y }, // Horizontal for stage 3, vertical for stage 4
+                stage === 3 ? { dx: pan.x } : { dy: pan.y },
             ],
             { useNativeDriver: false }
         ),
         onPanResponderGrant: () => {
             if ((stage === 3 || stage === 4) && !isBrushing) {
                 setIsBrushing(true);
-                setTimer(5); // Start timer when dragging begins
+                setTimer(5);
             }
         },
         onPanResponderRelease: () => {
@@ -91,17 +107,15 @@ const InteractivoDientesH0 = () => {
     // Handle hold for stage 5
     const handleHoldStart = () => {
         if (stage === 5) {
-            console.log("Hold started for stage 5"); // Debug log
             setIsHolding(true);
-            setTimer(3); // Changed from 5 to 3 seconds
+            setTimer(3);
         }
     };
 
     const handleHoldEnd = () => {
         if (stage === 5) {
-            console.log("Hold ended for stage 5"); // Debug log
             setIsHolding(false);
-            setTimer(3); // Changed from 5 to 3 seconds
+            setTimer(3);
         }
     };
 
@@ -113,7 +127,7 @@ const InteractivoDientesH0 = () => {
                 setTimer((prev) => {
                     if (prev <= 1) {
                         clearInterval(interval);
-                        setStage(stage === 3 ? 4 : 5); // Move to stage 4 or 5
+                        setStage(stage === 3 ? 4 : 5);
                         setIsBrushing(false);
                         setTimer(5);
                         return 0;
@@ -127,9 +141,8 @@ const InteractivoDientesH0 = () => {
                     if (prev <= 1) {
                         clearInterval(interval);
                         setIsHolding(false);
-                        setTimer(3); // Changed from 5 to 3 seconds
+                        setTimer(3);
                         setTimeout(() => {
-                            console.log("Advancing to stage 6"); // Debug log
                             setStage(6);
                         }, 1000);
                         return 0;
@@ -140,18 +153,6 @@ const InteractivoDientesH0 = () => {
         }
         return () => clearInterval(interval);
     }, [stage, isBrushing, isHolding, timer]);
-
-    // Navigate back to selection screen after 3 seconds in stage 7
-    useEffect(() => {
-        if (stage === 7) {
-            console.log("Reached stage 7, starting navigation timeout"); // Debug log
-            const timeout = setTimeout(() => {
-                console.log("Navigating back to selection screen"); // Debug log
-                navigation.goBack();
-            }, 3000); // Changed from 2000 to 3000 milliseconds
-            return () => clearTimeout(timeout);
-        }
-    }, [stage, navigation]);
 
     return (
         <Screen title="Interactivo - Cepillado de Dientes">
@@ -262,10 +263,15 @@ const InteractivoDientesH0 = () => {
                             </TouchableOpacity>
                         </>
                     ) : stage === 7 ? (
-                        <View style={styles.finalTextContainer}>
-                            <Text style={styles.finalText}>
-                                ¡Genial, ya sabes como lavarte bien los dientes! 🎉😊
-                            </Text>
+                        <View style={styles.gameFinishedContainer}>
+                            <GameFinished
+                                onBack={handleBack}
+                                onRetry={handleRetry}
+                                backButtonText='Regresar'
+                                retryButtonText='Repetir'
+                                subtitle='Has completado la rutina correctamente'
+                                title='¡Felicitaciones!'
+                            />
                         </View>
                     ) : null}
 
@@ -285,18 +291,29 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 16,
         paddingTop: 12,
-        backgroundColor: '#F0F8FF', // Light blue background
+        backgroundColor: '#F0F8FF',
+    },
+    gameAreaGameFinished: {
+        marginTop: 200,
+    },
+    gameFinishedContainer: {
+        flex: 1,
+        top: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        marginTop: width * 0.1,
     },
     instructionContainer: {
         position: 'absolute',
-        top: 20, // Fixed position near top
-        width: width * 0.9, // 90% of screen width
-        backgroundColor: '#FFD700', // Bright yellow
-        padding: width * 0.03, // Responsive padding
+        top: 20,
+        width: width * 0.9,
+        backgroundColor: '#FFD700',
+        padding: width * 0.03,
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 20, // Above all elements
+        zIndex: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
@@ -304,14 +321,14 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     instruction: {
-        fontSize: width * 0.05 > 20 ? 20 : width * 0.05, // Responsive font size, capped at 20
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FF4500', // Vibrant orange
+        color: '#FF4500',
         textShadowColor: '#FFF',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
-        lineHeight: width * 0.06, // Improve readability
+        lineHeight: width * 0.06,
     },
     gameArea: {
         flex: 1,
@@ -319,7 +336,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'relative',
         width: '100%',
-        marginTop: 80, // Space for instruction container
+        marginTop: 80,
     },
     imageContainer: {
         position: 'absolute',
@@ -389,7 +406,7 @@ const styles = StyleSheet.create({
     feedback: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#FF69B4', // Bright pink
+        color: '#FF69B4',
         position: 'absolute',
         top: 100,
         textShadowColor: '#FFF',
@@ -400,28 +417,28 @@ const styles = StyleSheet.create({
     timer: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#1E90FF', // Bright blue
+        color: '#1E90FF',
         position: 'absolute',
         top: 50,
         zIndex: 15,
     },
     finalTextContainer: {
-        width: width * 0.9, // Match instructionContainer width
-        minHeight: 100, // Ensure enough height for text
-        padding: 20, // Add padding for spacing
+        width: width * 0.9,
+        minHeight: 100,
+        padding: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'absolute', // Position within gameArea
-        top: '50%', // Center vertically
-        transform: [{ translateY: -50 }], // Adjust for true vertical centering
-        zIndex: 10, // Above other elements
+        position: 'absolute',
+        top: '50%',
+        transform: [{ translateY: -50 }],
+        zIndex: 10,
     },
     finalText: {
-        fontSize: 24, // Fixed size for visibility
+        fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FF4500', // Vibrant orange
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+        color: '#FF4500',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
         padding: 10,
         borderRadius: 10,
     },

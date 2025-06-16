@@ -14,194 +14,12 @@ import {
     ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import GameFinished from './GameFinished';
 
 const { width, height } = Dimensions.get('window');
 const characterWidth = width * 0.375;
 const characterHeight = height * 0.6;
 const isMobile = Platform.OS === 'android' || Platform.OS === 'ios';
-
-// Define clothing key type
-type ClothingKey = 'shirt' | 'pants' | 'socks' | 'underwear';
-
-type ClothingItem = {
-    key: ClothingKey;
-    source: any;
-    style: object;
-};
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#BEE3F8',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    character: {
-        position: 'absolute',
-        width: characterWidth,
-        height: characterHeight,
-        resizeMode: 'contain',
-        left: width - characterWidth - 10,
-        top: 80,
-        zIndex: 0,
-    },
-    basket: {
-        position: 'absolute',
-        width: characterWidth * 1.2,
-        height: characterHeight * 0.8,
-        resizeMode: 'contain',
-        left: 10,
-        top: characterHeight * 0.3,
-        zIndex: 8,
-    },
-    message: {
-        position: 'absolute',
-        bottom: -400,
-        alignSelf: 'center',
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#2F855A',
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 12,
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        zIndex: 12,
-    },
-    instructions: {
-        position: 'absolute',
-        top: 10,
-        paddingHorizontal: 20,
-        textAlign: 'center',
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#333',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        borderRadius: 12,
-        paddingVertical: 8,
-        zIndex: 12,
-    },
-    shower: {
-        position: 'absolute',
-        width: characterWidth * 1.2, // Smaller but not too small
-        height: characterHeight * 0.8, // Slightly shorter than character
-        resizeMode: 'contain',
-        left: 15, // Slightly adjusted for spacing
-        top: 80, // Aligned with character's top
-        zIndex: 10,
-    },
-    clothesItem: {
-        position: 'absolute',
-    },
-    characterShower: {
-        position: 'absolute',
-        width: characterWidth,
-        height: characterHeight,
-        resizeMode: 'contain',
-        left: (width - characterWidth) / 3.4,
-        top: 80,
-        zIndex: 10,
-    },
-    finalMessage: {
-        position: 'absolute',
-        bottom: -400,
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#2F855A',
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 12,
-        textAlign: 'center',
-        zIndex: 15,
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-    },
-    showerOver: {
-        position: 'absolute',
-        top: 50,
-        left: (width - 400) / 2,
-        width: 140,
-        height: 150,
-        resizeMode: 'contain',
-    },
-    soap: {
-        position: 'absolute',
-    },
-    bodyPart: {
-        position: 'absolute',
-        width: 80,
-        height: 80,
-    },
-    cleanedBodyPart: {
-        opacity: 0,
-        borderColor: 'limegreen',
-        borderWidth: 2,
-        borderRadius: 10,
-    },
-    draggableItem: {
-        width: 80,
-        height: 80,
-        margin: 10,
-    },
-    clothesFixed: {
-        position: 'absolute',
-        width: characterWidth,
-        height: characterHeight * 0.3,
-        resizeMode: 'contain',
-    },
-    fixedClothingContainer: {
-        position: 'absolute',
-    },
-    fixedClothingImage: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'contain',
-    },
-});
-
-// Clothing positions for first and last phases
-const stage1ClothingPositions: Record<ClothingKey, object> = {
-    shirt: {
-        ...styles.clothesItem,
-        width: characterWidth * 0.6,
-        height: characterHeight * 0.48,
-        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
-        top: characterHeight * 0.35,
-        zIndex: 14,
-    },
-    pants: {
-        ...styles.clothesItem,
-        width: characterWidth * 0.6,
-        height: characterHeight * 0.312,
-        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
-        top: characterHeight * 0.60,
-        zIndex: 13,
-    },
-    underwear: {
-        ...styles.clothesItem,
-        width: characterWidth * 0.6,
-        height: characterHeight * 0.09,
-        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
-        top: characterHeight * 0.62,
-        zIndex: 12,
-    },
-    socks: {
-        ...styles.clothesItem,
-        width: characterWidth * 0.6,
-        height: characterHeight * 0.18,
-        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
-        top: characterHeight * 0.80,
-        zIndex: 11,
-    },
-};
 
 type DraggableItemProps = {
     source: any;
@@ -229,7 +47,6 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
             onPanResponderRelease: (_: GestureResponderEvent, gesture: PanResponderGestureState) => {
                 const { moveX, moveY, dx, dy } = gesture;
 
-                // Get clothing item's dimensions from style
                 const itemStyle = style as { left?: number; top?: number; width?: number; height?: number };
                 const itemWidth = itemStyle.width || 80;
                 const itemHeight = itemStyle.height || 80;
@@ -238,13 +55,11 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
                 const itemRight = itemLeft + itemWidth;
                 const itemBottom = itemTop + itemHeight;
 
-                // Basket's bounding box
                 const targetLeft = characterDimensions.left;
                 const targetTop = characterDimensions.top;
                 const targetRight = targetLeft + characterDimensions.width;
                 const targetBottom = targetTop + characterDimensions.height;
 
-                // Check for rectangle overlap
                 const isOverlapping =
                     itemLeft < targetRight &&
                     itemRight > targetLeft &&
@@ -253,7 +68,6 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
 
                 if (isOverlapping) {
                     onDrop(itemKey, moveX, moveY);
-                    // Reset pan transform to prevent offset after drop
                     pan.setValue({ x: 0, y: 0 });
                 } else {
                     Animated.spring(pan, {
@@ -288,13 +102,11 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
             onPanResponderRelease: (_: GestureResponderEvent, gesture: PanResponderGestureState) => {
                 const { moveX, moveY } = gesture;
 
-                // Define shower area boundaries based on new shower size
                 const showerLeft = 15;
                 const showerTop = 80;
                 const showerRight = showerLeft + characterWidth * 1.2;
                 const showerBottom = showerTop + characterHeight * 0.8;
 
-                // Check if the character is dropped in the shower area
                 if (
                     moveX >= showerLeft &&
                     moveX <= showerRight &&
@@ -303,7 +115,6 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
                 ) {
                     onEnterShower();
                 } else {
-                    // Reset position with spring animation
                     Animated.spring(pan, {
                         toValue: { x: 0, y: 0 },
                         friction: 7,
@@ -400,6 +211,7 @@ const DraggableSoap: React.FC<DraggableSoapProps> = ({
 
 const InteractivoDuchaH0: React.FC = () => {
     const navigation = useNavigation();
+    const [stage, setStage] = useState(1);
     const [messageVisible, setMessageVisible] = useState(true);
     const [showShowerStage, setShowShowerStage] = useState(false);
     const [showSoapStage, setShowSoapStage] = useState(false);
@@ -408,6 +220,7 @@ const InteractivoDuchaH0: React.FC = () => {
     const [canTurnOnShower, setCanTurnOnShower] = useState(false);
     const [cleanedParts, setCleanedParts] = useState<string[]>([]);
     const [showDressUpStage, setShowDressUpStage] = useState<boolean>(false);
+    const [showGameFinished, setShowGameFinished] = useState<boolean>(false);
     const [removedClothes, setRemovedClothes] = useState<ClothingItem[]>([]);
     const [clothes, setClothes] = useState<ClothingItem[]>([
         {
@@ -438,10 +251,56 @@ const InteractivoDuchaH0: React.FC = () => {
         }
     };
 
+    const handleBack = () => {
+        navigation.goBack();
+    };
+
+    const handleRetry = () => {
+        setStage(1);
+        setMessageVisible(true);
+        setShowShowerStage(false);
+        setShowSoapStage(false);
+        setHasEnteredShower(false);
+        setShowerOn(false);
+        setCanTurnOnShower(false);
+        setCleanedParts([]);
+        setShowDressUpStage(false);
+        setShowGameFinished(false);
+        setRemovedClothes([]);
+        setClothes([
+            {
+                key: 'underwear',
+                source: require('@/assets/images/Ropa Interior (Hombre).png'),
+                style: stage1ClothingPositions.underwear,
+            },
+            {
+                key: 'socks',
+                source: require('@/assets/images/Medias.png'),
+                style: stage1ClothingPositions.socks,
+            },
+            {
+                key: 'pants',
+                source: require('@/assets/images/Pantalon Niño.png'),
+                style: stage1ClothingPositions.pants,
+            },
+            {
+                key: 'shirt',
+                source: require('@/assets/images/Buso Niño.png'),
+                style: stage1ClothingPositions.shirt,
+            },
+        ]);
+        setFixedClothes({
+            shirt: false,
+            pants: false,
+            socks: false,
+            underwear: false,
+        });
+    };
+
     const handleDrop = (key: ClothingKey, moveX: number, moveY: number) => {
         setClothes((prev) => {
             const newClothes = prev.filter((item) => item.key !== key);
-
+            setStage(1);
             const removedItem = prev.find((item) => item.key === key);
             if (removedItem) {
                 setRemovedClothes((prevRemoved) => [...prevRemoved, removedItem]);
@@ -451,6 +310,7 @@ const InteractivoDuchaH0: React.FC = () => {
                 setTimeout(() => {
                     setShowShowerStage(true);
                     setMessageVisible(false);
+                    setStage(2);
                 }, 2000);
             }
 
@@ -491,6 +351,7 @@ const InteractivoDuchaH0: React.FC = () => {
         setHasEnteredShower(true);
         setTimeout(() => {
             setShowSoapStage(true);
+            setStage(3);
         }, 2000);
     };
 
@@ -563,38 +424,37 @@ const InteractivoDuchaH0: React.FC = () => {
         if (showerOn) {
             const timer = setTimeout(() => {
                 setShowDressUpStage(true);
+                setStage(4);
             }, 2000);
             return () => clearTimeout(timer);
         }
     }, [showerOn]);
 
     useEffect(() => {
-        if (Object.values(fixedClothes).every((fixed) => fixed)) {
+        if (showDressUpStage && Object.values(fixedClothes).every((fixed) => fixed)) {
             const timer = setTimeout(() => {
-                navigation.goBack();
-            }, 3000);
+                setShowGameFinished(true);
+                setStage(5);
+            }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [fixedClothes, navigation]);
+    }, [fixedClothes, showDressUpStage]);
 
     return (
         <View style={styles.container}>
-            {!showShowerStage && !showSoapStage && !showDressUpStage ? (
+            {stage === 1 ? (
                 <>
                     <Text style={styles.instructions}>
                         Arrastra la ropa sucia y ponla en el cesto 🧺
                     </Text>
-
                     <Image
                         source={require('@/assets/images/Niño (Sin Ropa).png')}
                         style={styles.character}
                     />
-
                     <Image
                         source={require('@/assets/images/Cesto de Ropa.png')}
                         style={styles.basket}
                     />
-
                     {clothes.map((item) => (
                         <DraggableItem
                             key={item.key}
@@ -610,12 +470,11 @@ const InteractivoDuchaH0: React.FC = () => {
                             }}
                         />
                     ))}
-
                     {messageVisible && clothes.length === 0 && (
                         <Text style={styles.message}>¡Muy bien!</Text>
                     )}
                 </>
-            ) : showShowerStage && !showSoapStage && !showDressUpStage ? (
+            ) : stage === 2 ? (
                 <>
                     <DraggableCharacter onEnterShower={handleEnterShower} />
                     <Text style={styles.instructions}>
@@ -624,20 +483,18 @@ const InteractivoDuchaH0: React.FC = () => {
                     {hasEnteredShower && (
                         <Text style={styles.message}>¡Excelente trabajo!</Text>
                     )}
-
                     <Image
                         source={require('@/assets/images/Ducha (Afuera).png')}
                         style={styles.shower}
                     />
                 </>
-            ) : !showDressUpStage ? (
+            ) : stage === 3 ? (
                 <>
                     <Text style={styles.instructions}>
                         {canTurnOnShower
                             ? '¡Buen trabajo! Ahora presiona la ducha para enjuagarte 🚿'
                             : `¡Hora de enjabonarse! 🧼 Limpia todas las partes del cuerpo (${cleanedParts.length}/5)`}
                     </Text>
-
                     {bodyParts.map((part) => (
                         <Image
                             key={part.id}
@@ -655,7 +512,6 @@ const InteractivoDuchaH0: React.FC = () => {
                             ]}
                         />
                     ))}
-
                     <DraggableSoap
                         source={require('@/assets/images/Jabon.png')}
                         position={{ top: 200, left: 140 }}
@@ -666,7 +522,6 @@ const InteractivoDuchaH0: React.FC = () => {
                             }
                         }}
                     />
-
                     <TouchableOpacity onPress={handleShowerPress} disabled={!canTurnOnShower}>
                         <Image
                             source={
@@ -681,7 +536,7 @@ const InteractivoDuchaH0: React.FC = () => {
                         <Text style={styles.message}>¡Ya estás limpio! 🎉</Text>
                     )}
                 </>
-            ) : (
+            ) : stage === 4 ? (
                 <>
                     <Text style={styles.instructions}>
                         ¡Hora de vestirse! 👕 Arrastra cada prenda al personaje.
@@ -714,13 +569,216 @@ const InteractivoDuchaH0: React.FC = () => {
                             />
                         )
                     ))}
-                    {Object.values(fixedClothes).every((fixed) => fixed) && (
-                        <Text style={styles.finalMessage}>¡Listo! Estás vestido 🎉</Text>
-                    )}
                 </>
-            )}
+            ) : stage === 5 ? (
+                <View style={styles.gameFinishedContainer}>
+                    <GameFinished
+                        onBack={handleBack}
+                        onRetry={handleRetry}
+                        backButtonText='Regresar'
+                        retryButtonText='Repetir'
+                        subtitle='Has completado la rutina correctamente'
+                        title='¡Felicitaciones!'
+                    />
+                </View>
+            ) : null}
         </View>
     );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#BEE3F8',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    gameFinishedContainer: {
+    flex: 1,
+    marginTop: 200,
+    fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#FF4500',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    zIndex: 30,
+},
+    character: {
+        position: 'absolute',
+        width: characterWidth,
+        height: characterHeight,
+        resizeMode: 'contain',
+        left: width - characterWidth - 10,
+        top: 80,
+        zIndex: 0,
+    },
+    basket: {
+        position: 'absolute',
+        width: characterWidth * 1.2,
+        height: characterHeight * 0.8,
+        resizeMode: 'contain',
+        left: 10,
+        top: characterHeight * 0.3,
+        zIndex: 8,
+    },
+    message: {
+        position: 'absolute',
+        bottom: -400,
+        alignSelf: 'center',
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#2F855A',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 12,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        zIndex: 12,
+    },
+    instructions: {
+        position: 'absolute',
+        top: 10,
+        paddingHorizontal: 20,
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#333',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 12,
+        paddingVertical: 8,
+        zIndex: 12,
+    },
+    shower: {
+        position: 'absolute',
+        width: characterWidth * 1.2,
+        height: characterHeight * 0.8,
+        resizeMode: 'contain',
+        left: 15,
+        top: 80,
+        zIndex: 10,
+    },
+    clothesItem: {
+        position: 'absolute',
+    },
+    characterShower: {
+        position: 'absolute',
+        width: characterWidth,
+        height: characterHeight,
+        resizeMode: 'contain',
+        left: (width - characterWidth) / 3.4,
+        top: 80,
+        zIndex: 10,
+    },
+    finalMessage: {
+        position: 'absolute',
+        bottom: -400,
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#2F855A',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 12,
+        textAlign: 'center',
+        zIndex: 15,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+    },
+    showerOver: {
+        position: 'absolute',
+        top: 50,
+        left: (width - 400) / 2,
+        width: 140,
+        height: 150,
+        resizeMode: 'contain',
+    },
+    soap: {
+        position: 'absolute',
+    },
+    bodyPart: {
+        position: 'absolute',
+        width: 80,
+        height: 80,
+    },
+    cleanedBodyPart: {
+        opacity: 0,
+        borderColor: 'limegreen',
+        borderWidth: 2,
+        borderRadius: 10,
+    },
+    draggableItem: {
+        width: 80,
+        height: 80,
+        margin: 10,
+    },
+    clothesFixed: {
+        position: 'absolute',
+        width: characterWidth,
+        height: characterHeight * 0.3,
+        resizeMode: 'contain',
+    },
+    fixedClothingContainer: {
+        position: 'absolute',
+    },
+    fixedClothingImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
+    },
+});
+
+// Define clothing key type
+type ClothingKey = 'shirt' | 'pants' | 'socks' | 'underwear';
+
+type ClothingItem = {
+    key: ClothingKey;
+    source: any;
+    style: object;
+};
+
+// Clothing positions for first and last phases
+const stage1ClothingPositions: Record<ClothingKey, object> = {
+    shirt: {
+        ...styles.clothesItem,
+        width: characterWidth * 0.6,
+        height: characterHeight * 0.48,
+        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        top: characterHeight * 0.35,
+        zIndex: 14,
+    },
+    pants: {
+        ...styles.clothesItem,
+        width: characterWidth * 0.6,
+        height: characterHeight * 0.312,
+        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        top: characterHeight * 0.60,
+        zIndex: 13,
+    },
+    underwear: {
+        ...styles.clothesItem,
+        width: characterWidth * 0.6,
+        height: characterHeight * 0.09,
+        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        top: characterHeight * 0.62,
+        zIndex: 12,
+    },
+    socks: {
+        ...styles.clothesItem,
+        width: characterWidth * 0.6,
+        height: characterHeight * 0.18,
+        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        top: characterHeight * 0.80,
+        zIndex: 11,
+    },
 };
 
 export default InteractivoDuchaH0;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, PanResponder, Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
+import GameFinished from './GameFinished';
 
 // Get screen width for responsive instruction container
 const { width } = Dimensions.get('window');
@@ -26,11 +27,27 @@ const InteractivoDientesH12 = () => {
     const [showFeedback, setShowFeedback] = useState(false);
     const [useToothpasteWith, setUseToothpasteWith] = useState(false);
     const [useFaucetOpen, setUseFaucetOpen] = useState(false);
-    const [useMouthwash, setUseMouthwash] = useState(false); // New state for mouthwash
+    const [useMouthwash, setUseMouthwash] = useState(false);
     const [timer, setTimer] = useState(5);
     const [isBrushing, setIsBrushing] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
     const [useSpitWith, setUseSpitWith] = useState(false);
+
+    const handleBack = () => {
+        navigation.goBack();
+    };
+
+    const handleRetry = () => {
+        setStage(1);
+        setShowFeedback(false);
+        setUseToothpasteWith(false);
+        setUseFaucetOpen(false);
+        setTimer(5);
+        setIsBrushing(false);
+        setIsHolding(false);
+        setUseSpitWith(false);
+        setUseMouthwash(false);
+    };
 
     // Animated value for toothbrush movement (stages 3, 4, and 5)
     const pan = new Animated.ValueXY({ x: 0, y: 0 });
@@ -151,18 +168,6 @@ const InteractivoDientesH12 = () => {
         return () => clearInterval(interval);
     }, [stage, isBrushing, isHolding, timer]);
 
-    // Navigate back to selection screen after 3 seconds in stage 9
-    useEffect(() => {
-        if (stage === 9) {
-            console.log("Reached stage 9, starting navigation timeout"); // Debug log
-            const timeout = setTimeout(() => {
-                console.log("Navigating back to selection screen"); // Debug log
-                navigation.goBack();
-            }, 3000);
-            return () => clearTimeout(timeout);
-        }
-    }, [stage, navigation]);
-
     return (
         <Screen title="Interactivo - Cepillado de Dientes">
             <View style={styles.container}>
@@ -272,7 +277,7 @@ const InteractivoDientesH12 = () => {
                             <TouchableOpacity onPress={handlePress}>
                                 <View style={styles.mouthwashContainer}>
                                     <Image
-                                        source={IMAGES.mouthwash}
+                                        source={useMouthwash ? IMAGES.mouthwash : IMAGES.mouthwash}
                                         style={styles.mouthwashImage}
                                     />
                                 </View>
@@ -291,10 +296,15 @@ const InteractivoDientesH12 = () => {
                             </TouchableOpacity>
                         </>
                     ) : stage === 9 ? (
-                        <View style={styles.finalTextContainer}>
-                            <Text style={styles.finalText}>
-                                ¡Genial, ya sabes como lavarte bien los dientes! 🎉😊
-                            </Text>
+                        <View style={styles.gameFinishedContainer}>
+                            <GameFinished
+                                onBack={handleBack}
+                                onRetry={handleRetry}
+                                backButtonText='Regresar'
+                                retryButtonText='Repetir'
+                                subtitle='Has completado la rutina correctamente'
+                                title='¡Felicitaciones!'
+                            />
                         </View>
                     ) : null}
 
@@ -315,6 +325,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingTop: 12,
         backgroundColor: '#F0F8FF', // Light blue background
+    },
+    gameAreaGameFinished: {
+        marginTop: 200,
+    },
+    gameFinishedContainer: {
+        flex: 1,
+        marginTop: 200,
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#FF4500',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        zIndex: 30,
     },
     instructionContainer: {
         position: 'absolute',
