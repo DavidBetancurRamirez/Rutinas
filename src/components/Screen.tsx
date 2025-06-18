@@ -32,6 +32,7 @@ const Screen: React.FC<ScreenProps> = ({
       <Text {...titleProps} style={[styles.title, titleProps?.style]}>
         {title}
       </Text>
+
       <View style={styles.content}>
         {cards && (
           <View style={styles.cardsContainer}>
@@ -54,6 +55,7 @@ const Screen: React.FC<ScreenProps> = ({
             })}
           </View>
         )}
+
         {children && (
           <View style={styles.childrenContainer} {...childrenProps}>
             {children}
@@ -96,6 +98,7 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 25,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   childrenContainer: {
     flex: 1,
