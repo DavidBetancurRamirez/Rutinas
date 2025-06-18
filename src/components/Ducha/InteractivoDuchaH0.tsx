@@ -149,7 +149,7 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
             {...panResponder.panHandlers}
         >
             <Image
-                source={require('@/assets/images/Niño (Sin Ropa).png')}
+                source={require('@/assets/images/Niño (Sin Ropa).webp')}
                 style={styles.characterShower}
                 resizeMode="contain"
             />
@@ -234,22 +234,22 @@ const InteractivoDuchaH0: React.FC = () => {
     const [clothes, setClothes] = useState<ClothingItem[]>([
         {
             key: 'underwear',
-            source: require('@/assets/images/Ropa Interior (Hombre).png'),
+            source: require('@/assets/images/Ropa Interior (Hombre).webp'),
             style: stage1ClothingPositions.underwear,
         },
         {
             key: 'socks',
-            source: require('@/assets/images/Medias.png'),
+            source: require('@/assets/images/Medias.webp'),
             style: stage1ClothingPositions.socks,
         },
         {
             key: 'pants',
-            source: require('@/assets/images/Pantalon Niño.png'),
+            source: require('@/assets/images/Pantalon Niño.webp'),
             style: stage1ClothingPositions.pants,
         },
         {
             key: 'shirt',
-            source: require('@/assets/images/Buso Niño.png'),
+            source: require('@/assets/images/Buso Niño.webp'),
             style: stage1ClothingPositions.shirt,
         },
     ]);
@@ -275,22 +275,22 @@ const InteractivoDuchaH0: React.FC = () => {
         setClothes([
             {
                 key: 'underwear',
-                source: require('@/assets/images/Ropa Interior (Hombre).png'),
+                source: require('@/assets/images/Ropa Interior (Hombre).webp'),
                 style: stage1ClothingPositions.underwear,
             },
             {
                 key: 'socks',
-                source: require('@/assets/images/Medias.png'),
+                source: require('@/assets/images/Medias.webp'),
                 style: stage1ClothingPositions.socks,
             },
             {
                 key: 'pants',
-                source: require('@/assets/images/Pantalon Niño.png'),
+                source: require('@/assets/images/Pantalon Niño.webp'),
                 style: stage1ClothingPositions.pants,
             },
             {
                 key: 'shirt',
-                source: require('@/assets/images/Buso Niño.png'),
+                source: require('@/assets/images/Buso Niño.webp'),
                 style: stage1ClothingPositions.shirt,
             },
         ]);
@@ -363,27 +363,27 @@ const InteractivoDuchaH0: React.FC = () => {
     const bodyParts = [
         {
             id: 'rostro',
-            image: require('@/assets/images/Rostro.png'),
+            image: require('@/assets/images/Rostro.webp'),
             position: { top: 100, left: 140, width: 80, height: 80 },
         },
         {
             id: 'brazos',
-            image: require('@/assets/images/Brazos.png'),
+            image: require('@/assets/images/Brazos.webp'),
             position: { top: 200, left: 40, width: 100, height: 80 },
         },
         {
             id: 'axilas',
-            image: require('@/assets/images/Axilas.png'),
+            image: require('@/assets/images/Axilas.webp'),
             position: { top: 200, left: 240, width: 80, height: 80 },
         },
         {
             id: 'nalgas',
-            image: require('@/assets/images/Nalgas.png'),
+            image: require('@/assets/images/Nalgas.webp'),
             position: { top: 300, left: 140, width: 90, height: 90 },
         },
         {
             id: 'pies',
-            image: require('@/assets/images/Pies.png'),
+            image: require('@/assets/images/Pies.webp'),
             position: { top: 400, left: 140, width: 80, height: 70 },
         },
     ];
@@ -459,11 +459,11 @@ const InteractivoDuchaH0: React.FC = () => {
                         Arrastra la ropa sucia y ponla en el cesto 🧺
                     </Text>
                     <Image
-                        source={require('@/assets/images/Niño (Sin Ropa).png')}
+                        source={require('@/assets/images/Niño (Sin Ropa).webp')}
                         style={styles.character}
                     />
                     <Image
-                        source={require('@/assets/images/Cesto de Ropa.png')}
+                        source={require('@/assets/images/Cesto de Ropa.webp')}
                         style={styles.basket}
                     />
                     {clothes.map((item) => (
@@ -495,7 +495,7 @@ const InteractivoDuchaH0: React.FC = () => {
                         <Text style={styles.message}>¡Excelente trabajo!</Text>
                     )}
                     <Image
-                        source={require('@/assets/images/Ducha (Afuera).png')}
+                        source={require('@/assets/images/Ducha (Afuera).webp')}
                         style={styles.shower}
                     />
                 </>
@@ -524,7 +524,7 @@ const InteractivoDuchaH0: React.FC = () => {
                         />
                     ))}
                     <DraggableSoap
-                        source={require('@/assets/images/Jabon.png')}
+                        source={require('@/assets/images/Jabon.webp')}
                         position={{ top: 200, left: 140 }}
                         bodyParts={bodyParts}
                         onScrub={(targetId: string) => {
@@ -537,8 +537,8 @@ const InteractivoDuchaH0: React.FC = () => {
                         <Image
                             source={
                                 showerOn
-                                    ? require('@/assets/images/Ducha (Adentro) prendida.png')
-                                    : require('@/assets/images/Ducha (Adentro) apagada.png')
+                                    ? require('@/assets/images/Ducha (Adentro) prendida.webp')
+                                    : require('@/assets/images/Ducha (Adentro) apagada.webp')
                             }
                             style={styles.showerOver}
                         />
@@ -553,7 +553,7 @@ const InteractivoDuchaH0: React.FC = () => {
                         ¡Hora de vestirse! 👕 Arrastra cada prenda al personaje.
                     </Text>
                     <Image
-                        source={require('@/assets/images/Niño (Sin Ropa).png')}
+                        source={require('@/assets/images/Niño (Sin Ropa).webp')}
                         style={styles.character}
                     />
                     {clothes.map((item) => (

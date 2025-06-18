@@ -23,7 +23,7 @@ const Index = () => {
       title="Elige tu rutina"
       cards={[
         {
-          image: { source: require('@/assets/images/routines/shower.png') },
+          image: { source: require('@/assets/images/routines/shower.webp') },
           text: { children: routineName[ROUTINES.SHOWER] },
           cardProps: {
             onPress: () => handlePress(ROUTINES.SHOWER),
@@ -31,7 +31,7 @@ const Index = () => {
           },
         },
         {
-          image: { source: require('@/assets/images/routines/bathroom.png') },
+          image: { source: require('@/assets/images/routines/bathroom.webp') },
           text: { children: routineName[ROUTINES.BATHROOM] },
           cardProps: {
             onPress: () => handlePress(ROUTINES.BATHROOM),
@@ -39,7 +39,7 @@ const Index = () => {
           },
         },
         {
-          image: { source: require('@/assets/images/routines/teeth.png') },
+          image: { source: require('@/assets/images/routines/teeth.webp') },
           text: { children: routineName[ROUTINES.TEETH] },
           cardProps: {
             onPress: () => handlePress(ROUTINES.TEETH),
