@@ -57,18 +57,17 @@ const InteractivoDientesM0 = () => {
         onPanResponderMove: Animated.event(
             [
                 null,
-                stage === 3 ? { dx: pan.x } : { dy: pan.y }, // Horizontal for stage 3, vertical for stage 4
+                stage === 3 ? { dx: pan.x } : { dy: pan.y },
             ],
             { useNativeDriver: false }
         ),
         onPanResponderGrant: () => {
             if ((stage === 3 || stage === 4) && !isBrushing) {
                 setIsBrushing(true);
-                setTimer(5); // Start timer when dragging begins
+                setTimer(5);
             }
         },
         onPanResponderRelease: () => {
-            // Reset timer and brushing state when player stops dragging
             setIsBrushing(false);
             setTimer(5);
             Animated.spring(pan, {
@@ -211,7 +210,13 @@ const InteractivoDientesM0 = () => {
                     ) : stage === 3 || stage === 4 ? (
                         <>
                             {/* Mouth Image */}
-                            <View style={styles.targetContainer}>
+                            <View style={[
+                                styles.targetContainer,
+                                {
+                                    top: width * 0.55, // Match toothbrush vertical position
+                                    left: (width - 300) / 2 - 20, // Match toothbrush horizontal position, adjusted for mouth width
+                                }
+                            ]}>
                                 <Image source={IMAGES.mouth} style={styles.mouthImage} />
                             </View>
 
@@ -225,8 +230,8 @@ const InteractivoDientesM0 = () => {
                                             { translateX: stage === 3 ? pan.x : 0 },
                                             { translateY: stage === 4 ? pan.y : 0 },
                                         ],
-                                        top: 220,
-                                        right: 120,
+                                        top: width * 0.55, // Adjusted for centering vertically
+                                        left: (width - 200) / 2 - 20, // Center horizontally, shift 20px left
                                     },
                                 ]}
                             >
@@ -286,7 +291,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 16,
         paddingTop: 12,
-        backgroundColor: '#F0F8FF', // Light blue background
+        backgroundColor: '#F0F8FF',
     },
     gameAreaGameFinished: {
         marginTop: 200,
@@ -305,14 +310,14 @@ const styles = StyleSheet.create({
     },
     instructionContainer: {
         position: 'absolute',
-        top: 20, // Fixed position near top
-        width: width * 0.9, // 90% of screen width
-        backgroundColor: '#FFD700', // Bright yellow
-        padding: width * 0.03, // Responsive padding
+        top: 20,
+        width: width * 0.9,
+        backgroundColor: '#FFD700',
+        padding: width * 0.03,
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 20, // Above all elements
+        zIndex: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
@@ -320,14 +325,14 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     instruction: {
-        fontSize: width * 0.05 > 20 ? 20 : width * 0.05, // Responsive font size, capped at 20
+        fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FF4500', // Vibrant orange
+        color: '#FF4500',
         textShadowColor: '#FFF',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
-        lineHeight: width * 0.06, // Improve readability
+        lineHeight: width * 0.06,
     },
     gameArea: {
         flex: 1,
@@ -335,7 +340,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'relative',
         width: '100%',
-        marginTop: 80, // Space for instruction container
+        marginTop: 80,
     },
     imageContainer: {
         position: 'absolute',
@@ -405,7 +410,7 @@ const styles = StyleSheet.create({
     feedback: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#FF69B4', // Bright pink
+        color: '#FF69B4',
         position: 'absolute',
         top: 100,
         textShadowColor: '#FFF',
@@ -416,28 +421,28 @@ const styles = StyleSheet.create({
     timer: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#1E90FF', // Bright blue
+        color: '#1E90FF',
         position: 'absolute',
         top: 50,
         zIndex: 15,
     },
     finalTextContainer: {
-        width: width * 0.9, // Match instructionContainer width
-        minHeight: 100, // Ensure enough height for text
-        padding: 20, // Add padding for spacing
+        width: width * 0.9,
+        minHeight: 100,
+        padding: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'absolute', // Position within gameArea
-        top: '50%', // Center vertically
-        transform: [{ translateY: -50 }], // Adjust for true vertical centering
-        zIndex: 10, // Above other elements
+        position: 'absolute',
+        top: '50%',
+        transform: [{ translateY: -50 }],
+        zIndex: 10,
     },
     finalText: {
-        fontSize: 24, // Fixed size for visibility
+        fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FF4500', // Vibrant orange
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+        color: '#FF4500',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
         padding: 10,
         borderRadius: 10,
     },
