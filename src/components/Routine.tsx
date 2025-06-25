@@ -22,21 +22,21 @@ const Routine: React.FC<RoutineProps> = ({ routine }) => {
       title={`Juegos para la rutina de ${routineName[routine].toLowerCase()}`}
       cards={[
         {
-          image: { source: require('@/assets/images/games/quiz.png') },
+          image: { source: require('@/assets/images/games/quiz.webp') },
           text: { children: gameName[GAMES.QUIZ] },
           cardProps: {
             onPress: () => handlePress(GAMES.QUIZ),
           },
         },
         {
-          image: { source: require('@/assets/images/games/interactive.png') },
+          image: { source: require('@/assets/images/games/interactive.webp') },
           text: { children: gameName[GAMES.INTERACTIVE] },
           cardProps: {
             onPress: () => handlePress(GAMES.INTERACTIVE),
           },
         },
         {
-          image: { source: require('@/assets/images/games/sort.png') },
+          image: { source: require('@/assets/images/games/sort.webp') },
           text: { children: gameName[GAMES.SORT] },
           cardProps: {
             onPress: () => handlePress(GAMES.SORT),
