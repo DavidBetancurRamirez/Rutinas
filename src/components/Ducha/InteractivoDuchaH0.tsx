@@ -22,7 +22,18 @@ const characterWidth = width * 0.375;
 const characterHeight = height * 0.6;
 const isMobile = Platform.OS === 'android' || Platform.OS === 'ios';
 
-// Define types early to avoid reference errors
+// Get screen dimensions
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+// Define reference dimensions
+const REFERENCE_WIDTH = 360;
+const REFERENCE_HEIGHT = 640;
+
+// Scale factor for responsive positioning
+const scaleX = SCREEN_WIDTH / REFERENCE_WIDTH;
+const scaleY = SCREEN_HEIGHT / REFERENCE_HEIGHT;
+
+// Define types
 type ClothingKey = 'shirt' | 'pants' | 'socks' | 'underwear';
 
 type ClothingItem = {
@@ -53,7 +64,8 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
             onStartShouldSetPanResponder: () => true,
             onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
                 useNativeDriver: false,
-            }), onPanResponderRelease: (_: GestureResponderEvent, gesture: PanResponderGestureState) => {
+            }),
+            onPanResponderRelease: (_: GestureResponderEvent, gesture: PanResponderGestureState) => {
                 const { moveX, moveY, dx, dy } = gesture;
 
                 const itemStyle = style as { left?: number; top?: number; width?: number; height?: number };
@@ -182,14 +194,17 @@ const DraggableSoap: React.FC<DraggableSoapProps> = ({
                 useNativeDriver: false,
             }),
             onPanResponderRelease: (_, gesture) => {
-                const currentX = position.left + gesture.dx;
-                const currentY = position.top + gesture.dy;
+                const currentX = (position.left * scaleX) + gesture.dx;
+                const currentY = (position.top * scaleY) + gesture.dy;
 
                 bodyParts.forEach((part) => {
                     const { left, top, width, height } = part.position;
 
-                    const withinX = currentX + 40 >= left && currentX <= left + width;
-                    const withinY = currentY + 40 >= top && currentY <= top + height;
+                    const soapCenterX = currentX + (80 * scaleX) / 2;
+                    const soapCenterY = currentY + (80 * scaleY) / 2;
+
+                    const withinX = soapCenterX >= left && soapCenterX <= left + width;
+                    const withinY = soapCenterY >= top && soapCenterY <= top + height;
 
                     if (withinX && withinY) {
                         onScrub(part.id);
@@ -206,14 +221,14 @@ const DraggableSoap: React.FC<DraggableSoapProps> = ({
 
     const animatedStyle: Animated.WithAnimatedObject<ViewStyle> = {
         position: 'absolute',
-        top: position.top,
-        left: position.left,
+        top: position.top * scaleY,
+        left: position.left * scaleX,
         transform: pan.getTranslateTransform(),
     };
 
     return (
         <Animated.View style={animatedStyle} {...panResponder.panHandlers}>
-            <Image source={source} style={{ width: 80, height: 80, resizeMode: 'contain' }} />
+            <Image source={source} style={{ width: 80 * scaleX, height: 80 * scaleY, resizeMode: 'contain' }} />
         </Animated.View>
     );
 };
@@ -224,7 +239,7 @@ const InteractivoDuchaH0: React.FC = () => {
     const [messageVisible, setMessageVisible] = useState(true);
     const [showShowerStage, setShowShowerStage] = useState(false);
     const [showSoapStage, setShowSoapStage] = useState(false);
-    const [hasEnteredShower, setHasEnteredShower] = useState(false);
+    const [hasEnteredShower, setStageStage] = useState(false);
     const [showerOn, setShowerOn] = useState(false);
     const [canTurnOnShower, setCanTurnOnShower] = useState(false);
     const [cleanedParts, setCleanedParts] = useState<string[]>([]);
@@ -266,7 +281,7 @@ const InteractivoDuchaH0: React.FC = () => {
         setMessageVisible(true);
         setShowShowerStage(false);
         setShowSoapStage(false);
-        setHasEnteredShower(false);
+        setStageStage(false);
         setShowerOn(false);
         setCanTurnOnShower(false);
         setCleanedParts([]);
@@ -353,7 +368,7 @@ const InteractivoDuchaH0: React.FC = () => {
     }, [showDressUpStage]);
 
     const handleEnterShower = () => {
-        setHasEnteredShower(true);
+        setStageStage(true);
         setTimeout(() => {
             setShowSoapStage(true);
             setStage(3);
@@ -364,27 +379,52 @@ const InteractivoDuchaH0: React.FC = () => {
         {
             id: 'rostro',
             image: require('@/assets/images/Rostro.webp'),
-            position: { top: 100, left: 140, width: 80, height: 80 },
+            position: {
+                top: 100 * scaleY,
+                left: 140 * scaleX,
+                width: 80 * scaleX,
+                height: 80 * scaleY,
+            },
         },
         {
             id: 'brazos',
             image: require('@/assets/images/Brazos.webp'),
-            position: { top: 200, left: 40, width: 100, height: 80 },
+            position: {
+                top: 200 * scaleY,
+                left: 40 * scaleX,
+                width: 100 * scaleX,
+                height: 80 * scaleY,
+            },
         },
         {
             id: 'axilas',
             image: require('@/assets/images/Axilas.webp'),
-            position: { top: 200, left: 240, width: 80, height: 80 },
+            position: {
+                top: 200 * scaleY,
+                left: 240 * scaleX,
+                width: 80 * scaleX,
+                height: 80 * scaleY,
+            },
         },
         {
             id: 'nalgas',
             image: require('@/assets/images/Nalgas.webp'),
-            position: { top: 300, left: 140, width: 90, height: 90 },
+            position: {
+                top: 300 * scaleY,
+                left: 140 * scaleX,
+                width: 90 * scaleX,
+                height: 90 * scaleY,
+            },
         },
         {
             id: 'pies',
             image: require('@/assets/images/Pies.webp'),
-            position: { top: 400, left: 140, width: 80, height: 70 },
+            position: {
+                top: 400 * scaleY,
+                left: 140 * scaleX,
+                width: 80 * scaleX,
+                height: 70 * scaleY,
+            },
         },
     ];
 
@@ -625,8 +665,9 @@ const styles = StyleSheet.create({
     },
     message: {
         position: 'absolute',
-        bottom: 20, // Adjusted to ensure visibility
-        alignSelf: 'center',
+        top: 300,
+        left: '20%',
+        transform: [{ translateX: -50 }, { translateY: -50 }],
         fontSize: 28,
         fontWeight: 'bold',
         color: '#2F855A',
@@ -677,7 +718,7 @@ const styles = StyleSheet.create({
     },
     finalMessage: {
         position: 'absolute',
-        bottom: 20, // Adjusted to ensure visibility
+        bottom: 20,
         fontSize: 28,
         fontWeight: 'bold',
         color: '#2F855A',
@@ -695,11 +736,12 @@ const styles = StyleSheet.create({
     },
     showerOver: {
         position: 'absolute',
-        top: 50,
-        left: (width - 400) / 2,
-        width: 140,
-        height: 150,
+        top: 50 * scaleY, // Position above the rostro body part
+        left: (140 * scaleX) - (100 * scaleX) / 2, // Center above rostro (140 * scaleX)
+        width: 100 * scaleX, // Scaled size for responsiveness
+        height: 100 * scaleY, // Scaled size for responsiveness
         resizeMode: 'contain',
+        zIndex: 11,
     },
     soap: {
         position: 'absolute',
