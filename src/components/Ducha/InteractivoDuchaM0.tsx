@@ -12,19 +12,40 @@ import {
     PanResponderGestureState,
     TouchableOpacity,
     ViewStyle,
+    ImageSourcePropType,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import GameFinished from '../GameFinished';
 import { useRouter } from 'expo-router';
+import GameFinished from '../GameFinished';
 
 const { width, height } = Dimensions.get('window');
 const characterWidth = width * 0.375;
 const characterHeight = height * 0.6;
 const isMobile = Platform.OS === 'android' || Platform.OS === 'ios';
 
+// Get screen dimensions
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+// Define reference dimensions
+const REFERENCE_WIDTH = 360;
+const REFERENCE_HEIGHT = 640;
+
+// Scale factor for responsive positioning
+const scaleX = SCREEN_WIDTH / REFERENCE_WIDTH;
+const scaleY = SCREEN_HEIGHT / REFERENCE_HEIGHT;
+
+// Define types
+type ClothingKey = 'dress' | 'pants' | 'socks' | 'underwear';
+
+type ClothingItem = {
+    key: ClothingKey;
+    source: ImageSourcePropType;
+    style: ViewStyle;
+};
+
 type DraggableItemProps = {
-    source: any;
-    style: object;
+    source: ImageSourcePropType;
+    style: ViewStyle;
     onDrop: (itemKey: ClothingKey, moveX: number, moveY: number) => void;
     itemKey: ClothingKey;
     characterDimensions: { top: number; left: number; width: number; height: number };
@@ -49,8 +70,8 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
                 const { moveX, moveY, dx, dy } = gesture;
 
                 const itemStyle = style as { left?: number; top?: number; width?: number; height?: number };
-                const itemWidth = itemStyle.width || 80;
-                const itemHeight = itemStyle.height || 80;
+                const itemWidth = itemStyle.width || 80 * scaleX;
+                const itemHeight = itemStyle.height || 80 * scaleY;
                 const itemLeft = (itemStyle.left || 0) + dx;
                 const itemTop = (itemStyle.top || 0) + dy;
                 const itemRight = itemLeft + itemWidth;
@@ -103,8 +124,8 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
             onPanResponderRelease: (_: GestureResponderEvent, gesture: PanResponderGestureState) => {
                 const { moveX, moveY } = gesture;
 
-                const showerLeft = 15;
-                const showerTop = 80;
+                const showerLeft = 15 * scaleX;
+                const showerTop = 80 * scaleY;
                 const showerRight = showerLeft + characterWidth * 1.2;
                 const showerBottom = showerTop + characterHeight * 0.8;
 
@@ -150,7 +171,7 @@ const DraggableCharacter = ({ onEnterShower }: { onEnterShower: () => void }) =>
 };
 
 interface DraggableSoapProps {
-    source: any;
+    source: ImageSourcePropType;
     position: { top: number; left: number };
     bodyParts: {
         id: string;
@@ -174,14 +195,17 @@ const DraggableSoap: React.FC<DraggableSoapProps> = ({
                 useNativeDriver: false,
             }),
             onPanResponderRelease: (_, gesture) => {
-                const currentX = position.left + gesture.dx;
-                const currentY = position.top + gesture.dy;
+                const currentX = (position.left * scaleX) + gesture.dx;
+                const currentY = (position.top * scaleY) + gesture.dy;
 
                 bodyParts.forEach((part) => {
                     const { left, top, width, height } = part.position;
 
-                    const withinX = currentX + 40 >= left && currentX <= left + width;
-                    const withinY = currentY + 40 >= top && currentY <= top + height;
+                    const soapCenterX = currentX + (80 * scaleX) / 2;
+                    const soapCenterY = currentY + (80 * scaleY) / 2;
+
+                    const withinX = soapCenterX >= left && soapCenterX <= left + width;
+                    const withinY = soapCenterY >= top && soapCenterY <= top + height;
 
                     if (withinX && withinY) {
                         onScrub(part.id);
@@ -198,20 +222,21 @@ const DraggableSoap: React.FC<DraggableSoapProps> = ({
 
     const animatedStyle: Animated.WithAnimatedObject<ViewStyle> = {
         position: 'absolute',
-        top: position.top,
-        left: position.left,
+        top: position.top * scaleY,
+        left: position.left * scaleX,
         transform: pan.getTranslateTransform(),
     };
 
     return (
         <Animated.View style={animatedStyle} {...panResponder.panHandlers}>
-            <Image source={source} style={{ width: 80, height: 80, resizeMode: 'contain' }} />
+            <Image source={source} style={{ width: 80 * scaleX, height: 80 * scaleY, resizeMode: 'contain' }} />
         </Animated.View>
     );
 };
 
 const InteractivoDuchaM0: React.FC = () => {
     const navigation = useNavigation();
+    const router = useRouter();
     const [stage, setStage] = useState(1);
     const [messageVisible, setMessageVisible] = useState(true);
     const [showShowerStage, setShowShowerStage] = useState(false);
@@ -222,7 +247,6 @@ const InteractivoDuchaM0: React.FC = () => {
     const [cleanedParts, setCleanedParts] = useState<string[]>([]);
     const [showDressUpStage, setShowDressUpStage] = useState<boolean>(false);
     const [gameFinished, setGameFinished] = useState(false);
-    const router = useRouter();
     const [removedClothes, setRemovedClothes] = useState<ClothingItem[]>([]);
     const [clothes, setClothes] = useState<ClothingItem[]>([
         {
@@ -319,10 +343,10 @@ const InteractivoDuchaM0: React.FC = () => {
     useEffect(() => {
         if (showDressUpStage) {
             const leftSidePositions = [
-                { key: 'dress' as ClothingKey, top: 100 },
-                { key: 'pants' as ClothingKey, top: 200 },
-                { key: 'socks' as ClothingKey, top: 300 },
-                { key: 'underwear' as ClothingKey, top: 400 },
+                { key: 'dress' as ClothingKey, top: 100 * scaleY },
+                { key: 'pants' as ClothingKey, top: 200 * scaleY },
+                { key: 'socks' as ClothingKey, top: 300 * scaleY },
+                { key: 'underwear' as ClothingKey, top: 400 * scaleY },
             ];
 
             setClothes((prevClothes) => [
@@ -335,8 +359,8 @@ const InteractivoDuchaM0: React.FC = () => {
                             ...styles.clothesItem,
                             width: characterWidth * 0.48,
                             height: characterHeight * 0.18,
-                            left: 10,
-                            top: position ? position.top : 100,
+                            left: 10 * scaleX,
+                            top: position ? position.top : 100 * scaleY,
                         },
                     };
                 }),
@@ -357,27 +381,52 @@ const InteractivoDuchaM0: React.FC = () => {
         {
             id: 'rostro',
             image: require('@/assets/images/Rostro Mujer.webp'),
-            position: { top: 100, left: 140, width: 80, height: 80 },
+            position: {
+                top: 100 * scaleY,
+                left: 140 * scaleX,
+                width: 80 * scaleX,
+                height: 80 * scaleY,
+            },
         },
         {
             id: 'brazos',
             image: require('@/assets/images/Brazos.webp'),
-            position: { top: 200, left: 40, width: 100, height: 80 },
+            position: {
+                top: 200 * scaleY,
+                left: 40 * scaleX,
+                width: 100 * scaleX,
+                height: 80 * scaleY,
+            },
         },
         {
             id: 'axilas',
             image: require('@/assets/images/Axilas.webp'),
-            position: { top: 200, left: 240, width: 80, height: 80 },
+            position: {
+                top: 200 * scaleY,
+                left: 240 * scaleX,
+                width: 80 * scaleX,
+                height: 80 * scaleY,
+            },
         },
         {
             id: 'nalgas',
             image: require('@/assets/images/Nalgas.webp'),
-            position: { top: 300, left: 140, width: 90, height: 90 },
+            position: {
+                top: 300 * scaleY,
+                left: 140 * scaleX,
+                width: 90 * scaleX,
+                height: 90 * scaleY,
+            },
         },
         {
             id: 'pies',
             image: require('@/assets/images/Pies.webp'),
-            position: { top: 400, left: 140, width: 80, height: 70 },
+            position: {
+                top: 400 * scaleY,
+                left: 140 * scaleX,
+                width: 80 * scaleX,
+                height: 70 * scaleY,
+            },
         },
     ];
 
@@ -468,7 +517,7 @@ const InteractivoDuchaM0: React.FC = () => {
                             itemKey={item.key}
                             characterDimensions={{
                                 top: characterHeight * 0.3,
-                                left: 10,
+                                left: 10 * scaleX,
                                 width: characterWidth * 1.2,
                                 height: characterHeight * 0.8,
                             }}
@@ -565,8 +614,8 @@ const InteractivoDuchaM0: React.FC = () => {
                                 onDrop={handleDressUpDrop}
                                 itemKey={item.key}
                                 characterDimensions={{
-                                    top: 80,
-                                    left: width - characterWidth - 10,
+                                    top: 80 * scaleY,
+                                    left: width - characterWidth - 10 * scaleX,
                                     width: characterWidth * 1.5,
                                     height: characterHeight * 1.5,
                                 }}
@@ -577,15 +626,6 @@ const InteractivoDuchaM0: React.FC = () => {
             ) : null}
         </View>
     );
-};
-
-// Define clothing key type
-type ClothingKey = 'dress' | 'pants' | 'socks' | 'underwear';
-
-type ClothingItem = {
-    key: ClothingKey;
-    source: any;
-    style: object;
 };
 
 const styles = StyleSheet.create({
@@ -600,8 +640,8 @@ const styles = StyleSheet.create({
         width: characterWidth,
         height: characterHeight,
         resizeMode: 'contain',
-        left: width - characterWidth - 10,
-        top: 80,
+        left: width - characterWidth - 10 * scaleX,
+        top: 80 * scaleY,
         zIndex: 0,
     },
     basket: {
@@ -609,15 +649,15 @@ const styles = StyleSheet.create({
         width: characterWidth * 1.2,
         height: characterHeight * 0.8,
         resizeMode: 'contain',
-        left: 10,
+        left: 10 * scaleX,
         top: characterHeight * 0.3,
         zIndex: 8,
     },
     message: {
         position: 'absolute',
-        bottom: -400,
+        top: 300 * scaleY,
         alignSelf: 'center',
-        fontSize: 28,
+        fontSize: 28 * Math.min(scaleX, scaleY),
         fontWeight: 'bold',
         color: '#2F855A',
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -633,10 +673,10 @@ const styles = StyleSheet.create({
     },
     instructions: {
         position: 'absolute',
-        top: 10,
+        top: 10 * scaleY,
         paddingHorizontal: 20,
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: 20 * Math.min(scaleX, scaleY),
         fontWeight: '600',
         color: '#333',
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -649,8 +689,8 @@ const styles = StyleSheet.create({
         width: characterWidth * 1.2,
         height: characterHeight * 0.8,
         resizeMode: 'contain',
-        left: 15,
-        top: 80,
+        left: 15 * scaleX,
+        top: 80 * scaleY,
         zIndex: 10,
     },
     clothesItem: {
@@ -662,34 +702,35 @@ const styles = StyleSheet.create({
         height: characterHeight,
         resizeMode: 'contain',
         left: (width - characterWidth) / 3.4,
-        top: 80,
+        top: 80 * scaleY,
         zIndex: 10,
     },
     showerOver: {
         position: 'absolute',
-        top: 50,
-        left: (width - 400) / 2,
-        width: 140,
-        height: 150,
+        top: 50 * scaleY,
+        left: (140 * scaleX) - (100 * scaleX) / 2,
+        width: 100 * scaleX,
+        height: 100 * scaleY,
         resizeMode: 'contain',
+        zIndex: 11,
     },
     soap: {
         position: 'absolute',
     },
     bodyPart: {
         position: 'absolute',
-        width: 80,
-        height: 80,
+        width: 80 * scaleX,
+        height: 80 * scaleY,
     },
     cleanedBodyPart: {
-        opacity: 0,
+        opacity: 0.5,
         borderColor: 'limegreen',
         borderWidth: 2,
         borderRadius: 10,
     },
     draggableItem: {
-        width: 80,
-        height: 80,
+        width: 80 * scaleX,
+        height: 80 * scaleY,
         margin: 10,
     },
     clothesFixed: {
@@ -708,7 +749,7 @@ const styles = StyleSheet.create({
     },
     gameFinishedContainer: {
         flex: 1,
-        marginTop: 400,
+        marginTop: 400 * scaleY,
         fontSize: width * 0.05 > 20 ? 20 : width * 0.05,
         fontWeight: 'bold',
         textAlign: 'center',
@@ -720,13 +761,12 @@ const styles = StyleSheet.create({
     },
 });
 
-// Clothing positions for first and last phases
-const stage1ClothingPositions: Record<ClothingKey, object> = {
+const stage1ClothingPositions: Record<ClothingKey, ViewStyle> = {
     dress: {
         ...styles.clothesItem,
         width: characterWidth * 0.7,
         height: characterHeight * 0.48,
-        left: width - characterWidth - 10 + (characterWidth * 0.30) / 2,
+        left: width - characterWidth - 10 * scaleX + (characterWidth * 0.30) / 2,
         top: characterHeight * 0.42,
         zIndex: 14,
     },
@@ -734,7 +774,7 @@ const stage1ClothingPositions: Record<ClothingKey, object> = {
         ...styles.clothesItem,
         width: characterWidth * 0.6,
         height: characterHeight * 0.312,
-        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        left: width - characterWidth - 10 * scaleX + (characterWidth * 0.4) / 2,
         top: characterHeight * 0.60,
         zIndex: 13,
     },
@@ -742,7 +782,7 @@ const stage1ClothingPositions: Record<ClothingKey, object> = {
         ...styles.clothesItem,
         width: characterWidth * 0.6,
         height: characterHeight * 0.09,
-        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        left: width - characterWidth - 10 * scaleX + (characterWidth * 0.4) / 2,
         top: characterHeight * 0.66,
         zIndex: 12,
     },
@@ -750,7 +790,7 @@ const stage1ClothingPositions: Record<ClothingKey, object> = {
         ...styles.clothesItem,
         width: characterWidth * 0.6,
         height: characterHeight * 0.18,
-        left: width - characterWidth - 10 + (characterWidth * 0.4) / 2,
+        left: width - characterWidth - 10 * scaleX + (characterWidth * 0.4) / 2,
         top: characterHeight * 0.80,
         zIndex: 11,
     },
