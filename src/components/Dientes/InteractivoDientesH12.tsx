@@ -227,7 +227,13 @@ const InteractivoDientesH12 = () => {
                     ) : stage === 3 || stage === 4 || stage === 5 ? (
                         <>
                             {/* Mouth or Tongue Image */}
-                            <View style={styles.targetContainer}>
+                            <View style={[
+                                styles.targetContainer,
+                                {
+                                    top: width * 0.55, // Match toothbrush vertical position
+                                    left: (width - 300) / 2 - 20, // Match toothbrush horizontal position, adjusted for mouth/tongue width
+                                }
+                            ]}>
                                 <Image
                                     source={stage === 5 ? IMAGES.tongue : IMAGES.mouth}
                                     style={stage === 5 ? styles.tongueImage : styles.mouthImage}
@@ -244,8 +250,8 @@ const InteractivoDientesH12 = () => {
                                             { translateX: stage === 3 ? pan.x : 0 },
                                             { translateY: stage === 4 || stage === 5 ? pan.y : 0 },
                                         ],
-                                        top: 220,
-                                        right: 120,
+                                        top: width * 0.55, // Adjusted for centering vertically
+                                        left: (width - 200) / 2 - 20, // Center horizontally, shift 20px left
                                     },
                                 ]}
                             >
