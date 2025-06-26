@@ -134,18 +134,6 @@ const Quiz = () => {
             }}
           />
         </View>
-
-        {/* Info general */}
-        <View style={{ gap: 12, width: '100%', maxWidth: 500 }}>
-          <Text
-            style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}
-          >
-            Modo de juego: {routine}
-          </Text>
-          <Text style={{ fontSize: 16, textAlign: 'center' }}>
-            Edad: {age} - Género: {gender}
-          </Text>
-
           {/* Pregunta */}
           <View style={{ marginTop: 24 }}>
             <Text
@@ -201,7 +189,6 @@ const Quiz = () => {
             </View>
           </View>
         </View>
-      </View>
     </Screen>
   );
 };
