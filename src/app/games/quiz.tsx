@@ -11,7 +11,7 @@ import { questionBankMap, StepKey, Question } from '@/data/quizBankData';
 import useAppStore from '@/stores';
 import { Colors } from '@/constants/colors';
 
-const shuffleArray = (array: Question[]) => {
+const shuffleArray = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
 
@@ -34,7 +34,12 @@ const Quiz = () => {
   const [correctCount, setCorrectCount] = useState(0);
 
   useEffect(() => {
-    const shuffled = shuffleArray(fullQuestions).slice(0, 5);
+    const shuffled = shuffleArray(fullQuestions)
+      .slice(0, 5)
+      .map((question) => ({
+        ...question,
+        options: shuffleArray(question.options),
+      }));
     setQuestions(shuffled);
   }, [fullQuestions]);
 
@@ -62,7 +67,12 @@ const Quiz = () => {
   };
 
   const handleRetry = () => {
-    const shuffled = shuffleArray(fullQuestions).slice(0, 5);
+    const shuffled = shuffleArray(fullQuestions)
+      .slice(0, 5)
+      .map((question) => ({
+        ...question,
+        options: shuffleArray(question.options),
+      }));
     setQuestions(shuffled);
     setCurrentIndex(0);
     setCorrectCount(0);
@@ -72,9 +82,7 @@ const Quiz = () => {
   if (questions.length === 0) {
     return (
       <Screen title="Quiz">
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ fontSize: 18, textAlign: 'center' }}>
             No hay preguntas disponibles 😕
           </Text>
@@ -134,61 +142,62 @@ const Quiz = () => {
             }}
           />
         </View>
-          {/* Pregunta */}
-          <View style={{ marginTop: 24 }}>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: '600',
-                textAlign: 'center',
-                marginBottom: 12,
-              }}
-            >
-              {currentQuestion.question}
-            </Text>
 
-            <View style={{ gap: 10 }}>
-              {currentQuestion.options.map((option) => {
-                const isCorrect = option === currentQuestion.correctAnswer;
-                const isSelected = option === selectedAnswer;
+        {/* Pregunta */}
+        <View style={{ marginTop: 24 }}>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: '600',
+              textAlign: 'center',
+              marginBottom: 12,
+            }}
+          >
+            {currentQuestion.question}
+          </Text>
 
-                let bg = '#e2e2e2';
-                if (showResult && isSelected) {
-                  bg = isCorrect ? Colors.success : Colors.error;
-                }
+          <View style={{ gap: 10 }}>
+            {currentQuestion.options.map((option) => {
+              const isCorrect = option === currentQuestion.correctAnswer;
+              const isSelected = option === selectedAnswer;
 
-                return (
-                  <TouchableOpacity
-                    key={option}
-                    onPress={() => handleSelect(option)}
-                    style={{
-                      backgroundColor: bg,
-                      padding: 12,
-                      borderRadius: 12,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
-                    disabled={showResult}
-                  >
-                    <Ionicons
-                      name={
-                        showResult && isCorrect
-                          ? 'checkmark-circle-outline'
-                          : showResult && isSelected
-                            ? 'close-circle-outline'
-                            : 'ellipse-outline'
-                      }
-                      size={20}
-                      color="#333"
-                      style={{ marginRight: 10 }}
-                    />
-                    <Text style={{ fontSize: 16 }}>{option}</Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
+              let bg = '#e2e2e2';
+              if (showResult && isSelected) {
+                bg = isCorrect ? Colors.success : Colors.error;
+              }
+
+              return (
+                <TouchableOpacity
+                  key={option}
+                  onPress={() => handleSelect(option)}
+                  style={{
+                    backgroundColor: bg,
+                    padding: 12,
+                    borderRadius: 12,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                  disabled={showResult}
+                >
+                  <Ionicons
+                    name={
+                      showResult && isCorrect
+                        ? 'checkmark-circle-outline'
+                        : showResult && isSelected
+                          ? 'close-circle-outline'
+                          : 'ellipse-outline'
+                    }
+                    size={20}
+                    color="#333"
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text style={{ fontSize: 16 }}>{option}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
+      </View>
     </Screen>
   );
 };
