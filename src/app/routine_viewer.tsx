@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
-import { ScrollView, useWindowDimensions } from 'react-native';
+import { ScrollView, useWindowDimensions, Platform } from 'react-native';
 import { View, StyleSheet } from 'react-native';
 
 import RoutineOption, { FillEmptyOptions } from '@/components/RoutineOption';
@@ -47,12 +47,19 @@ const RoutineViewer = () => {
 
   return (
     <Screen title="Tus rutinas">
-      <View style={{ flex: 1 }}>
+      <View
+        style={[
+          styles.container,
+          Platform.OS === 'ios' && { overflow: 'visible' },
+        ]}
+      >
         <View style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
             selectedValue={age}
             onValueChange={(itemValue) => setAge(itemValue)}
+            itemStyle={styles.pickerItem}
+            mode="dropdown"
           >
             <Picker.Item label="Edad" value={null} enabled={false} />
             <Picker.Item label="Niño/a" value={AGES.CHILD} />
@@ -63,6 +70,8 @@ const RoutineViewer = () => {
             style={styles.picker}
             selectedValue={gender}
             onValueChange={(itemValue) => setGender(itemValue)}
+            itemStyle={styles.pickerItem}
+            mode="dropdown"
           >
             <Picker.Item label="Género" value={null} enabled={false} />
             <Picker.Item label="Hombre" value={GENDERS.MALE} />
@@ -73,6 +82,8 @@ const RoutineViewer = () => {
             style={styles.picker}
             selectedValue={routine}
             onValueChange={(itemValue) => setRoutine(itemValue)}
+            itemStyle={styles.pickerItem}
+            mode="dropdown"
           >
             <Picker.Item label="Rutina" value={null} enabled={false} />
             <Picker.Item
@@ -90,7 +101,10 @@ const RoutineViewer = () => {
           </Picker>
         </View>
 
-        <ScrollView style={styles.scrollView}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContent}
+        >
           {shouldShowRoutine && (
             <View style={gridStyles.grid}>
               {steps.map((step) => {
@@ -118,8 +132,16 @@ const RoutineViewer = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   scrollView: {
     marginVertical: 10,
+  },
+  scrollViewContent: {
+    paddingBottom: 20,
+    top: 10,
+    flexGrow: 1,
   },
   pickerContainer: {
     flexDirection: 'row',
@@ -127,12 +149,28 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     marginVertical: 10,
     gap: 10,
+    zIndex: 10,
   },
   picker: {
     flex: 1,
     backgroundColor: '#fff',
     borderRadius: 10,
     minWidth: 150,
+    top: -10,
+    color: '#000',
+    ...Platform.select({
+      ios: {
+        height: 160,
+      },
+      android: {
+        height: 50,
+      },
+    }),
+  },
+  pickerItem: {
+    color: '#000',
+    fontSize: 16,
+    top: -25,
   },
 });
 

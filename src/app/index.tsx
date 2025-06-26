@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import CreditsModal from '@/components/CreditsModal';
-import Screen from '@/components/Screen';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Screen, { genericMargin } from '@/components/Screen';
 
 const Index = () => {
   const router = useRouter();
@@ -15,7 +15,6 @@ const Index = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Screen
         title="Bienvenid@ a Rutinas"
-        childrenProps={{ style: { alignSelf: 'stretch' } }}
         cards={[
           {
             text: { children: 'Comenzar' },
@@ -36,36 +35,38 @@ const Index = () => {
             },
           },
         ]}
-      >
-        <View style={styles.container}>
-          <Image
-            resizeMode="contain"
-            style={styles.logo}
-            source={require('@/assets/images/logo_aula_abierta.png')}
-          />
-          <Image
-            resizeMode="contain"
-            style={styles.logo}
-            source={require('@/assets/images/logo_eia.png')}
-          />
-        </View>
-      </Screen>
+      />
+
+      <View style={styles.imageContainer}>
+        <Image
+          resizeMode="contain"
+          style={styles.logo}
+          source={require('@/assets/images/logo_aula_abierta.png')}
+        />
+        <Image
+          resizeMode="contain"
+          style={styles.logo}
+          source={require('@/assets/images/logo_eia.png')}
+        />
+      </View>
+
       <CreditsModal visible={showModal} onClose={() => setShowModal(false)} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  imageContainer: {
+    alignItems: 'flex-end',
     flexDirection: 'row',
-    alignItems: 'center',
   },
   logo: {
     aspectRatio: 1,
     width: '40%',
     maxWidth: 150,
-    marginBottom: 10,
+    marginBottom: genericMargin,
     marginHorizontal: 'auto',
+    height: 'auto',
   },
 });
 
