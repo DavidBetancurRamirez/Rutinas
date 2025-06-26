@@ -47,7 +47,12 @@ const RoutineViewer = () => {
 
   return (
     <Screen title="Tus rutinas">
-      <View style={[styles.container, Platform.OS === 'ios' && { overflow: 'visible' }]}>
+      <View
+        style={[
+          styles.container,
+          Platform.OS === 'ios' && { overflow: 'visible' },
+        ]}
+      >
         <View style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
