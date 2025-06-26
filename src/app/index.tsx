@@ -41,12 +41,12 @@ const Index = () => {
         <Image
           resizeMode="contain"
           style={styles.logo}
-          source={require('@/assets/images/logo_aula_abierta.webp')}
+          source={require('@/assets/images/logo_aula_abierta.png')}
         />
         <Image
           resizeMode="contain"
           style={styles.logo}
-          source={require('@/assets/images/logo_eia.webp')}
+          source={require('@/assets/images/logo_eia.png')}
         />
       </View>
 
