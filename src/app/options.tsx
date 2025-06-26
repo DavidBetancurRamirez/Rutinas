@@ -24,7 +24,7 @@ const Options = () => {
         <Text style={styles.subTitle}>Género</Text>
         <View style={styles.optionContainer}>
           <CardWithIcon
-            image={{ source: require('@/assets/images/options/icon_man.webp') }}
+            image={{ source: require('@/assets/images/options/icon_man.png') }}
             text={{ children: genderName[GENDERS.MALE] }}
             cardProps={{
               onPress: () => setGender(GENDERS.MALE),
@@ -37,7 +37,7 @@ const Options = () => {
           />
           <CardWithIcon
             image={{
-              source: require('@/assets/images/options/icon_woman.webp'),
+              source: require('@/assets/images/options/icon_woman.png'),
             }}
             text={{ children: genderName[GENDERS.FEMALE] }}
             cardProps={{
@@ -54,9 +54,7 @@ const Options = () => {
         <Text style={styles.subTitle}>Edad</Text>
         <View style={styles.optionContainer}>
           <CardWithIcon
-            image={{
-              source: require('@/assets/images/options/icon_kids.webp'),
-            }}
+            image={{ source: require('@/assets/images/options/icon_kids.png') }}
             text={{ children: '0-11 años' }}
             cardProps={{
               onPress: () => setAge(AGES.CHILD),
@@ -69,7 +67,7 @@ const Options = () => {
           />
           <CardWithIcon
             image={{
-              source: require('@/assets/images/options/icon_teens.webp'),
+              source: require('@/assets/images/options/icon_teens.png'),
             }}
             text={{ children: '+12 años' }}
             cardProps={{

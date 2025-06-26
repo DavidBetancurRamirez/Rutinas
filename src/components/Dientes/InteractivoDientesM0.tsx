@@ -10,15 +10,15 @@ const { width } = Dimensions.get('window');
 
 // Image imports
 const IMAGES = {
-    toothpasteWithout: require('@/assets/images/Crema Dental (Sin).webp'),
-    toothpasteWith: require('@/assets/images/Crema Dental (Con).webp'),
-    faucetClosed: require('@/assets/images/Canilla (Cerrada).webp'),
-    faucetOpen: require('@/assets/images/Canilla (Abierta).webp'),
-    toothbrush: require('@/assets/images/cepillo.webp'),
-    mouth: require('@/assets/images/Dientes.webp'),
-    wash: require('@/assets/images/Agua.webp'),
-    spit: require('@/assets/images/Escupir (Sin).webp'),
-    spit2: require('@/assets/images/Escupir (Con).webp'),
+    toothpasteWithout: require('@/assets/images/Crema Dental (Sin).png'),
+    toothpasteWith: require('@/assets/images/Crema Dental (Con).png'),
+    faucetClosed: require('@/assets/images/Canilla (Cerrada).png'),
+    faucetOpen: require('@/assets/images/Canilla (Abierta).png'),
+    toothbrush: require('@/assets/images/cepillo.png'),
+    mouth: require('@/assets/images/Dientes.png'),
+    wash: require('@/assets/images/Agua.png'),
+    spit: require('@/assets/images/Escupir (Sin).png'),
+    spit2: require('@/assets/images/Escupir (Con).png'),
 };
 
 const InteractivoDientesM0 = () => {
