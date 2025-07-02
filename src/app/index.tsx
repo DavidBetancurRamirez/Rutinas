@@ -12,7 +12,7 @@ const Index = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <Screen
         title="Bienvenid@ a Rutinas"
         cards={[
@@ -51,7 +51,7 @@ const Index = () => {
       </View>
 
       <CreditsModal visible={showModal} onClose={() => setShowModal(false)} />
-    </SafeAreaView>
+    </View>
   );
 };
 
