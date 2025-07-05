@@ -6,13 +6,23 @@ import { useRouter } from 'expo-router';
 import GameFinished from '@/components/GameFinished';
 import Screen from '@/components/Screen';
 
+import { Colors } from '@/constants/colors';
+
 import { questionBankMap, StepKey, Question } from '@/data/quizBankData';
 
 import useAppStore from '@/stores';
-import { Colors } from '@/constants/colors';
 
 const shuffleArray = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
+};
+
+const shuffleQuestions = (questions: Question[]): Question[] => {
+  return shuffleArray(questions)
+    .slice(0, 5)
+    .map((q) => ({
+      ...q,
+      options: shuffleArray(q.options),
+    }));
 };
 
 const Quiz = () => {
@@ -34,13 +44,7 @@ const Quiz = () => {
   const [correctCount, setCorrectCount] = useState(0);
 
   useEffect(() => {
-    const shuffled = shuffleArray(fullQuestions)
-      .slice(0, 5)
-      .map((question) => ({
-        ...question,
-        options: shuffleArray(question.options),
-      }));
-    setQuestions(shuffled);
+    setQuestions(shuffleQuestions(fullQuestions));
   }, [fullQuestions]);
 
   const currentQuestion = questions[currentIndex];
@@ -67,13 +71,7 @@ const Quiz = () => {
   };
 
   const handleRetry = () => {
-    const shuffled = shuffleArray(fullQuestions)
-      .slice(0, 5)
-      .map((question) => ({
-        ...question,
-        options: shuffleArray(question.options),
-      }));
-    setQuestions(shuffled);
+    setQuestions(shuffleQuestions(fullQuestions));
     setCurrentIndex(0);
     setCorrectCount(0);
     setGameFinished(false);
@@ -82,7 +80,9 @@ const Quiz = () => {
   if (questions.length === 0) {
     return (
       <Screen title="Quiz">
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
           <Text style={{ fontSize: 18, textAlign: 'center' }}>
             No hay preguntas disponibles 😕
           </Text>
