@@ -36,34 +36,41 @@
 </ul>
 </li>
 
-<li class="my-0"><a href="#getting-started">Application Architecture</a>
+<li class="my-0"><a href="#application-architecture">Application Architecture</a>
 <ul class="list-disc pl-4 my-0">
-<li class="my-0"><a href="#Technology Stack">Technology Stack</a></li>
+<li class="my-0"><a href="#technology-stack">Technology Stack</a></li>
+<li class="my-0"><a href="#screen-organization">Screen Organization</a></li>
 </ul>
 
-<li class="my-0"><a href="#getting-started">Routines</a>
+<li class="my-0"><a href="#user-profile-integration">User Profile Integration</a>
+<ul class="list-disc pl-4 my-0">
+<li class="my-0"><a href="#data-structure-mapping">Data Structure Mapping</a></li>
+</ul>
+
+<li class="my-0"><a href="#routines">Routines</a>
+<ul class="list-disc pl-4 my-0">
+<li class="my-0"><a href="#educational-content-structure">Educational Content Structure</a></li>
+</ul>
 
 <li class="my-0"><a href="#getting-started">Game Systems</a>
-<ul class="list-disc pl-4 my-0">
-<li class="my-0"><a href="#Technology Stack">Quiz Games</a></li>
-<li class="my-0"><a href="#Technology Stack">Sort Games</a></li>
-<li class="my-0"><a href="#Technology Stack">Interactive Games</a></li>
 </ul>
 
-</ul>
 <hr>
 <h2>Overview</h2>
 <p>The Rutinas application is a cross-platform mobile app that helps children learn personal hygiene routines through gamified experiences. The app personalizes content based on user demographics (age and gender) and provides three distinct game types for educational engagement. This overview covers the application's architecture, core systems, and component structure.
 
 For detailed information about specific game mechanics, see Quiz Games, Sort Games, and Interactive Games. For navigation and user flow details, see Architecture & Navigation. For component implementation details, see UI Components & Theming.</p>
+
 <hr>
 <h2>Getting Started</h2>
+
 <h3>Prerequisites</h3>
 <p>This project requires the following dependencies:</p>
 <ul class="list-disc pl-4 my-0">
 <li class="my-0"><strong>Programming Language:</strong> TypeScript</li>
 <li class="my-0"><strong>Package Manager:</strong> Npm</li>
 </ul>
+
 <h3>Installation</h3>
 <p>Build Rutinas from the source and install dependencies:</p>
 <ol>
@@ -81,9 +88,11 @@ For detailed information about specific game mechanics, see Quiz Games, Sort Gam
 <p><strong>Install the dependencies:</strong></p>
 </li>
 </ol>
+
 <p><strong>Using <a href="https://www.npmjs.com/">npm</a>:</strong></p>
 <pre><code class="language-sh">❯ npm install
 </code></pre>
+
 <h3>Usage</h3>
 <p>Run the project with:</p>
 <p><strong>Using <a href="https://www.npmjs.com/">npm</a>:</strong></p>
@@ -94,6 +103,7 @@ For detailed information about specific game mechanics, see Quiz Games, Sort Gam
 <hr>
 <h2>Application Architecture</h2>
 <p>The Rutinas application follows a modern React Native architecture pattern using Expo as the development framework. The application is structured around a file-based routing system with centralized state management.</p>
+
 <h3>Technology Stack</h3>
 <table><thead><tr><th>Technology</th><th>Purpose</th><th>Version</th></tr></thead><tbody><tr><td><strong>Expo</strong></td><td>Development framework</td><td>~53.0.0</td></tr><tr><td><strong>React Native</strong></td><td>Mobile framework</td><td>0.79.2</td></tr><tr><td><strong>TypeScript</strong></td><td>Type safety</td><td>~5.8.3</td></tr><tr><td><strong>Zustand</strong></td><td>State management</td><td>^5.0.3</td></tr><tr><td><strong>Expo Router</strong></td><td>Navigation</td><td>^5.1.2</td></tr><tr><td><strong>React Native Reanimated</strong></td><td>Animations</td><td>~3.17.4</td></tr><tr><td><strong>React Native Gesture Handler</strong></td><td>Touch interactions</td><td>~2.24.0</td></tr></tbody></table>
 
@@ -116,11 +126,13 @@ For detailed information about specific game mechanics, see Quiz Games, Sort Gam
 <hr>
 <h2>User Profile Integration</h2>
 <p>All game types integrate with the global user profile stored in <code class="rounded-sm bg-[#e5e5e5] px-[0.25rem] py-[0.20rem] text-xs font-normal leading-[15px] before:hidden after:hidden dark:bg-[#484848]/30">useAppStore()</code>. The profile consists of three key attributes:</p>
+
 <ul>
 <li><strong>Age</strong>: <code class="rounded-sm bg-[#e5e5e5] px-[0.25rem] py-[0.20rem] text-xs font-normal leading-[15px] before:hidden after:hidden dark:bg-[#484848]/30">'teen'</code> (12+) or <code class="rounded-sm bg-[#e5e5e5] px-[0.25rem] py-[0.20rem] text-xs font-normal leading-[15px] before:hidden after:hidden dark:bg-[#484848]/30">'child'</code> (0-11)</li>
 <li><strong>Gender</strong>: <code class="rounded-sm bg-[#e5e5e5] px-[0.25rem] py-[0.20rem] text-xs font-normal leading-[15px] before:hidden after:hidden dark:bg-[#484848]/30">'male'</code> or <code class="rounded-sm bg-[#e5e5e5] px-[0.25rem] py-[0.20rem] text-xs font-normal leading-[15px] before:hidden after:hidden dark:bg-[#484848]/30">'female'</code></li>
 <li><strong>Routine</strong>: <code class="rounded-sm bg-[#e5e5e5] px-[0.25rem] py-[0.20rem] text-xs font-normal leading-[15px] before:hidden after:hidden dark:bg-[#484848]/30">'shower'</code>, <code class="rounded-sm bg-[#e5e5e5] px-[0.25rem] py-[0.20rem] text-xs font-normal leading-[15px] before:hidden after:hidden dark:bg-[#484848]/30">'teeth'</code>, or <code class="rounded-sm bg-[#e5e5e5] px-[0.25rem] py-[0.20rem] text-xs font-normal leading-[15px] before:hidden after:hidden dark:bg-[#484848]/30">'bathroom'</code></li>
 </ul>
+
 <p>This profile data is used to:</p>
 <ol>
 <li>Route to appropriate Interactive components</li>
