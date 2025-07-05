@@ -1,11 +1,11 @@
 import 'react-native-reanimated';
-import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect } from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { useEffect } from 'react';
 
 import { Theme } from '@/constants/Theme';
 
@@ -31,6 +31,8 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ThemeProvider value={Theme}>
         <SafeAreaView style={{ flex: 1 }}>
+          <StatusBar style="dark" backgroundColor="#ffffff" />
+
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="options" options={{ title: 'Modo de juego' }} />
@@ -42,7 +44,6 @@ export default function RootLayout() {
             <Stack.Screen name="games" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
-          <StatusBar style="dark" />
         </SafeAreaView>
       </ThemeProvider>
     </SafeAreaProvider>
