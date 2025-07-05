@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import CreditsModal from '@/components/CreditsModal';
@@ -12,7 +11,7 @@ const Index = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <Screen
         title="Bienvenid@ a Rutinas"
         cards={[
@@ -51,7 +50,7 @@ const Index = () => {
       </View>
 
       <CreditsModal visible={showModal} onClose={() => setShowModal(false)} />
-    </SafeAreaView>
+    </View>
   );
 };
 
